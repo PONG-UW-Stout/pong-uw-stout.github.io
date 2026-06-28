@@ -1,0 +1,30 @@
+title: PONG
+
+markdown: kramdown
+kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: highlight
+    block:
+      line_numbers: true
+
+plugins:
+- jekyll-watch 
+
+exclude:
+  - "*.gem"
+  - "*.gemspec"
+  - README.md
+  - LICENSE
+  - Rakefile
+  - CHANGELOG.md
+  - CODE_OF_CONDUCT.md
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values: 
+      layout: post
+      permalink: /posts/:title/
+      toc: true
