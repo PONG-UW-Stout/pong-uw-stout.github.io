@@ -28,3 +28,9 @@ defaults:
       layout: post
       permalink: /posts/:title/
       toc: true
+
+collections:
+  tabs:
+    output: true
+    permalink: /:name/
+    sort_by: order
