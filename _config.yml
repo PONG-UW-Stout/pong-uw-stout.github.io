@@ -19,6 +19,7 @@ exclude:
   - Rakefile
   - CHANGELOG.md
   - CODE_OF_CONDUCT.md
+  - ".github"
 
 defaults:
   - scope:

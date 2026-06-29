@@ -1,0 +1,44 @@
+name: Front Matter Lint
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  frontmatter-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Check required front matter keys
+        run: |
+          pip install python-frontmatter
+          python3 - <<'EOF'
+          import sys, glob, frontmatter
+
+
+          REQUIRED_KEYS = ["layout", "date", "author", "description"]
+          CONTENT_GLOBS = ["_posts/**/*.md"]
+
+          failures = []
+          for pattern in CONTENT_GLOBS:
+              for path in glob.glob(pattern, recursive=True):
+                  post = frontmatter.load(path)
+                  missing = [k for k in REQUIRED_KEYS if k not in post.metadata]
+                  if missing:
+                      failures.append((path, missing))
+
+          if failures:
+              for path, missing in failures:
+                  print(f"::error file={path}::Missing front matter key(s): {', '.join(missing)}")
+              sys.exit(1)
+          EOF

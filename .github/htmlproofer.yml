@@ -1,0 +1,32 @@
+name: HTML Proofer
+ 
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+ 
+permissions:
+  contents: read
+ 
+jobs:
+  html-proofer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+ 
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+ 
+      - name: Build site
+        run: bundle exec jekyll build
+ 
+      - name: Run HTML Proofer
+        run: |
+          gem install html-proofer --no-document
+          htmlproofer ./_site \
+            --disable-external \
+            --checks "Links,Images,Scripts"
