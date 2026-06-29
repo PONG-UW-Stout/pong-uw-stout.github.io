@@ -39,6 +39,11 @@ jobs:
 
           if failures:
               for path, missing in failures:
-                  print(f"::error file={path}::Missing front matter key(s): {', '.join(missing)}")
+                  message = (
+                      f"::error file={path}::"
+                      f"Missing front matter key(s): "
+                      f"{', '.join(missing)}"
+                  )
+                  print(message)
               sys.exit(1)
           EOF

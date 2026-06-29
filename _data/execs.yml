@@ -1,10 +1,11 @@
 # _data/execs.yml
 # One entry per exec, order here is display order on /about/.
 # socials is a list of {type, url} pairs, list length can vary per person.
-# `type` should match an icon filename in /assets/icons/ (e.g. type: twitter -> /assets/icons/twitter.svg)
+# `type` should match an icon filename in /assets/icons/
+# (e.g. type: twitter -> /assets/icons/twitter.svg)
 # url: "#" is a placeholder, swap in the real link when you have it.
 
-- name: 
+- name:
   role: President
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
@@ -13,7 +14,7 @@
     - type: linkedin
       url: "#"
 
-- name: 
+- name:
   role: Vice President
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
@@ -22,7 +23,7 @@
     - type: linkedin
       url: "#"
 
-- name: 
+- name:
   role: Treasurer
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
@@ -31,7 +32,7 @@
     - type: linkedin
       url: "#"
 
-- name: 
+- name:
   role: Event Coordinator
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
@@ -47,7 +48,7 @@
     - type: discord
       url: "#"
 
-- name: 
+- name:
   role: Designer
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
@@ -56,21 +57,21 @@
     - type: linkedin
       url: "#"
 
-- name: 
+- name:
   role: Promoter
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
     - type: instagram
       url: "#"
 
-- name: 
+- name:
   role: Ambassador
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
     - type: linkedin
       url: "#"
 
-- name: 
+- name:
   role: Server Administrator
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
@@ -79,7 +80,7 @@
     - type: discord
       url: "#"
 
-- name: 
+- name:
   role: Network Administrator
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:
@@ -88,7 +89,7 @@
     - type: discord
       url: "#"
 
-- name: 
+- name:
   role: Web Administrator
   photo: /assets/images/exec_photos/temp_unknown.png
   socials:

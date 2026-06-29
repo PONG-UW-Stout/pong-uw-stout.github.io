@@ -1,5 +1,6 @@
 # _data/socials.yml
-# Keyed by platform. `type` in execs.yml's socials list should match a key here exactly.
+# Keyed by platform. `type` in execs.yml's socials list should match a key
+# here exactly.
 # color: hex used as the link's background.
 # icon: the Font Awesome brand slug (the part after "fa-brands fa-").
 
