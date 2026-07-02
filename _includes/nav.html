@@ -2,7 +2,7 @@
 
     <a href="/index.html"><img class="header_logo" src="/assets/pong_banner-logo_v1.webp" alt="pong logo"></a>
 
-    <ul class="flex">
+    <ul id="nav-menu">
         {% for tab in site.tabs %}
         <li class="header_button"><a href="{{ tab.url | relative_url }}"
                 class="{% if page.url == tab.url %}active{% endif %}">
@@ -11,8 +11,14 @@
         {% endfor %}
     </ul>
 
-    <button id="theme-toggle" aria-label="Toggle dark mode">
-        <i class="fa-solid fa-sun"></i>
-        <i class="fa-solid fa-moon"></i>
-    </button>
+    <div class="nav-controls flex">
+        <button id="theme-toggle" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-sun"></i>
+            <i class="fa-solid fa-moon"></i>
+        </button>
+        <button id="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-menu">
+            <i class="fa-solid fa-bars"></i>
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
 </nav>
