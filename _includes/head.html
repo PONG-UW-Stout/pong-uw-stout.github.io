@@ -5,4 +5,13 @@
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon/pong_logo-icon_v2.ico" alt="favicon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="{{ "/assets/css/pong.css" | relative_url }}">
+    <script>
+        // Dark mode script
+        (function () {
+            var saved = localStorage.getItem('theme');
+            if (saved) {
+                document.documentElement.setAttribute('data-theme', saved);
+            }
+        })();
+    </script>
 </head>

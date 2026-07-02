@@ -5,95 +5,93 @@
 # (e.g. type: twitter -> /assets/icons/twitter.svg)
 # url: "#" is a placeholder, swap in the real link when you have it.
 
-- name:
+- name: Max C.
   role: President
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/max_c.png
   socials:
-    - type: twitter
-      url: "#"
     - type: linkedin
-      url: "#"
+      url: https://www.linkedin.com/in/mwcarleton
+    - type: github
+      url: https://github.com/pinheadtf2
+    - type: steam
+      url: https://steamcommunity.com/id/pinheadtf2
+    - type: link
+      url: https://pinhead.dev/
+    - type: link
+      url: https://pinhe.ad/
 
-- name:
+- name: Kei K.
   role: Vice President
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/kei_k.png
   socials:
-    - type: twitter
-      url: "#"
-    - type: linkedin
-      url: "#"
+    - type: steam
+      url: https://steamcommunity.com/profiles/76561198870583987/
 
-- name:
+- name: Ryan H.
   role: Treasurer
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/ryan_h.png
   socials:
-    - type: twitter
-      url: "#"
-    - type: linkedin
-      url: "#"
 
-- name:
+- name: Zoe O.
   role: Event Coordinator
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/zoe_o.png
   socials:
-    - type: instagram
-      url: "#"
-    - type: linkedin
-      url: "#"
+    - type: steam
+      url: https://s.team/p/cdwk-gvjg/NHQMNCBP
 
-- name:
+- name: Spencer D.
   role: Games Coordinator
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/spencer_d.png
   socials:
     - type: discord
-      url: "#"
+      url: https://discordapp.com/users/451721497552355328
+    - type: steam
+      url: https://steamcommunity.com/profiles/76561199029254703/
+    - type: youtube
+      url: https://www.youtube.com/@pinetree721
 
-- name:
+- name: Abby M.
   role: Designer
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/abby_m.png
   socials:
-    - type: instagram
-      url: "#"
-    - type: linkedin
-      url: "#"
+    - type: discord
+      url: https://discordapp.com/users/745054193726914620
+    - type: steam
+      url: https://steamcommunity.com/profiles/76561199249011977
 
-- name:
+- name: Annika H.
   role: Promoter
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/annika_h.png
   socials:
-    - type: instagram
-      url: "#"
+    - type: steam
+      url: https://steamcommunity.com/profiles/76561198800098854/
+    - type: link
+      url: https://linktr.ee/bonikaboo
 
-- name:
+- name: Dawson
   role: Ambassador
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/dawson.png
   socials:
-    - type: linkedin
-      url: "#"
 
-- name:
+- name: Daniel Z.
   role: Server Administrator
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/daniel_z.png
   socials:
-    - type: twitter
-      url: "#"
     - type: discord
-      url: "#"
+      url: https://discord.gg/Ubnz4XmN
+    - type: steam
+      url: https://steamcommunity.com/id/ADHDBoi/
 
-- name:
+
+- name: Conan H.
   role: Network Administrator
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/conan_h.png
   socials:
-    - type: twitter
-      url: "#"
-    - type: discord
-      url: "#"
 
-- name:
+
+- name: Daisy H.
   role: Web Administrator
-  photo: /assets/images/exec_photos/temp_unknown.png
+  photo: /assets/images/exec_photos/daisy_h.png
   socials:
-    - type: twitter
-      url: "#"
     - type: linkedin
-      url: "#"
+      url: "https://www.linkedin.com/in/daisy-hardwick/"

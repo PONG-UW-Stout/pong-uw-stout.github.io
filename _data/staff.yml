@@ -1,0 +1,41 @@
+# _data/staff.yml
+# Like # _data/execs.yml, but for staff. Same layout
+
+- name: Taylor T.
+  photo: /assets/images/staff_photos/taylor_t.png
+  role: Staff
+  socials:
+    - type: steam
+      url: https://steamcommunity.com/id/thatglitterygamer/
+
+- name: Michael K.
+  photo: /assets/images/staff_photos/michael_k.png
+  role: Staff
+  socials:
+
+- name: Caleb S.
+  photo: /assets/images/staff_photos/caleb_s.png
+  role: Staff
+  socials:
+    - type: steam
+      url: https://s.team/p/fcgk-mpjg/VJMDMPGF
+    - type: youtube
+      url: https://youtube.com/@cabletv123
+
+- name: Tanner S.
+  photo: /assets/images/staff_photos/tanner_s.png
+  role: Staff
+  socials:
+    - type: discord
+      url: https://discordapp.com/users/613791858224660481
+
+- name: Sam H.
+  photo: /assets/images/staff_photos/sam_h.png
+  role: Staff
+  socials:
+    - type: discord
+      url: https://discord.com/users/420326616800165896
+    - type: steam
+      url: https://s.team/p/gcwb-rdfr/MVWBRWKK
+    - type: youtube
+      url: https://youtube.com/@studiodonkfilm

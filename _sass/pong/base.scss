@@ -3,6 +3,17 @@
 html {
 	background-color: $light;
 	font-family: "cocogoose";
+
+    &[data-theme="dark"] {
+        background-color: $dark-mode-bg;
+        color: $light;
+
+    }
+
+    &[data-theme="light"] {
+        background-color: $light;
+        color: $dark;
+    }
 }
 
 body {

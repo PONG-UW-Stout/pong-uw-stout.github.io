@@ -5,21 +5,33 @@
 # icon: the Font Awesome brand slug (the part after "fa-brands fa-").
 
 twitter:
-  icon: x-twitter
+  icon: "fa-brands fa-x-twitter"
   color: "#000000"
 
 linkedin:
-  icon: linkedin
+  icon: "fa-brands fa-linkedin"
   color: "#0A66C2"
 
 github:
-  icon: github
+  icon: "fa-brands fa-github"
   color: "#181717"
 
 discord:
-  icon: discord
+  icon: "fa-brands fa-discord"
   color: "#5865F2"
 
 instagram:
-  icon: instagram
+  icon: "fa-brands fa-instagram"
   color: "#E1306C"
+
+steam:
+  icon: "fa-brands fa-steam"
+  color: "#171a21"
+
+link:
+  icon: "fa-solid fa-link"
+  color: "#000000"
+
+youtube:
+  icon: "fa-brands fa-youtube"
+  color: "#FF0000"
