@@ -51,3 +51,7 @@ twitch:
 facebook:
   icon: "fa-brands fa-facebook"
   color: "#0866FF"
+
+bluesky:
+  icon: "fa-brands fa-bluesky"
+  color: "#0886fe"

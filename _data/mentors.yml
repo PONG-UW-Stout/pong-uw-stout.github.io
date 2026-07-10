@@ -1,0 +1,9 @@
+# _data/mentors.yml
+# Like # _data/execs.yml, but for mentors. Same layout
+
+- name: Luke M.
+  photo: /assets/images/mentor_photos/luke_m.png
+  role: Mentor
+  socials:
+    - type: steam
+      url: https://steamcommunity.com/id/Flare199

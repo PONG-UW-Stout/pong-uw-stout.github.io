@@ -1,0 +1,11 @@
+# _data/advisors.yml
+# Like # _data/execs.yml, but for advisors. Same layout
+
+- name: Ashe G.
+  photo: /assets/images/advisor_photos/ashe-g.jpeg
+  role: Advisor
+  socials:
+    - type: linkedin
+      url: https://www.linkedin.com/in/ashelyngunderson/
+    - type: bluesky
+      url: https://bsky.app/profile/aestris.bsky.social

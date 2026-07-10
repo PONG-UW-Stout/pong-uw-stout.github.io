@@ -6,7 +6,7 @@ order: 1
 
 <div class="flex flex-column hero_section">
     <h1 class="center">People's Organization of Network Gaming</h1>
-    <h2 class="center">University of Wisconsin: Stout Polytechnic's Premier Gaming Club</h2>
+    <h2 class="center">University of Wisconsin - Stout Polytechnic's Premier Gaming Club</h2>
     <div class="center">
         {% assign discord_url = "" %}
         {% for social in site.data.pong_info.socials %}

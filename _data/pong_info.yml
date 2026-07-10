@@ -26,3 +26,54 @@ next_lan:
   start_date: To Be Announced
   end_date: To Be Announced
   details_url:
+
+sponsors:
+  tiers:
+    platinum:
+      - name: RedBull
+        logo: /assets/images/sponsor_logos/red-bull.png
+        socials:
+          - type: link
+            url: https://www.redbull.com/us-en/
+          - type: youtube
+            url: https://www.youtube.com/channel/UCblfuW_4rakIf2h6aqANefA
+          - type: facebook
+            url: https://www.facebook.com/RedBull
+          - type: instagram
+            url: https://www.instagram.com/redbull
+      - name: d20 Gaming
+        logo: /assets/images/sponsor_logos/d-20-gaming.png
+        socials:
+          - type: link
+            url: https://www.d20ec.com/
+          - type: facebook
+            url: https://www.facebook.com/d20gamingllc/
+      - name: Culver's
+        logo: /assets/images/sponsor_logos/culvers.png
+        socials:
+          - type: link
+            url: https://www.culvers.com/
+          - type: youtube
+            url: https://www.youtube.com/channel/UCQXqDziZy-elQL6SnCVCF7A
+          - type: twitter
+            url: https://x.com/culvers
+          - type: instagram
+            url: https://www.instagram.com/culvers
+    diamond:
+      - name: Digital Red
+        logo: /assets/images/sponsor_logos/digital_red.png
+        socials:
+          - type: link
+            url: https://www.godigitalred.com/
+          - type: linkedin
+            url: https://www.linkedin.com/company/digital-r-e-d
+      - name: Flare199
+        logo: /assets/images/sponsor_logos/flare199.png
+    gold:
+      - name: Stout Bread
+        logo: /assets/images/sponsor_logos/stout_bread.png
+        socials:
+          - type: link
+            url: https://stoutbread.com/
+          - type: instagram
+            url: https://www.instagram.com/stout.bread/
