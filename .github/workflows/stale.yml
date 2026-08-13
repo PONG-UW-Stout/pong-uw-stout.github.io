@@ -13,7 +13,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v10
+      - uses: actions/stale@v11
         with:
           stale-pr-message: 'This PR has had no activity in 30 days. It will
             close in 7 days unless there is further activity.'
