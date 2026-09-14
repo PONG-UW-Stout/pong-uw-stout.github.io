@@ -34,7 +34,9 @@ order: 1
      class="lan_banner">
             <div class="lan_info">
                 <h3>{{ site.data.pong_info.next_lan.name }}</h3>
-                <p>{{ site.data.pong_info.next_lan.start_date }} - {{ site.data.pong_info.next_lan.end_date }}</p>
+                <time>{{ site.data.pong_info.next_lan.start_date }} - {{ site.data.pong_info.next_lan.end_date }}</time>
+                <br>
+                <br>
                 {% if site.data.pong_info.next_lan.name != "To Be Announced" %}
                     <a href="{{ site.data.pong_info.next_lan.details_url }}" class="lan_details_link">Details &gt;</a>
                 {% endif %}
@@ -54,7 +56,7 @@ order: 1
                 <a href="{{ post.url }}">
                     <h3>{{ post.title }}</h3>
                     <time class="post_date">{{ post.date | date: "%B %d, %Y" }}</time>
-                    <p class="post_excerpt">{{ post.excerpt | strip_html | truncatewords: 20 }}</p>
+                    <p class="post_excerpt">{{ post.description | strip_html | truncatewords: 20 }}</p>
                 </a>
             </div>
         {% endfor %}
