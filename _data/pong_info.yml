@@ -21,11 +21,10 @@ socials:
     url: https://www.facebook.com/ponguwstout/
 
 next_lan:
-  name: To Be Announced
-#  banner:
-  start_date: To Be Announced
-  end_date: To Be Announced
-  details_url:
+  name: LAN-tasy
+  start_date: September, 18th 2026
+  end_date: September, 20th 2026
+  details_url: /lans/LAN-tasy/
 
 sponsors:
   tiers:

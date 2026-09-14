@@ -244,7 +244,6 @@ order: 2
   </div>
 </div>
 
-</div>
 
 <br>
 <div class="flex flex-column center">
