@@ -1,0 +1,1454 @@
+---
+---
+
+// ===========================================================================
+//  LAN-Prix event stylesheet
+//  Concept: Epic racing event website. Think F1.com meets Forza game site.
+//  Full-bleed sections, diagonal cuts, neon glows, speed lines.
+//  Class namespace: gp- (Grand Prix)
+//  No external requests: all ornament is pure CSS or SVG data URIs.
+// ===========================================================================
+
+@use "pong/variables" as *;
+
+/* ============================================================ TYPE STACKS */
+
+$gp-display: "Impact", "Arial Narrow", "Haettenschweiler", "Franklin Gothic Heavy", Arial, sans-serif;
+$gp-body:    "Arial", "Helvetica Neue", Helvetica, sans-serif;
+$gp-mono:    "Courier New", Courier, monospace;
+
+/* =========================================================== COLOUR CONSTANTS */
+
+$gp-red:        #e10600;
+$gp-red-glow:   rgba(225, 6, 0, 0.5);
+$gp-red-deep:   #8b0000;
+$gp-teal:       #00d2b4;
+$gp-teal-glow:  rgba(0, 210, 180, 0.4);
+$gp-gold:       #f5c400;
+$gp-white:      #f0f0f0;
+$gp-dark:       #0a0a0b;
+$gp-dark-mid:   #141416;
+$gp-dark-panel: #1c1c1e;
+$gp-border:     rgba(255, 255, 255, 0.08);
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --dc-ground:      #0a0a0b;
+    --dc-ground-deep: #000000;
+    --dc-vellum:      #1c1c1e;
+    --dc-vellum-lit:  #242426;
+    --dc-vellum-deep: #141416;
+    --dc-ink:         #f0f0f0;
+    --dc-ink-soft:    #cfcfcf;
+    --dc-rubric:      #e10600;
+    --dc-gold:        #f5c400;
+    --dc-gold-edge:   #ffffff;
+    --dc-link:        #e10600;
+    --dc-link-hover:  #ff4040;
+    --dc-lift:        0 4px 24px rgba(0, 0, 0, 0.6);
+    --dc-candle:      rgba(0, 0, 0, 0);
+
+    --gp-red:        #{$gp-red};
+    --gp-teal:       #{$gp-teal};
+    --gp-gold:       #{$gp-gold};
+    --gp-dark:       #{$gp-dark};
+    --gp-dark-mid:   #{$gp-dark-mid};
+    --gp-dark-panel: #{$gp-dark-panel};
+    --gp-border:     #{$gp-border};
+    --gp-text:       #{$gp-white};
+    --gp-text-soft:  #cfcfcf;
+}
+
+html[data-theme="light"] {
+    --dc-ground:      #111113;
+    --dc-vellum:      #1e1e20;
+    --gp-dark:        #111113;
+    --gp-dark-mid:    #1a1a1c;
+    --gp-dark-panel:  #222224;
+}
+
+/* ================================================================ MIXINS */
+
+@mixin gp-headline {
+    font-family: $gp-display;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 0.95;
+}
+
+@mixin gp-red-glow {}
+
+@mixin gp-teal-glow {}
+
+@mixin speed-lines($color: rgba(255, 255, 255, 0.03), $angle: 165deg) {
+    background-image: repeating-linear-gradient(
+        $angle,
+        transparent 0px,
+        transparent 8px,
+        $color 8px,
+        $color 9px
+    );
+}
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header {
+    display: none;
+}
+
+#content {
+    margin: 0;
+    padding: 0;
+    font-family: $gp-body;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--gp-text);
+    background: var(--gp-dark);
+}
+
+#post-container article {
+    display: block;
+}
+
+#content a {
+    color: var(--gp-red);
+    text-decoration-color: rgba(225, 6, 0, 0.4);
+
+    &:hover {
+        color: var(--dc-link-hover);
+        text-decoration-color: currentColor;
+    }
+}
+
+nav {
+    border-bottom: 2px solid var(--gp-red);
+}
+
+/* ========================================================== SVG SPRITE */
+
+.gp-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.gp-icon {
+    display: inline-block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+    vertical-align: middle;
+}
+
+/* ============================================================== TICKER */
+
+.gp-ticker {
+    overflow: hidden;
+    padding: 7px 0;
+    background: $gp-red;
+    animation: none;
+    font-family: $gp-mono;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: #fff;
+    white-space: nowrap;
+
+    span {
+        display: inline-block;
+        padding-left: 100%;
+        animation: gp-ticker 40s linear infinite;
+    }
+}
+
+@keyframes gp-ticker {
+    to { transform: translateX(-100%); }
+}
+
+@keyframes gp-streak {
+    from { background-position: 0 0; }
+    to   { background-position: 300px 0; }
+}
+
+@keyframes gp-badge-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+
+@keyframes gp-scan {
+    0%   { top: -100%; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+@keyframes gp-shimmer {
+    from { background-position: -200% center; }
+    to   { background-position: 200% center; }
+}
+
+@keyframes gp-flag-scroll {
+    to { background-position: 32px 0, center, center; }
+}
+
+/* ================================================================= HERO */
+
+.gp-hero {
+    position: relative;
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px 80px;
+    text-align: center;
+    background: $gp-dark;
+    overflow: hidden;
+
+    // Starting grid: two columns of position boxes painted on the tarmac
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+            // horizontal grid position box outlines for the left column
+            repeating-linear-gradient(
+                180deg,
+                transparent 0px,
+                transparent 68px,
+                rgba(255, 255, 255, 0.035) 68px,
+                rgba(255, 255, 255, 0.035) 70px
+            ),
+            // vertical divider lines for the two columns
+            repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent calc(50% - 40px),
+                rgba(255, 255, 255, 0.025) calc(50% - 40px),
+                rgba(255, 255, 255, 0.025) calc(50% - 38px),
+                transparent calc(50% - 38px),
+                transparent calc(50% + 38px),
+                rgba(255, 255, 255, 0.025) calc(50% + 38px),
+                rgba(255, 255, 255, 0.025) calc(50% + 40px),
+                transparent calc(50% + 40px)
+            );
+    }
+}
+
+.gp-hero-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+        160deg,
+        transparent 0px, transparent 8px,
+        rgba(255, 255, 255, 0.025) 8px, rgba(255, 255, 255, 0.025) 9px
+    );
+    background-size: 300px 300px;
+    animation: gp-streak 2s linear infinite;
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: repeating-linear-gradient(
+            190deg,
+            transparent 0px, transparent 14px,
+            rgba(225, 6, 0, 0.04) 14px, rgba(225, 6, 0, 0.04) 15px
+        );
+        background-size: 300px 300px;
+        animation: gp-streak 3s linear infinite;
+    }
+}
+
+.gp-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+}
+
+.gp-hero-title {
+    @include gp-headline;
+    font-size: clamp(4rem, 18vw, 11rem);
+    color: #fff;
+    margin: 0 0 8px;
+
+    &::after {
+        content: "";
+        display: block;
+        width: 120px;
+        height: 5px;
+        background: $gp-red;
+        margin: 12px auto 0;
+    }
+}
+
+.gp-hero-subhead {
+    @include gp-headline;
+    font-size: clamp(1.2rem, 4vw, 2.2rem);
+    color: $gp-white;
+    margin: 20px 0 12px;
+    opacity: 0.9;
+}
+
+.gp-hero-dates {
+    @include gp-headline;
+    font-size: clamp(1rem, 2.6vw, 1.5rem);
+    letter-spacing: 0.08em;
+    color: var(--gp-gold);
+    margin: 0 0 12px;
+}
+
+.gp-hero-tagline {
+    font-size: 17px;
+    color: var(--gp-text-soft);
+    margin: 0 0 36px;
+    font-style: italic;
+}
+
+.gp-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+
+/* ============================================================== BUTTONS */
+
+.gp-btn {
+    display: inline-block;
+    padding: 14px 36px;
+    font-family: $gp-display;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    transition: all 0.15s;
+
+    &--primary {
+        position: relative;
+        overflow: hidden;
+        background: $gp-red;
+        color: #fff !important;
+        border: 2px solid $gp-red;
+
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.3) 50%, transparent 80%);
+            background-size: 200% 100%;
+            background-position: -200% center;
+            pointer-events: none;
+        }
+
+        &:hover {
+            background: #f52010;
+            transform: translateY(-2px);
+
+            &::after {
+                animation: gp-shimmer 0.5s ease forwards;
+            }
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    &--ghost {
+        background: transparent;
+        color: $gp-white !important;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+
+        &:hover {
+            border-color: $gp-red;
+            color: $gp-red !important;
+        }
+    }
+}
+
+/* ======================================================= RACE FACTS STRIP */
+
+.gp-facts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+    background: $gp-dark-panel;
+    border-top: 1px solid $gp-border;
+    border-bottom: 3px solid $gp-red;
+}
+
+.gp-fact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 24px 28px;
+    border-right: 1px solid $gp-border;
+    flex: 1;
+    min-width: 120px;
+    transition: background 0.2s;
+    cursor: default;
+
+    &:last-child { border-right: none; }
+
+    &:hover {
+        background: rgba(225, 6, 0, 0.07);
+
+        .gp-fact-value {
+            color: $gp-red;
+        }
+
+        .gp-fact-icon {
+            color: $gp-white;
+        }
+    }
+
+    .gp-fact-icon {
+        width: 28px;
+        height: 28px;
+        color: $gp-red;
+        transition: color 0.2s, filter 0.2s;
+    }
+
+    .gp-fact-label {
+        font-family: $gp-mono;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--gp-text-soft);
+    }
+
+    .gp-fact-value {
+        font-family: $gp-display;
+        font-size: 16px;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $gp-white;
+        text-align: center;
+        transition: color 0.2s, text-shadow 0.2s;
+    }
+}
+
+/* ============================================================== SECTIONS */
+
+.gp-section {
+    position: relative;
+    padding: 80px 0;
+
+    &--dark {
+        background: $gp-dark;
+        // Carbon-fibre weave + speed lines
+        background-image:
+            repeating-linear-gradient(
+                45deg,
+                transparent 0px, transparent 3px,
+                rgba(255, 255, 255, 0.022) 3px, rgba(255, 255, 255, 0.022) 4px
+            ),
+            repeating-linear-gradient(
+                -45deg,
+                transparent 0px, transparent 3px,
+                rgba(255, 255, 255, 0.012) 3px, rgba(255, 255, 255, 0.012) 4px
+            ),
+            repeating-linear-gradient(
+                165deg,
+                transparent 0px, transparent 8px,
+                rgba(255, 255, 255, 0.018) 8px, rgba(255, 255, 255, 0.018) 9px
+            );
+    }
+
+    &--mid {
+        background: $gp-dark-mid;
+        // Carbon-fibre weave
+        background-image:
+            repeating-linear-gradient(
+                45deg,
+                transparent 0px, transparent 3px,
+                rgba(255, 255, 255, 0.018) 3px, rgba(255, 255, 255, 0.018) 4px
+            ),
+            repeating-linear-gradient(
+                -45deg,
+                transparent 0px, transparent 3px,
+                rgba(255, 255, 255, 0.01) 3px, rgba(255, 255, 255, 0.01) 4px
+            );
+    }
+}
+
+.gp-section--dark + .gp-section--mid,
+.gp-section--mid + .gp-section--dark {
+    clip-path: polygon(0 40px, 100% 0, 100% 100%, 0 100%);
+    margin-top: -40px;
+    padding-top: 120px;
+}
+
+.gp-section-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.gp-section-head {
+    margin-bottom: 48px;
+}
+
+.gp-section-title {
+    @include gp-headline;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    color: $gp-white;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .gp-icon {
+        width: 36px;
+        height: 36px;
+        color: $gp-red;
+        flex: none;
+    }
+}
+
+.gp-section-sub {
+    font-size: 16px;
+    color: var(--gp-text-soft);
+    margin: 0;
+    padding-left: 52px;
+}
+
+/* ======================================================= SCHEDULE MONITOR */
+
+.gp-screen-wrap {
+    border: 1px solid $gp-border;
+    border-top: 3px solid $gp-red;
+    background: #000;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+}
+
+.gp-screen {
+    display: block;
+    position: relative;
+    background: #111;
+    padding: 12px;
+
+    &.is-missing {
+        .gp-schedule-img { display: none; }
+        .gp-signal-lost { display: flex; }
+    }
+}
+
+.gp-schedule-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+.gp-signal-lost {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 320px;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--gp-text-soft);
+
+    .gp-signal-icon {
+        width: 56px;
+        height: 56px;
+        color: $gp-red;
+        opacity: 0.6;
+    }
+
+    strong {
+        @include gp-headline;
+        font-size: 20px;
+        color: $gp-white;
+    }
+
+    span {
+        font-style: italic;
+        font-size: 16px;
+    }
+}
+
+.gp-screen-meta {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: $gp-dark-panel;
+    font-size: 14px;
+    color: var(--gp-text-soft);
+    border-top: 1px solid $gp-border;
+
+    a { font-size: 14px; }
+}
+
+/* ========================================================= ZOOM OVERLAY */
+
+.gp-zoom-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.95);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s, visibility 0.2s;
+
+    &:target {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
+
+.gp-zoom-bg {
+    position: absolute;
+    inset: 0;
+}
+
+.gp-zoom-frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    max-height: 100%;
+    border: 2px solid $gp-red;
+    background: #000;
+}
+
+.gp-zoom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: $gp-dark-panel;
+    border-bottom: 1px solid $gp-border;
+    font-family: $gp-mono;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: $gp-white;
+}
+
+.gp-zoom-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    font-size: 14px;
+    color: $gp-white !important;
+    text-decoration: none !important;
+
+    &:hover {
+        border-color: $gp-red;
+        color: $gp-red !important;
+        background: rgba(225, 6, 0, 0.1);
+    }
+}
+
+.gp-zoom-body img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(100vh - 120px);
+    object-fit: contain;
+}
+
+/* ============================================================ LAP BY LAP */
+
+.gp-sessions {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+$session-colors: ("red": $gp-red, "teal": $gp-teal, "gold": $gp-gold, "grey": #666666);
+
+.gp-session {
+    border: 1px solid $gp-border;
+    border-top-width: 3px;
+
+    @each $name, $color in $session-colors {
+        &--#{$name} {
+            border-top-color: $color;
+
+            .gp-session-name {
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
+                border-left: 4px solid $color;
+            }
+        }
+    }
+}
+
+.gp-session-name {
+    @include gp-headline;
+    font-size: 15px;
+    padding: 12px 16px;
+    margin: 0;
+    color: $gp-white;
+    border-bottom: 1px solid $gp-border;
+    letter-spacing: 0.1em;
+    position: relative;
+    overflow: hidden;
+
+    // Animated scan line sweeping down the left border
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: -100%;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, transparent 0%, currentColor 50%, transparent 100%);
+        animation: gp-scan 2s ease-in-out infinite;
+        pointer-events: none;
+    }
+}
+
+.gp-lap-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.gp-lap {
+    display: grid;
+    grid-template-columns: 72px 1fr max-content;
+    align-items: baseline;
+    gap: 4px 16px;
+    padding: 10px 16px;
+    border-bottom: 1px solid $gp-border;
+    font-size: 15px;
+
+    &:last-child { border-bottom: none; }
+    &:hover { background: rgba(255, 255, 255, 0.03); }
+}
+
+.gp-lap-time {
+    font-family: $gp-mono;
+    font-size: 14px;
+    color: var(--gp-text-soft);
+    white-space: nowrap;
+}
+
+.gp-lap-name { color: $gp-white; }
+
+.gp-lap-note {
+    display: block;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--gp-text-soft);
+}
+
+.gp-lap-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.gp-badge {
+    padding: 2px 8px;
+    font-family: $gp-mono;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    &--free {
+        background: rgba(0, 210, 180, 0.12);
+        color: $gp-teal;
+        border: 1px solid rgba(0, 210, 180, 0.35);
+    }
+
+    &--contest {
+        background: rgba(225, 6, 0, 0.12);
+        color: $gp-red;
+        border: 1px solid rgba(225, 6, 0, 0.35);
+    }
+}
+
+.gp-tba-msg {
+    margin-top: 24px;
+    padding: 28px 24px;
+    border: 1px solid rgba(255,255,255,0.07);
+    color: var(--gp-text-soft);
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 0.03em;
+}
+
+.gp-legend {
+    margin-top: 24px;
+    font-size: 15px;
+    color: var(--gp-text-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+/* =========================================================== EVENT GRID */
+
+.gp-event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.gp-event-card {
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    grid-template-columns: 72px 1fr;
+    gap: 4px 16px;
+    align-items: start;
+    padding: 20px;
+    background: $gp-dark-panel;
+    border: 1px solid $gp-border;
+    border-left: 4px solid $gp-red;
+    text-decoration: none !important;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+
+    &:hover {
+        border-left-color: #f52010;
+        transform: translateX(4px);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .gp-event-num {
+        grid-row: 1 / 4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: $gp-display;
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: $gp-red;
+        @include gp-red-glow;
+        padding-top: 4px;
+    }
+
+    .gp-event-name {
+        font-family: $gp-display;
+        font-size: 1.2rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: $gp-white;
+        letter-spacing: 0.04em;
+    }
+
+    .gp-event-format {
+        font-family: $gp-mono;
+        font-size: 12px;
+        color: $gp-teal;
+        letter-spacing: 0.06em;
+    }
+
+    .gp-event-org {
+        font-size: 14px;
+        color: var(--gp-text-soft);
+        font-style: italic;
+    }
+
+    .gp-event-cta {
+        grid-column: 1 / -1;
+        margin-top: 12px;
+        font-family: $gp-display;
+        font-size: 14px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: $gp-red;
+    }
+}
+
+/* ========================================================= PADDOCK NOTES */
+
+.gp-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.gp-note {
+    padding: 24px 0;
+    border-bottom: 1px solid $gp-border;
+
+    &:last-child { border-bottom: none; }
+}
+
+.gp-note-title {
+    @include gp-headline;
+    font-size: 1.4rem;
+    color: $gp-white;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 1.2em;
+        background: $gp-red;
+        flex: none;
+    }
+}
+
+.gp-note p {
+    margin: 0 0 10px;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.gp-note p:last-child { margin-bottom: 0; }
+
+/* ============================================================== KIT LIST */
+
+.gp-kit-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.gp-kit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    font-size: 15px;
+    color: $gp-white;
+    border-bottom: 1px solid $gp-border;
+}
+
+.gp-kit-check {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    border: 2px solid $gp-red;
+    position: relative;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 0;
+        width: 7px;
+        height: 13px;
+        border: 2px solid $gp-red;
+        border-top: 0;
+        border-left: 0;
+        transform: rotate(42deg);
+    }
+}
+
+/* ================================================================== FAQ */
+
+.gp-faq {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.gp-faq-item {
+    border: 1px solid $gp-border;
+    background: $gp-dark-panel;
+    transition: border-color 0.15s;
+
+    &[open] {
+        border-color: rgba(225, 6, 0, 0.4);
+        border-left: 3px solid $gp-red;
+    }
+}
+
+.gp-faq-q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    font-family: $gp-display;
+    font-size: 16px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $gp-white;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+
+    &::after {
+        content: "+";
+        font-size: 22px;
+        color: $gp-red;
+        line-height: 1;
+    }
+
+    &:hover { color: $gp-red; }
+}
+
+.gp-faq-item[open] .gp-faq-q::after { content: "−"; }
+
+.gp-faq-a {
+    margin: 0;
+    padding: 14px 20px 16px;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--gp-text-soft);
+    border-top: 1px solid $gp-border;
+}
+
+/* ============================================================= SPONSORS */
+
+.gp-sponsors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.gp-sponsor {
+    width: 180px;
+    text-align: center;
+}
+
+.gp-sponsor-logo {
+    width: 160px;
+    height: 100px;
+    margin: 0 auto 12px;
+    background: #fff;
+    border: 1px solid $gp-border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    position: relative;
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-style: solid;
+        border-width: 0 20px 20px 0;
+        border-color: transparent $gp-red transparent transparent;
+    }
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+}
+
+.gp-sponsor-name {
+    font-family: $gp-display;
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: $gp-white;
+    letter-spacing: 0.04em;
+}
+
+.gp-sponsor-tier {
+    font-size: 13px;
+    color: var(--gp-text-soft);
+    font-style: italic;
+    margin-top: 2px;
+}
+
+.gp-sponsor-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 8px;
+
+    a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        font-size: 11px;
+        color: #fff !important;
+        text-decoration: none !important;
+    }
+}
+
+/* =========================================================== FINISH LINE */
+
+.gp-finish {
+    position: relative;
+    padding: 100px 24px 80px;
+    text-align: center;
+    overflow: hidden;
+    clip-path: polygon(0 40px, 100% 0, 100% 100%, 0 100%);
+    margin-top: -40px;
+    background: $gp-dark;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Crect width='16' height='16' fill='rgba(255,255,255,0.03)'/%3E%3Crect x='16' y='16' width='16' height='16' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E"),
+        linear-gradient(180deg, #{$gp-dark-mid} 0%, #{$gp-dark} 100%);
+    animation: gp-flag-scroll 2s linear infinite;
+}
+
+.gp-finish-lines {
+    position: absolute;
+    inset: 0;
+    @include speed-lines(rgba(255, 255, 255, 0.025), 170deg);
+    pointer-events: none;
+}
+
+.gp-finish-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.gp-finish-title {
+    @include gp-headline;
+    @include gp-red-glow;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: $gp-white;
+    margin: 0 0 12px;
+}
+
+.gp-finish-sub {
+    font-family: $gp-mono;
+    font-size: 15px;
+    letter-spacing: 0.14em;
+    color: var(--gp-text-soft);
+    margin: 0 0 36px;
+    text-transform: uppercase;
+}
+
+.gp-finish-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+/* ================================================= RACE START LIGHTS */
+
+.gp-lights-sequence {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 0 10px;
+    background: $gp-dark;
+    border-bottom: 1px solid $gp-border;
+}
+
+.gp-lights-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.gp-light {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: $gp-dark-panel;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.8);
+    transition: background 0.1s, box-shadow 0.1s;
+
+    &.is-on {
+        background: $gp-red;
+        border-color: rgba(255, 80, 80, 0.6);
+    }
+
+    &.is-out {
+        background: $gp-dark-panel;
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.8);
+    }
+
+    &.is-green {
+        background: #00c040;
+        border-color: rgba(0, 220, 80, 0.7);
+    }
+}
+
+/* ======================================================== RACE CAR */
+
+// Sits just outside .gp-hero so clip-path on the hero doesn't cut the car.
+// Negative margin pulls it up to visually overlap the hero bottom edge.
+.gp-race-car {
+    position: relative;
+    z-index: 5;
+    height: 80px;
+    margin-top: -80px;
+    overflow: hidden;
+    pointer-events: none;
+
+    svg {
+        position: absolute;
+        bottom: 8px;
+        left: 0;
+        width: 195px;  // 260:80 aspect ratio at ~60px height
+        height: 60px;
+        color: $gp-red;
+        transform: translateX(-210px);
+    }
+
+    // Speed streak trailing the car
+    &::before {
+        content: "";
+        position: absolute;
+        bottom: 36px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, rgba(225,6,0,0.8) 60%, transparent 100%);
+        opacity: 0;
+        transform: scaleX(0);
+        transform-origin: left center;
+    }
+
+    &.is-launched svg {
+        animation: gp-car-launch 1.6s cubic-bezier(0.08, 0, 0.2, 1) forwards;
+    }
+
+    &.is-launched::before {
+        animation: gp-streak-flash 1.6s ease-out forwards;
+    }
+}
+
+@keyframes gp-car-launch {
+    0%   { transform: translateX(-210px); }
+    6%   { transform: translateX(0px); }
+    10%  { transform: translateX(0px); }
+    100% { transform: translateX(calc(100vw + 300px)); }
+}
+
+@keyframes gp-streak-flash {
+    0%   { opacity: 0; transform: scaleX(0); }
+    15%  { opacity: 0.7; transform: scaleX(0.12); }
+    60%  { opacity: 0.9; transform: scaleX(0.72); }
+    100% { opacity: 0; transform: scaleX(1); }
+}
+
+// Grid cars, one per horizontal gridline inside .gp-hero, injected by JS.
+// Clipped by .gp-hero overflow:hidden.  --gp-car-dur / --gp-car-delay per car.
+.gp-grid-car {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    svg {
+        display: block;
+        width: 98px;  // 260:80 ratio at ~30px height
+        height: 30px;
+        color: $gp-red;
+        opacity: 0.85;
+        transform: translateX(-110px);
+    }
+
+    &.is-launched svg {
+        animation: gp-grid-car-launch var(--gp-car-dur, 1.0s) var(--gp-car-delay, 0ms) cubic-bezier(0.1, 0, 0.2, 1) forwards;
+    }
+}
+
+@keyframes gp-grid-car-launch {
+    from { transform: translateX(-110px); }
+    to   { transform: translateX(calc(100vw + 150px)); }
+}
+
+/* Hero content hides until car passes, then reveals */
+.gp-hero-content {
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.gp-hero-content.is-pending {
+    opacity: 0;
+    transform: translateY(14px);
+}
+
+/* ======================================================= COUNTDOWN */
+
+.gp-countdown {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0;
+    background: $gp-dark-panel;
+    border-top: 3px solid $gp-red;
+    border-bottom: 1px solid $gp-border;
+    padding: 28px 0;
+    flex-wrap: wrap;
+}
+
+.gp-countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 0 32px;
+    border-right: 1px solid $gp-border;
+
+    &:last-child { border-right: none; }
+}
+
+.gp-countdown-num {
+    font-family: $gp-mono;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: bold;
+    color: $gp-red;
+    line-height: 1;
+    min-width: 2ch;
+    text-align: center;
+    letter-spacing: 0.05em;
+}
+
+.gp-countdown-label {
+    font-family: $gp-mono;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gp-text-soft);
+}
+
+.gp-countdown-sep {
+    font-family: $gp-mono;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: rgba(225, 6, 0, 0.4);
+    align-self: flex-start;
+    padding-top: 4px;
+    line-height: 1;
+}
+
+.gp-countdown--done {
+    .gp-countdown-num  { color: $gp-gold; }
+    .gp-countdown-label { color: $gp-gold; }
+}
+
+/* ================================================= SECTION DIVIDER */
+
+.gp-section + .gp-section {
+    border-top: 6px solid transparent;
+    border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='6'%3E%3Crect width='8' height='6' fill='%23e10600'/%3E%3Crect x='8' width='8' height='6' fill='%230a0a0b'/%3E%3Crect x='16' width='8' height='6' fill='%23e10600'/%3E%3Crect x='24' width='8' height='6' fill='%230a0a0b'/%3E%3C/svg%3E") 6 repeat;
+}
+
+/* ================================================= SCROLL REVEAL */
+
+.gp-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+
+    &.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.gp-reveal--left {
+    opacity: 0;
+    transform: translateX(-32px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+
+    &.is-visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@for $i from 1 through 8 {
+    .gp-reveal:nth-child(#{$i}),
+    .gp-reveal--left:nth-child(#{$i}) {
+        transition-delay: #{($i - 1) * 0.08}s;
+    }
+}
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    .gp-hero {
+        min-height: 70vh;
+    }
+
+    .gp-facts { flex-wrap: wrap; }
+
+    .gp-fact {
+        flex: 1 1 33%;
+        border-bottom: 1px solid $gp-border;
+    }
+
+    .gp-section--dark + .gp-section--mid,
+    .gp-section--mid + .gp-section--dark {
+        clip-path: polygon(0 20px, 100% 0, 100% 100%, 0 100%);
+        margin-top: -20px;
+        padding-top: 80px;
+    }
+
+    .gp-section-title { font-size: 1.8rem; }
+
+    .gp-event-grid { grid-template-columns: 1fr; }
+
+    .gp-kit-list { grid-template-columns: 1fr; }
+
+    .gp-lap {
+        grid-template-columns: 1fr;
+        gap: 3px;
+    }
+
+    .gp-lap-badges { justify-content: flex-start; }
+
+    .gp-section { padding: 60px 0; }
+
+    .gp-section-inner { padding: 0 16px; }
+
+    .gp-countdown-unit { padding: 0 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gp-ticker span        { padding-left: 12px; animation: none; }
+    .gp-ticker             { animation: none; }
+    .gp-zoom-overlay       { transition: none; }
+    .gp-btn                { transition: none; }
+    .gp-btn--primary::after { display: none; }
+    .gp-event-card         { transition: none; }
+    .gp-hero-lines,
+    .gp-hero-lines::after  { animation: none !important; }
+    .gp-hero-title         { animation: none !important; }
+    .gp-finish             { animation: none !important; }
+    .gp-session-name::after { display: none; }
+    .gp-reveal,
+    .gp-reveal--left       { opacity: 1; transform: none; transition: none; }
+}

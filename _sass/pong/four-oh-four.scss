@@ -1,0 +1,212 @@
+@use "variables" as *;
+
+/* 404: a Pong rally where the ball gets past the right paddle.
+   The court stays dark in both themes, like the nav and LAN sections. */
+
+.pong404 {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 3.5rem;
+    text-align: center;
+}
+
+.pong404_court {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    margin: 0 auto 2.5rem;
+    overflow: hidden;
+    background-color: $dark;
+    border: 3px solid $light;
+    border-radius: 4px;
+}
+
+.pong404_net {
+    position: absolute;
+    top: 4%;
+    bottom: 4%;
+    left: 50%;
+    width: 4px;
+    margin-left: -2px;
+    background-image: linear-gradient(
+        $light 0 50%,
+        transparent 50% 100%
+    );
+    background-size: 100% 7%;
+    opacity: 0.55;
+}
+
+.pong404_score {
+    position: absolute;
+    top: 7%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 14%;
+    font-family: "pong_cocogoose";
+    color: $light;
+    opacity: 0.85;
+    line-height: 1;
+}
+
+.pong404_score_num {
+    font-size: clamp(1.75rem, 7vw, 3.25rem);
+    letter-spacing: 0.1em;
+}
+
+.pong404_paddle {
+    position: absolute;
+    top: 37%;          // 50% less half the paddle height
+    width: 2.5%;
+    height: 26%;
+    background-color: $light;
+}
+
+.pong404_paddle--left {
+    left: 4%;
+    animation: pong404-rally-left 2.8s ease-in-out infinite;
+}
+
+/* Drifts low while the ball climbs, so the return sails over it. */
+.pong404_paddle--right {
+    right: 4%;
+    animation: pong404-rally-right 2.8s ease-in-out infinite;
+}
+
+.pong404_ball {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.5%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background-color: $exec-color;
+    animation: pong404-ball 2.8s linear infinite;
+}
+
+/* The rally runs from 0% to 80%, and the serve reset fills the rest.
+   Keyframe stops are spaced by the LENGTH of each leg, not by leg count, so
+   the ball holds one speed the whole way, including the run out of play.
+   Lengths are measured in court-widths: the court is 2:1, so a vertical
+   percentage covers half the distance a horizontal one does. */
+@keyframes pong404-ball {
+    /* served from centre court */
+    0%     { left: 50%;   top: 50%;   opacity: 1; }
+    /* top wall, left half */
+    15.4%  { left: 18%;   top: 3.5%;  opacity: 1; }
+    /* the left paddle gets a racket on it */
+    24.3%  { left: 8%;    top: 44%;   opacity: 1; }
+    /* bottom wall */
+    38.7%  { left: 34%;   top: 96.5%; opacity: 1; }
+    /* top wall, right half */
+    62.1%  { left: 72%;   top: 3.5%;  opacity: 1; }
+    /* past the right paddle and out of play, at the same speed as the rally */
+    80%    { left: 108%;  top: 60%;   opacity: 1; }
+    80.01% { left: 108%;  top: 60%;   opacity: 0; }
+    /* back to centre court, out of sight, to serve again */
+    80.02% { left: 50%;   top: 50%;   opacity: 0; }
+    91%    { left: 50%;   top: 50%;   opacity: 1; }
+    100%   { left: 50%;   top: 50%;   opacity: 1; }
+}
+
+/* Paddle offsets are percentages of the paddle's own height (26% of the
+   court), so -23% lifts its centre from 50% to 44%, onto the ball. */
+@keyframes pong404-rally-left {
+    0%        { transform: translateY(0); }
+    15.4%     { transform: translateY(-10%); }
+    24.3%     { transform: translateY(-23%); }
+    38.7%     { transform: translateY(-10%); }
+    70%, 100% { transform: translateY(0); }
+}
+
+@keyframes pong404-rally-right {
+    0%        { transform: translateY(0); }
+    38.7%     { transform: translateY(10%); }
+    62.1%     { transform: translateY(35%); }
+    /* still reaching low as the ball crosses the goal line above it */
+    80%       { transform: translateY(45%); }
+    91%, 100% { transform: translateY(0); }
+}
+
+.pong404_title {
+    font-size: clamp(1.75rem, 6vw, 2.75rem);
+    margin-bottom: 0.75rem;
+}
+
+.pong404_lead {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    opacity: 0.85;
+    margin: 0 auto 2rem;
+    max-width: 46ch;
+}
+
+.pong404_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.pong404_btn {
+    display: inline-block;
+    padding: 0.7rem 1.4rem;
+    font-family: "pong_cocogoose";
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    color: inherit;
+    transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        background-color: $dark;
+        color: $light;
+    }
+}
+
+.pong404_btn--primary {
+    background-color: $exec-color;
+    border-color: $exec-color;
+    color: $dark;
+
+    &:hover {
+        background-color: $exec-color;
+        border-color: $exec-color;
+        color: $dark;
+    }
+}
+
+html[data-theme="dark"] .pong404_btn:hover {
+    background-color: $light;
+    color: $dark;
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .pong404_court {
+        margin-bottom: 1.75rem;
+    }
+
+    .pong404_actions {
+        flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pong404_ball,
+    .pong404_paddle {
+        animation: none !important;
+    }
+
+    /* Hold the still frame that tells the story: the ball has crossed the
+       goal line above a paddle that is still reaching low for it. */
+    .pong404_ball {
+        left: 97%;
+        top: 34%;
+    }
+
+    .pong404_paddle--right {
+        transform: translateY(45%);
+    }
+}
