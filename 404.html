@@ -1,0 +1,32 @@
+---
+layout: default
+title: 404
+permalink: /404.html
+---
+
+{% assign discord_url = "" %}
+{% for social in site.data.pong_info.socials %}{% if social.type == "discord" %}{% assign discord_url = social.url %}{% endif %}{% endfor %}
+
+
+<div class="pong404">
+    <h1 class="pong404_title">404</h1>
+    <div class="pong404_court" aria-hidden="true">
+        <div class="pong404_net"></div>
+        <div class="pong404_paddle pong404_paddle--left"></div>
+        <div class="pong404_paddle pong404_paddle--right"></div>
+        <div class="pong404_ball"></div>
+    </div>
+
+    <h1 class="pong404_title">Ball Out of Bounds</h1>
+    <p class="pong404_lead">The page you were after went wide of the paddle. Nobody got to it in time.</p>
+
+    <div class="pong404_actions">
+        <a class="pong404_btn pong404_btn--primary" href="{{ '/' | relative_url }}">Back to Centre Court</a>
+        <a class="pong404_btn" href="{{ '/lans/' | relative_url }}">See the LANs</a>
+        <a class="pong404_btn" href="{{ '/posts/' | relative_url }}">Read the Posts</a>
+        {% if discord_url != "" %}
+        <a class="pong404_btn" href="{{ discord_url }}" target="_blank" rel="noopener">Ask in the Discord</a>
+        {% endif %}
+    </div>
+
+</div>
