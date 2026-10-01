@@ -7,3 +7,14 @@
   socials:
     - type: steam
       url: https://steamcommunity.com/id/Flare199
+
+- name: Aidan M.
+  photo: /assets/images/mentor_photos/aidan_m.png
+  role: Mentor
+  socials:
+    - type: discord
+      url: https://discord.com/users/572245847333666816
+    - type: steam
+      url: https://steamcommunity.com/id/astrogwomp/  
+    - type: instagram
+      url: https://www.instagram.com/a_mayx
