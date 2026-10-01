@@ -1,0 +1,45 @@
+// ===========================================================================
+//  PONG game page styles.
+//  Compiled on its own via assets/css/games/pong.scss,
+//  so rules here apply to /games/pong/ only.
+//  The court, scoreboard, ball, notice overlay and mode buttons come from the
+//  shared arcade shell. Everything below is specific to Pong.
+// ===========================================================================
+
+@use "pong/variables" as *;
+@use "pong/games/arcade";
+
+.court {
+    aspect-ratio: 2 / 1;
+}
+
+.net {
+    position: absolute;
+    top: 4%;
+    bottom: 4%;
+    left: 50%;
+    width: 4px;
+    margin-left: -2px;
+    background-image: linear-gradient(
+        $light 0 50%,
+        transparent 50% 100%
+    );
+    background-size: 100% 7%;
+    opacity: 0.55;
+}
+
+.paddle {
+    position: absolute;
+    top: 37%;          // 50% less half the paddle height
+    width: 2.5%;
+    height: 26%;
+    background-color: $light;
+}
+
+#paddle-yaoi {
+    left: 4%;
+}
+
+#paddle-yuri {
+    right: 4%;
+}

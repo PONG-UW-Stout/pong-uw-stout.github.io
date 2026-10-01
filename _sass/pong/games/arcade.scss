@@ -1,0 +1,101 @@
+// ===========================================================================
+//  Shared arcade shell.
+//  The parts a game with a playfield wants: a court to play inside, a
+//  scoreboard, a ball and the notice overlay. The mode buttons and the
+//  explainer line live in pong/games/controls, which this @use's, since the
+//  pages without a court want those too.
+//  Each game's own partial @use's this and adds its own pieces on top, so the
+//  games match each other without the rules living in three places.
+//
+//  Not @use'd by the global pong.css: these are bare, generic class names that
+//  would collide site-wide. They only ever get pulled into a single game's
+//  stylesheet under assets/css/games/.
+// ===========================================================================
+
+@use "pong/variables" as *;
+@use "pong/games/controls";
+
+.court {
+    position: relative;
+    // Capped so a wide window can't make the court so tall that the mode
+    // buttons under it fall below the fold. Each game sets its own shape with
+    // aspect-ratio; this only limits how big that shape gets.
+    max-width: 58rem;
+    margin: 0 auto 2.5rem;
+    overflow: hidden;
+    background-color: $dark;
+    touch-action: none;   // dragging a paddle must not scroll the page
+    border: 3px solid $light;
+    border-radius: 4px;
+}
+
+.score {
+    position: absolute;
+    top: 7%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 14%;
+    font-family: "pong_cocogoose";
+    color: $light;
+    opacity: 0.85;
+    line-height: 1;
+}
+
+.score_num {
+    font-size: clamp(1.75rem, 7vw, 3.25rem);
+    letter-spacing: 0.1em;
+}
+
+.ball {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.5%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background-color: $exec-color;
+}
+
+// Remaining lives, drawn as a row of tokens so a court never needs a label
+// explaining what a number means. Games reshape .life to suit themselves.
+.lives {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.life {
+    width: 0.55rem;
+    height: 0.55rem;
+    background-color: $light;
+    border-radius: 2px;
+}
+
+// Serve / pause / win notices. No display property here, so the `hidden`
+// attribute still works; the rule below is what actually hides it.
+.court-message {
+    position: absolute;
+    // Above the playing pieces. A ball parked at centre sits exactly where this
+    // text does, and the text is the thing meant to be read.
+    z-index: 3;
+    top: 50%;
+    left: 8%;
+    right: 8%;
+    margin: 0;
+    padding: 0.6em 0;
+    font-family: "pong_cocogoose";
+    font-size: clamp(0.75rem, 2.4vw, 1.1rem);
+    line-height: 1.4;
+    color: $light;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background-color: rgba(0, 0, 0, 0.72);
+    transform: translateY(-50%);
+}
+
+.court-message[hidden] {
+    display: none;
+}

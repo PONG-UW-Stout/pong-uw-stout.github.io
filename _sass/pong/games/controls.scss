@@ -1,0 +1,99 @@
+// ===========================================================================
+//  Shared game controls.
+//  The mode buttons and the explainer line under them, used by every page in
+//  _games/ whether or not it has a playfield. Games with a court pull this in
+//  via pong/games/arcade, which @use's it.
+// ===========================================================================
+
+@use "pong/variables" as *;
+
+.game-note {
+    max-width: 46rem;
+    margin: 0 auto 2rem;
+    text-align: center;
+    opacity: 0.8;
+}
+
+.game-note kbd {
+    display: inline-block;
+    padding: 0.1em 0.45em;
+    font-family: "pong_cocogoose";
+    font-size: 0.85em;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+}
+
+// ---------------------------------------------------------------------------
+//  Mode buttons.
+//  Styled after the court, not the page. The court stays dark in both themes,
+//  so the buttons under it do too, and the selected mode is filled with the
+//  ball's colour.
+// ---------------------------------------------------------------------------
+
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0 0 1.5rem;
+}
+
+.mode-button {
+    padding: 0.75rem 1.75rem;
+    font-family: "pong_cocogoose";
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $light;
+    background-color: $dark;
+    border: 2px solid $light;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease,
+                border-color 0.15s ease, box-shadow 0.15s ease,
+                transform 0.15s ease;
+
+    &:hover {
+        background-color: $dark-hover;
+        transform: translateY(-2px);
+    }
+
+    // Focus has to stay visible here. Space and the arrows are game controls,
+    // so players end up tabbing onto these buttons.
+    &:focus-visible {
+        outline: 2px solid $exec-color;
+        outline-offset: 3px;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &.is-active {
+        color: $dark;
+        background-color: $exec-color;
+        border-color: $exec-color;
+        box-shadow: 0 0 14px rgba(247, 148, 35, 0.55);
+
+        &:hover {
+            background-color: $exec-color;
+        }
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+        flex: 1 1 40%;
+        padding: 0.75rem 0.5rem;
+        letter-spacing: 0.08em;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mode-button {
+        transition: none;
+
+        &:hover,
+        &:active {
+            transform: none;
+        }
+    }
+}

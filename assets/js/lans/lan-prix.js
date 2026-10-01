@@ -8,7 +8,7 @@
   /* ------------------------------------------------------------------ */
 
   function runLightsSequence() {
-    var redLights   = document.querySelectorAll('.gp-light--red');
+    var redLights = document.querySelectorAll('.gp-light--red');
     var greenLights = document.querySelectorAll('.gp-light--green');
     if (!redLights.length) return;
 
@@ -57,8 +57,8 @@
     if (!container) return;
 
     var target = new Date(2026, 10, 20, 16, 0, 0); // Nov 20 2026, 16:00 local
-    var now    = new Date();
-    var diff   = target - now;
+    var now = new Date();
+    var diff = target - now;
 
     if (diff <= 0) {
       container.classList.add('gp-countdown--done');
@@ -68,10 +68,10 @@
       return;
     }
 
-    var days    = Math.floor(diff / 86400000);
-    var hours   = Math.floor((diff % 86400000) / 3600000);
-    var minutes = Math.floor((diff % 3600000)  / 60000);
-    var seconds = Math.floor((diff % 60000)    / 1000);
+    var days = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    var minutes = Math.floor((diff % 3600000) / 60000);
+    var seconds = Math.floor((diff % 60000) / 1000);
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -134,16 +134,16 @@
     style.textContent = [
       '.gp-session-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}',
       '.gp-session-tab{',
-        'padding:8px 18px;',
-        'font-family:"Impact","Arial Narrow",Arial,sans-serif;',
-        'font-size:13px;font-weight:900;letter-spacing:0.06em;text-transform:uppercase;',
-        'color:#cfcfcf;background:#1c1c1e;border:1px solid rgba(255,255,255,0.08);',
-        'cursor:pointer;transition:color 0.15s,border-color 0.15s,background 0.15s,box-shadow 0.15s;',
+      'padding:8px 18px;',
+      'font-family:"Impact","Arial Narrow",Arial,sans-serif;',
+      'font-size:13px;font-weight:900;letter-spacing:0.06em;text-transform:uppercase;',
+      'color:#cfcfcf;background:#1c1c1e;border:1px solid rgba(255,255,255,0.08);',
+      'cursor:pointer;transition:color 0.15s,border-color 0.15s,background 0.15s,box-shadow 0.15s;',
       '}',
       '.gp-session-tab:hover{color:#f0f0f0;border-color:rgba(225,6,0,0.4);}',
       '.gp-session-tab.is-active{',
-        'color:#fff;background:#e10600;border-color:#e10600;',
-        'box-shadow:0 0 14px rgba(225,6,0,0.55);',
+      'color:#fff;background:#e10600;border-color:#e10600;',
+      'box-shadow:0 0 14px rgba(225,6,0,0.55);',
       '}',
     ].join('');
     document.head.appendChild(style);
@@ -160,7 +160,7 @@
     tabBar.className = 'gp-session-tabs';
 
     var allTab = document.createElement('button');
-    allTab.className  = 'gp-session-tab is-active';
+    allTab.className = 'gp-session-tab is-active';
     allTab.textContent = 'All';
     allTab.dataset.target = 'all';
     tabBar.appendChild(allTab);
@@ -169,8 +169,8 @@
       var nameEl = session.querySelector('.gp-session-name');
       if (!nameEl) return;
       var tab = document.createElement('button');
-      tab.className   = 'gp-session-tab';
-      tab.textContent  = nameEl.textContent.trim();
+      tab.className = 'gp-session-tab';
+      tab.textContent = nameEl.textContent.trim();
       tab.dataset.target = String(i);
       tabBar.appendChild(tab);
     });
@@ -200,50 +200,50 @@
     if (!hero) return;
 
     // Gridlines in .gp-hero::before repeat every 70px, first at y=68px
-    var firstLine   = 68;
+    var firstLine = 68;
     var lineSpacing = 70;
-    var carH        = 28;
-    var heroH       = hero.offsetHeight;
+    var carH = 28;
+    var heroH = hero.offsetHeight;
 
     // Distinct speeds spanning 0.55s (lightning) → 2.1s (slow)
     var speeds = [1.1, 0.65, 1.5, 0.8, 1.85, 0.55, 1.25, 2.1, 0.9, 1.65, 0.7, 1.4];
 
     var svgStr =
       '<svg viewBox="0 0 260 80" fill="none" aria-hidden="true">' +
-        '<path d="M8,24 L15,24 L15,62 L8,62 Z" fill="currentColor"/>' +
-        '<path d="M10,24 L55,22 L55,26 L10,28 Z" fill="currentColor"/>' +
-        '<path d="M10,28 L57,26 L57,30 L10,32 Z" fill="currentColor"/>' +
-        '<path d="M22,51 L54,49 L54,53 L22,55 Z" fill="currentColor" opacity=".85"/>' +
-        '<path d="M31,26 L35,26 L37,51 L33,51 Z" fill="currentColor" opacity=".6"/>' +
-        '<path d="M 243,68 C 228,64 210,59 196,54 C 186,51 175,48 162,43 C 152,39 142,35 128,33 C 118,32 108,33 98,34 C 88,35 78,37 68,40 C 58,43 45,47 32,51 L 22,55 L 22,62 L 185,61 C 210,63 228,66 243,68 Z" fill="currentColor"/>' +
-        '<path d="M90,37 C100,34 114,33 126,34 L126,43 C114,44 100,45 90,43 Z" fill="rgba(0,0,0,.62)"/>' +
-        '<path d="M98,34 C97,28 103,23 113,22 L116,22 C106,23 101,28 102,34 Z" fill="currentColor"/>' +
-        '<path d="M134,36 C130,30 124,24 117,22 L114,22 C121,24 126,30 129,36 Z" fill="currentColor"/>' +
-        '<rect x="113" y="22" width="4" height="8" rx="1" fill="currentColor" opacity=".65"/>' +
-        '<path d="M103,34 L103,38 C114,39 124,39 131,36 L131,34 C124,35 114,35 103,34 Z" fill="rgba(0,0,0,.7)"/>' +
-        '<path d="M152,72 L248,68 L248,65 L152,69 Z" fill="currentColor"/>' +
-        '<path d="M156,69 L246,65 L246,62 L156,66 Z" fill="currentColor"/>' +
-        '<path d="M160,66 L244,62 L244,59 L160,63 Z" fill="currentColor" opacity=".9"/>' +
-        '<path d="M163,63 L242,59 L242,56 L163,60 Z" fill="currentColor" opacity=".8"/>' +
-        '<path d="M243,54 L249,54 L249,74 L243,74 Z" fill="currentColor"/>' +
-        '<path d="M150,65 L156,65 L156,74 L150,74 Z" fill="currentColor"/>' +
-        '<path d="M182,59 L193,59 L193,66 L182,66 Z" fill="currentColor" opacity=".6"/>' +
-        '<circle cx="50" cy="64" r="11" fill="rgba(55,55,55,.92)"/>' +
-        '<circle cx="50" cy="64" r="6.5" fill="currentColor" opacity=".4"/>' +
-        '<circle cx="50" cy="64" r="2.5" fill="rgba(20,20,20,.95)"/>' +
-        '<circle cx="190" cy="64" r="9" fill="rgba(55,55,55,.92)"/>' +
-        '<circle cx="190" cy="64" r="5.5" fill="currentColor" opacity=".4"/>' +
-        '<circle cx="190" cy="64" r="2" fill="rgba(20,20,20,.95)"/>' +
+      '<path d="M8,24 L15,24 L15,62 L8,62 Z" fill="currentColor"/>' +
+      '<path d="M10,24 L55,22 L55,26 L10,28 Z" fill="currentColor"/>' +
+      '<path d="M10,28 L57,26 L57,30 L10,32 Z" fill="currentColor"/>' +
+      '<path d="M22,51 L54,49 L54,53 L22,55 Z" fill="currentColor" opacity=".85"/>' +
+      '<path d="M31,26 L35,26 L37,51 L33,51 Z" fill="currentColor" opacity=".6"/>' +
+      '<path d="M 243,68 C 228,64 210,59 196,54 C 186,51 175,48 162,43 C 152,39 142,35 128,33 C 118,32 108,33 98,34 C 88,35 78,37 68,40 C 58,43 45,47 32,51 L 22,55 L 22,62 L 185,61 C 210,63 228,66 243,68 Z" fill="currentColor"/>' +
+      '<path d="M90,37 C100,34 114,33 126,34 L126,43 C114,44 100,45 90,43 Z" fill="rgba(0,0,0,.62)"/>' +
+      '<path d="M98,34 C97,28 103,23 113,22 L116,22 C106,23 101,28 102,34 Z" fill="currentColor"/>' +
+      '<path d="M134,36 C130,30 124,24 117,22 L114,22 C121,24 126,30 129,36 Z" fill="currentColor"/>' +
+      '<rect x="113" y="22" width="4" height="8" rx="1" fill="currentColor" opacity=".65"/>' +
+      '<path d="M103,34 L103,38 C114,39 124,39 131,36 L131,34 C124,35 114,35 103,34 Z" fill="rgba(0,0,0,.7)"/>' +
+      '<path d="M152,72 L248,68 L248,65 L152,69 Z" fill="currentColor"/>' +
+      '<path d="M156,69 L246,65 L246,62 L156,66 Z" fill="currentColor"/>' +
+      '<path d="M160,66 L244,62 L244,59 L160,63 Z" fill="currentColor" opacity=".9"/>' +
+      '<path d="M163,63 L242,59 L242,56 L163,60 Z" fill="currentColor" opacity=".8"/>' +
+      '<path d="M243,54 L249,54 L249,74 L243,74 Z" fill="currentColor"/>' +
+      '<path d="M150,65 L156,65 L156,74 L150,74 Z" fill="currentColor"/>' +
+      '<path d="M182,59 L193,59 L193,66 L182,66 Z" fill="currentColor" opacity=".6"/>' +
+      '<circle cx="50" cy="64" r="11" fill="rgba(55,55,55,.92)"/>' +
+      '<circle cx="50" cy="64" r="6.5" fill="currentColor" opacity=".4"/>' +
+      '<circle cx="50" cy="64" r="2.5" fill="rgba(20,20,20,.95)"/>' +
+      '<circle cx="190" cy="64" r="9" fill="rgba(55,55,55,.92)"/>' +
+      '<circle cx="190" cy="64" r="5.5" fill="currentColor" opacity=".4"/>' +
+      '<circle cx="190" cy="64" r="2" fill="rgba(20,20,20,.95)"/>' +
       '</svg>';
 
     var lineY = firstLine;
-    var idx   = 0;
+    var idx = 0;
     while (lineY + carH < heroH - 8) {
       var el = document.createElement('div');
       el.className = 'gp-grid-car';
       el.setAttribute('aria-hidden', 'true');
       el.style.top = (lineY - carH + 2) + 'px'; // wheel-bottom sits on gridline
-      el.style.setProperty('--gp-car-dur',   speeds[idx % speeds.length] + 's');
+      el.style.setProperty('--gp-car-dur', speeds[idx % speeds.length] + 's');
       el.style.setProperty('--gp-car-delay', Math.floor(Math.random() * 500) + 'ms');
       el.innerHTML = svgStr;
       hero.appendChild(el);
@@ -309,13 +309,52 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /*  8. Intro "already seen" gate                                        */
+  /* ------------------------------------------------------------------ */
+
+  // The start-lights intro is a once-per-browser thing: it hides the hero and
+  // locks scrolling for a couple of seconds, which gets old on a return visit.
+  // A cookie (not sessionStorage) so it also survives closing the tab.
+  // Mirrored by the inline script in _lans/LAN-Prix.md, which reads the same
+  // cookie before first paint to decide whether to hide the hero at all --
+  // keep the name in sync with it.
+  var ANIM_COOKIE = 'lan-prix-anim';
+  var ANIM_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // one year
+
+  function introAlreadySeen() {
+    return new RegExp('(?:^|;\\s*)' + ANIM_COOKIE + '=1(?:;|$)').test(document.cookie);
+  }
+
+  function rememberIntroSeen() {
+    document.cookie =
+      ANIM_COOKIE + '=1; path=/; max-age=' + ANIM_COOKIE_MAX_AGE + '; SameSite=Lax';
+  }
+
+  // Land on the intro's end state without playing it: hero visible, lights and
+  // car hidden (the .gp-anim-seen rules live in the page's critical CSS, so on
+  // a return visit they never paint in the first place).
+  function skipIntro() {
+    document.documentElement.classList.add('gp-anim-seen');
+    document.documentElement.classList.remove('gp-js');
+    var heroContent = document.querySelector('.gp-hero-content');
+    if (heroContent) heroContent.classList.remove('is-pending');
+  }
+
+  /* ------------------------------------------------------------------ */
   /*  Boot                                                                */
   /* ------------------------------------------------------------------ */
 
   function init() {
     injectTabStyles();
-    initGridCars();
-    runLightsSequence();
+
+    if (introAlreadySeen()) {
+      skipIntro();
+    } else {
+      rememberIntroSeen();
+      initGridCars();
+      runLightsSequence();
+    }
+
     updateCountdown();
     setInterval(updateCountdown, 1000);
     initReveal();

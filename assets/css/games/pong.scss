@@ -1,0 +1,8 @@
+---
+---
+
+// Entry point for the PONG game page only. Linked from _games/pong.html.
+// Kept out of the global pong.css so page-specific rules here can safely
+// touch :root, nav or bare element selectors without leaking site-wide.
+// Lives in games/ because assets/css/pong.scss is already the global bundle.
+@use "pong/games/pong";

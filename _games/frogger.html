@@ -1,0 +1,120 @@
+---
+title: Frogger
+description: Cross the traffic and the river to fill every bay, on any board you like
+---
+
+<link rel="stylesheet" href="{{ '/assets/css/games/frogger.css' | relative_url }}">
+
+<h1>Frogger</h1>
+<hr>
+
+{% comment %}
+  Boards come from _data/frogger_boards.yml, so a new one is a few lines of YAML
+  and no JavaScript. The same data drives both the buttons below and the board
+  the game builds, which is why it is handed over as JSON rather than rendered
+  into the markup: the game needs the lane speeds, not just the names.
+{% endcomment %}
+<script type="application/json" id="frogger-boards">{{ site.data.frogger_boards | jsonify }}</script>
+
+<div class="court court--pond" aria-hidden="true">
+    <div class="rows" id="rows"></div>
+    <div class="traffic" id="traffic"></div>
+    <div class="frog" id="frog"></div>
+    <p class="court-message" id="frog-message" hidden></p>
+</div>
+
+<div class="frog-hud">
+    <span class="frog-hud_stat">Score <span class="number" data-score="points">0</span></span>
+    <span class="frog-hud_stat">Home <span class="number" data-score="bays">0</span>/<span class="number" data-score="bay-goal">5</span></span>
+    <span class="lives" id="lives"></span>
+    <span class="frog-hud_timer"><span class="frog-hud_fill" id="timer-fill"></span></span>
+</div>
+
+<div class="game-controls">
+    <span class="game-controls_label">Board</span>
+    {% for board in site.data.frogger_boards %}
+        <button type="button" class="mode-button" data-board="{{ board.slug }}" aria-pressed="false">
+            {{ board.name }}
+        </button>
+    {% endfor %}
+</div>
+
+<div class="game-controls">
+    <span class="game-controls_label">Pace</span>
+    <button type="button" class="mode-button" data-mode="chill" aria-pressed="false">
+        Chill
+    </button>
+    <button type="button" class="mode-button" data-mode="classic" aria-pressed="true">
+        Classic
+    </button>
+</div>
+
+<p class="game-note">
+Hop with <kbd>&larr;</kbd> <kbd>&uarr;</kbd> <kbd>&darr;</kbd> <kbd>&rarr;</kbd> or
+<kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>, or tap the side of the frog you want to go.
+<kbd>Space</kbd> starts and pauses. Cars squash, water drowns, and logs carry you along.
+Fill every bay to move up a level, before the bar runs out.
+Want a different board? Pick one above, or build your own below.
+</p>
+
+<details class="builder" id="builder">
+    <summary>Build your own board</summary>
+
+    <p class="builder_intro">
+    Rows run top to bottom. The first is the bank with the bays you are aiming for and the last
+    is where the frog starts, so the rows in between are yours. Road and river can go in any
+    order, as many of each as you like.
+    </p>
+
+    <div class="builder_top">
+        <label class="builder_field">Board name
+            <input type="text" id="builder-name" maxlength="28" placeholder="My board">
+        </label>
+
+        <label class="builder_field builder_field--thin">Width
+            <input type="number" id="builder-cols" min="7" max="25" step="1">
+        </label>
+
+        <label class="builder_field builder_field--thin">Bays
+            <input type="number" id="builder-bays" min="2" max="5" step="1">
+        </label>
+
+        <label class="builder_field">Quick layout
+            <input type="text" id="builder-quick" spellcheck="false" autocapitalize="characters">
+            <span class="builder_hint">H bays, B bank, R road, W water</span>
+        </label>
+    </div>
+
+    <div class="builder_head" aria-hidden="true">
+        <span class="builder_cell builder_cell--num">#</span>
+        <span class="builder_cell">Type</span>
+        <span class="builder_cell">Way</span>
+        <span class="builder_cell builder_num">Speed</span>
+        <span class="builder_cell builder_num">Length</span>
+        <span class="builder_cell builder_num">Gap</span>
+        <span class="builder_cell builder_tools"></span>
+    </div>
+
+    <div id="builder-rows"></div>
+
+    <div class="builder_actions">
+        <button type="button" class="mode-button" id="builder-add">Add a row</button>
+        <button type="button" class="mode-button is-active" id="builder-play">Play this board</button>
+        <button type="button" class="mode-button" id="builder-save">Save it</button>
+        <button type="button" class="mode-button" id="builder-share">Make a link</button>
+        <button type="button" class="mode-button" id="builder-copy" hidden>Copy link</button>
+    </div>
+
+    <input type="text" id="builder-link" class="builder_link" readonly hidden
+           aria-label="Link to this board">
+
+    <p class="builder_note" id="builder-note" role="status" aria-live="polite"></p>
+
+    <div class="builder_saved_row">
+        <span class="game-controls_label">Saved here</span>
+        <span id="builder-saved" class="builder_saved"></span>
+    </div>
+</details>
+
+<script src="{{ '/assets/js/games/frogger.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/games/frogger-builder.js' | relative_url }}"></script>

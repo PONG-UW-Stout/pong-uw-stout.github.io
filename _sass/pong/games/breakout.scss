@@ -1,0 +1,101 @@
+// ===========================================================================
+//  Breakout game page styles.
+//  Compiled on its own via assets/css/games/breakout.scss,
+//  so rules here apply to /games/breakout/ only.
+//
+//  Brick geometry is not here. The collision code has to know every brick's box
+//  anyway, so assets/js/games/breakout.js owns the grid and sets each brick's
+//  position inline. This file only decides what a brick looks like.
+// ===========================================================================
+
+@use "pong/variables" as *;
+@use "pong/games/arcade";
+
+// Shallower than a square-ish 3:2, so the whole wall is on screen at once on a
+// laptop. Every piece is positioned as a % of the court, so changing the shape
+// here needs no matching change in the game code.
+.court {
+    aspect-ratio: 2 / 1;
+}
+
+// Score on the left, lives on the right, instead of Pong's two centred numbers.
+// Smaller than the shared scoreboard too: at Pong's size it is tall enough to
+// reach into the top row of bricks.
+.score {
+    top: 3%;
+    gap: 0;
+    justify-content: space-between;
+    padding: 0 4%;
+}
+
+.score_num {
+    font-size: clamp(0.9rem, 2.6vw, 1.5rem);
+}
+
+// Full-court layer the bricks sit inside, so their percentages are measured
+// against the court and not the page.
+.bricks {
+    position: absolute;
+    inset: 0;
+}
+
+// Each life is a small copy of the paddle it stands for.
+.life {
+    width: 1.5rem;
+    height: 0.4rem;
+}
+
+.paddle {
+    position: absolute;
+    bottom: 6%;
+    left: 50%;
+    width: 16%;
+    height: 2.5%;
+    background-color: $light;
+    border-radius: 2px;
+    transform: translateX(-50%);
+}
+
+// White ball. The bricks have all the colour on this page.
+.ball {
+    background-color: $light;
+}
+
+.brick {
+    position: absolute;
+    border-radius: 2px;
+    // Gives the flat tier colours some depth without a second colour per tier
+    // to keep in step.
+    box-shadow: inset 0 -0.35rem 0 rgba(0, 0, 0, 0.28);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.brick.is-broken {
+    opacity: 0;
+    transform: scale(0.6);
+}
+
+// Two-hit bricks, marked by a bright inner frame. The frame comes off when the
+// brick cracks, so what is left standing reads at a glance.
+.brick--tough {
+    box-shadow:
+        inset 0 -0.35rem 0 rgba(0, 0, 0, 0.28),
+        inset 0 0 0 2px rgba(249, 252, 255, 0.85);
+}
+
+.brick.is-cracked {
+    opacity: 0.6;
+    box-shadow: inset 0 -0.35rem 0 rgba(0, 0, 0, 0.28);
+}
+
+.brick--diamond  { background-color: $diamond-color; }
+.brick--platinum { background-color: $platinum-color; }
+.brick--gold     { background-color: $gold-color; }
+.brick--exec     { background-color: $exec-color; }
+.brick--staff    { background-color: $staff-color; }
+
+@media (prefers-reduced-motion: reduce) {
+    .brick {
+        transition: none;
+    }
+}

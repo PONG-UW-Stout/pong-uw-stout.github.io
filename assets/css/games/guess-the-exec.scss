@@ -1,0 +1,7 @@
+---
+---
+
+// Entry point for the Guess the Exec page only. Linked from
+// _games/guess-the-exec.html. Only the shared controls are pulled in, since
+// this game has no court and none of the arcade playfield CSS applies.
+@use "pong/games/guess-the-exec";
