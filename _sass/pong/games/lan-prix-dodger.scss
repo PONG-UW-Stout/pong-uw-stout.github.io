@@ -1,0 +1,140 @@
+// ===========================================================================
+//  LAN-Prix Dodger page styles.
+//  Compiled on its own via assets/css/games/lan-prix-dodger.scss,
+//  so rules here apply to /games/lan-prix-dodger/ only.
+//
+//  Lane geometry is not here. Collision needs to know where every lane and car
+//  is, so assets/js/games/lan-prix-dodger.js owns the lane count and positions
+//  the lines and cars inline. This file only decides how they look.
+// ===========================================================================
+
+@use "pong/variables" as *;
+@use "pong/games/arcade";
+
+// The LAN-Prix palette, copied from _sass/pong/lans/lan-prix.scss instead of
+// shared with it: that partial redefines :root custom properties and restyles
+// nav, all of which would come along with an @use.
+$gp-red:   #e10600;
+$gp-teal:  #00d2b4;
+$gp-white: #f0f0f0;
+$gp-dark:  #0a0a0b;
+
+// The <symbol> definitions only exist to be referenced by <use>. Collapsed to
+// nothing instead of display:none, which some browsers have treated as a reason
+// not to resolve references into it.
+.car-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.court--road {
+    aspect-ratio: 5 / 2;
+    background-color: $gp-dark;
+    border-color: $gp-red;
+}
+
+.road-lines {
+    position: absolute;
+    inset: 0;
+}
+
+// Lane dashes and kerbs are scrolled by the game loop, which shifts their
+// background-position to match the distance travelled.
+.lane-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-image: repeating-linear-gradient(
+        to right,
+        rgba(240, 240, 240, 0.5) 0 38%,
+        transparent 38% 100%
+    );
+    background-size: 6% 100%;
+    background-repeat: repeat-x;
+}
+
+.kerb {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3%;
+    background-image: repeating-linear-gradient(
+        to right,
+        $gp-red 0 50%,
+        $gp-white 50% 100%
+    );
+    background-size: 7% 100%;
+    background-repeat: repeat-x;
+    opacity: 0.85;
+}
+
+.kerb--top    { top: 0; }
+.kerb--bottom { bottom: 0; }
+
+.traffic {
+    position: absolute;
+    inset: 0;
+}
+
+// Cars are placed by their centre, the same point the collision code works
+// from. 13:4 is the artwork's own aspect ratio, so the car never squashes.
+.car {
+    position: absolute;
+    width: 16%;
+    aspect-ratio: 13 / 4;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+
+    svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+// Every shape in the artwork is filled with currentColor, so a car's livery is
+// a single declaration.
+.car--player {
+    color: $gp-red;
+    filter: drop-shadow(0 0 6px rgba(225, 6, 0, 0.55));
+}
+
+.car--rival {
+    color: $gp-teal;
+}
+
+// Distance on the left, personal best on the right.
+.score {
+    top: 5%;
+    gap: 0;
+    justify-content: space-between;
+    padding: 0 5%;
+    color: $gp-white;
+}
+
+.score_num {
+    font-size: clamp(1rem, 3.2vw, 1.75rem);
+    letter-spacing: 0.08em;
+}
+
+.score_num--best {
+    opacity: 0.5;
+}
+
+.court--road.is-crashed {
+    animation: road-crash 0.45s ease-out;
+}
+
+@keyframes road-crash {
+    0%   { background-color: $gp-red; }
+    100% { background-color: $gp-dark; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .court--road.is-crashed {
+        animation: none;
+    }
+}

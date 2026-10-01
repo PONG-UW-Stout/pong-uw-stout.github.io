@@ -1,0 +1,81 @@
+---
+title: LAN-Prix Dodger
+layout: default
+description: Overtake the field on the LAN-Prix straight without collecting anyone
+---
+
+<link rel="stylesheet" href="{{ '/assets/css/games/lan-prix-dodger.css' | relative_url }}">
+
+<h1>LAN-Prix Dodger</h1>
+<hr>
+
+{% comment %}
+  The car is the same one that launches across the hero of the LAN-Prix page.
+  It sits here as a <symbol> so every car on the road is one <use> of it, and so
+  each car can be coloured by setting `color` on its wrapper: every shape in the
+  bodywork is filled with currentColor.
+{% endcomment %}
+<svg class="car-defs" aria-hidden="true" focusable="false">
+    <symbol id="gp-car" viewBox="0 0 260 80">
+        <path d="M8,24 L15,24 L15,62 L8,62 Z" fill="currentColor"/>
+        <path d="M10,24 L55,22 L55,26 L10,28 Z" fill="currentColor"/>
+        <path d="M10,28 L57,26 L57,30 L10,32 Z" fill="currentColor"/>
+        <path d="M22,51 L54,49 L54,53 L22,55 Z" fill="currentColor" opacity=".85"/>
+        <path d="M31,26 L35,26 L37,51 L33,51 Z" fill="currentColor" opacity=".6"/>
+        <path d="M 243,68 C 228,64 210,59 196,54 C 186,51 175,48 162,43 C 152,39 142,35 128,33 C 118,32 108,33 98,34 C 88,35 78,37 68,40 C 58,43 45,47 32,51 L 22,55 L 22,62 L 185,61 C 210,63 228,66 243,68 Z" fill="currentColor"/>
+        <path d="M90,37 C100,34 114,33 126,34 L126,43 C114,44 100,45 90,43 Z" fill="rgba(0,0,0,.62)"/>
+        <path d="M98,34 C97,28 103,23 113,22 L116,22 C106,23 101,28 102,34 Z" fill="currentColor"/>
+        <path d="M134,36 C130,30 124,24 117,22 L114,22 C121,24 126,30 129,36 Z" fill="currentColor"/>
+        <rect x="113" y="22" width="4" height="8" rx="1" fill="currentColor" opacity=".65"/>
+        <path d="M103,34 L103,38 C114,39 124,39 131,36 L131,34 C124,35 114,35 103,34 Z" fill="rgba(0,0,0,.7)"/>
+        <path d="M152,72 L248,68 L248,65 L152,69 Z" fill="currentColor"/>
+        <path d="M156,69 L246,65 L246,62 L156,66 Z" fill="currentColor"/>
+        <path d="M160,66 L244,62 L244,59 L160,63 Z" fill="currentColor" opacity=".9"/>
+        <path d="M163,63 L242,59 L242,56 L163,60 Z" fill="currentColor" opacity=".8"/>
+        <path d="M243,54 L249,54 L249,74 L243,74 Z" fill="currentColor"/>
+        <path d="M150,65 L156,65 L156,74 L150,74 Z" fill="currentColor"/>
+        <path d="M182,59 L193,59 L193,66 L182,66 Z" fill="currentColor" opacity=".6"/>
+        <circle cx="50" cy="64" r="11" fill="rgba(55,55,55,.92)"/>
+        <circle cx="50" cy="64" r="6.5" fill="currentColor" opacity=".4"/>
+        <circle cx="50" cy="64" r="2.5" fill="rgba(20,20,20,.95)"/>
+        <circle cx="190" cy="64" r="9" fill="rgba(55,55,55,.92)"/>
+        <circle cx="190" cy="64" r="5.5" fill="currentColor" opacity=".4"/>
+        <circle cx="190" cy="64" r="2" fill="rgba(20,20,20,.95)"/>
+    </symbol>
+</svg>
+
+<div class="court court--road" aria-hidden="true">
+    <div class="road-lines" id="road-lines"></div>
+    <div class="traffic" id="traffic"></div>
+
+    <div class="score">
+        <span class="score_num" data-score="distance">0</span>
+        <span class="score_num score_num--best" data-score="best">0</span>
+    </div>
+
+    <p class="court-message" id="road-message" hidden></p>
+
+    <div class="car car--player" id="player">
+        <svg viewBox="0 0 260 80" aria-hidden="true" focusable="false">
+            <use href="#gp-car"></use>
+        </svg>
+    </div>
+</div>
+
+<div class="game-controls">
+    <button type="button" class="mode-button" data-mode="rookie" aria-pressed="false">
+        Rookie
+    </button>
+
+    <button type="button" class="mode-button" data-mode="pro" aria-pressed="true">
+        Pro
+    </button>
+</div>
+
+<p class="game-note">
+Change lanes with <kbd>&uarr;</kbd> <kbd>&darr;</kbd> or <kbd>W</kbd> <kbd>S</kbd>, or tap the lane you want.
+<kbd>Space</kbd> starts a run and pauses one. The field gets quicker the longer you stay out of the wall.
+See the <a href="{{ '/lans/LAN-Prix/' | relative_url }}">LAN-Prix</a> page for the real thing.
+</p>
+
+<script src="{{ '/assets/js/games/lan-prix-dodger.js' | relative_url }}"></script>

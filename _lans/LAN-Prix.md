@@ -53,7 +53,7 @@ kit:
   - A racing costume, if you mean to enter Sunday night's contest
   - Food and water for the stretches between runs
   - A pillow and something to sleep in, because 48 hours catches up with you
-  - Deodorant. It is a long race.
+  - Deodorant puh-lease. It is a long race.
 
 faq:
   - q: Do I need to be a UW-Stout student?
@@ -76,21 +76,38 @@ faq:
     a: Completely. Show up, find a table, say hi. Ask in the Discord beforehand if you want advice on what to bring.
 ---
 
-<!-- Critical inline CSS: hides the hero before the external stylesheet lands,
-     so nothing flashes ahead of the start-lights sequence. Gated on .gp-js so
-     the hero stays visible when JavaScript is off. -->
+<!-- Critical inline CSS + intro gate: both run before the external stylesheet
+     lands, so nothing flashes ahead of the start-lights sequence.
+
+     The hero is only hidden when the intro is actually going to play. If the
+     lan-prix-anim cookie is already set, this browser has seen the sequence, so
+     we mark the document .gp-anim-seen instead: the hero stays visible and the
+     lights / race car never paint. Gated on .gp-js so the hero also stays
+     visible when JavaScript is off. -->
 <script>
-  document.documentElement.classList.add('gp-js');
-  // Failsafe: if lan-prix.js never runs, don't leave the hero hidden.
-  setTimeout(function () {
-    var c = document.querySelector('.gp-hero-content');
-    if (c) c.classList.remove('is-pending');
-  }, 15000);
+  (function () {
+    var seen = /(?:^|;\s*)lan-prix-anim=1(?:;|$)/.test(document.cookie);
+    if (seen) {
+      document.documentElement.classList.add('gp-anim-seen');
+      return;
+    }
+    document.documentElement.classList.add('gp-js');
+    // Failsafe: if lan-prix.js never runs, don't leave the hero hidden.
+    setTimeout(function () {
+      var c = document.querySelector('.gp-hero-content');
+      if (c) c.classList.remove('is-pending');
+    }, 15000);
+  })();
 </script>
 <style>
 .gp-js .gp-hero-content.is-pending {
   opacity: 0;
   transform: translateY(14px);
+}
+/* Intro already seen on this browser: no lights, no car, no hidden hero. */
+.gp-anim-seen .gp-lights-sequence,
+.gp-anim-seen .gp-race-car {
+  display: none;
 }
 </style>
 
@@ -121,7 +138,7 @@ faq:
 {% assign schedule_exists = false %}
 {% for f in site.static_files %}{% if f.path == page.schedule_image %}{% assign schedule_exists = true %}{% endif %}{% endfor %}
 
-<script src="{{ '/assets/js/lan-prix.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/lans/lan-prix.js' | relative_url }}" defer></script>
 
 <div class="gp-lights-sequence" aria-label="Race start lights sequence" aria-hidden="true">
   <div class="gp-lights-row">

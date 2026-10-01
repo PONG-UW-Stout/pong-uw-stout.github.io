@@ -1,0 +1,7 @@
+---
+---
+
+// Entry point for the Breakout game page only. Linked from _games/breakout.html.
+// Kept out of the global pong.css so the bare class names in the arcade shell
+// can't leak onto every other page.
+@use "pong/games/breakout";

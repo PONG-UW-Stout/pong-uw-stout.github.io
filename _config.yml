@@ -35,6 +35,12 @@ defaults:
     values:
       layout: lan
       permalink: /lans/:title/
+  - scope:
+      path: ""
+      type: games
+    values:
+      layout: default
+      permalink: /games/:title/
 
 collections:
   tabs:
@@ -42,4 +48,6 @@ collections:
     permalink: /:name/
     sort_by: order
   lans:
+    output: true
+  games:
     output: true

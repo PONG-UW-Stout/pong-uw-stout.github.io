@@ -1,0 +1,80 @@
+---
+title: Guess the Exec
+layout: default
+description: Like wordle, but not, and with people
+---
+
+<link rel="stylesheet" href="{{ '/assets/css/games/guess-the-exec.css' | relative_url }}">
+
+{% comment %}
+  The roster is the answer list, so it comes straight from _data instead of a
+  JSON blob: every name on /about/ is a button here, and the JS reads the people
+  out of these data attributes. Add someone to _data/execs.yml and they are in
+  the game.
+{% endcomment %}
+{% assign roster = site.data.execs
+  | concat: site.data.staff
+  | concat: site.data.advisors
+  | concat: site.data.mentors
+  | sort: "name" %}
+
+<h1>Guess the Exec</h1>
+<hr>
+
+<div class="gte">
+    <div class="gte_stage">
+        <div class="mugshot" id="mugshot">
+            <img id="mugshot-img" src="" alt="">
+        </div>
+
+        <div class="gte_side">
+            <p class="gte_prompt" id="prompt">Who is this?</p>
+
+            <ul class="gte_hints" id="hints"></ul>
+
+            <p class="gte_tally">
+                <span id="guesses-left" class="number">&mdash;</span> guesses left
+            </p>
+
+            <p class="gte_streak">
+                Streak <span id="streak" class="number">0</span>
+                &middot; Best <span id="best" class="number">0</span>
+            </p>
+        </div>
+    </div>
+
+    <p class="gte_result" id="result" role="status" aria-live="polite" hidden></p>
+
+    <div class="guess-grid" id="guess-grid">
+        {% for person in roster %}
+            <button type="button" class="guess-option"
+                    data-name="{{ person.name }}"
+                    data-role="{{ person.role }}"
+                    data-photo="{{ person.photo | relative_url }}">
+                {{ person.name }}
+            </button>
+        {% endfor %}
+    </div>
+
+    <div class="game-controls">
+        <button type="button" class="mode-button" data-mode="daily" aria-pressed="true">
+            Daily
+        </button>
+
+        <button type="button" class="mode-button" data-mode="random" aria-pressed="false">
+            Random
+        </button>
+
+        <button type="button" class="mode-button" id="next-round" hidden>
+            Next Photo
+        </button>
+    </div>
+</div>
+
+<p class="game-note">
+Everyone in the game is already on the <a href="{{ '/about/' | relative_url }}">about page</a>.
+The photo sharpens with every wrong guess, and a hint comes with it. Daily mode gives the whole
+club the same person and keeps your streak; random mode is free play.
+</p>
+
+<script src="{{ '/assets/js/games/guess-the-exec.js' | relative_url }}"></script>
