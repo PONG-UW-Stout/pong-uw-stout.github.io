@@ -1,0 +1,172 @@
+@use "../variables" as *;
+@use "surfaces";
+
+/* New Year's Day at midnight. Three fireworks bursting on their own cadence,
+   confetti coming down, gold tinsel across the nav.
+
+   The bursts are pure gradient work. A repeating-conic-gradient makes the
+   spokes; a radial mask punches out the middle and feathers the rim, which
+   leaves a ring of rays. Scale it up from nothing and fade it out and the eye
+   reads a shell going off. */
+
+html {
+    background-image:
+        radial-gradient(ellipse 90vmax 34vmin at 50% 100%, rgba(255, 196, 92, 0.2) 0, rgba(255, 196, 92, 0) 100%),
+        linear-gradient(178deg, #05061a 0%, #0d1134 40%, #151038 70%, #06040f 100%) !important;
+    background-attachment: fixed !important;
+    background-color: #05061a !important;
+}
+
+%ny-burst {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    scale: 0.05;
+    opacity: 0;
+    mask: radial-gradient(circle, transparent 16%, #000 36%, #000 66%, transparent 80%);
+    -webkit-mask: radial-gradient(circle, transparent 16%, #000 36%, #000 66%, transparent 80%);
+}
+
+// Gold, high and to the left.
+html::before {
+    @extend %ny-burst;
+    left: 24%;
+    top: 20%;
+    width: 46vmin;
+    background: repeating-conic-gradient(from 6deg, rgba(255, 221, 112, 0.95) 0deg 1.5deg, transparent 1.5deg 15deg);
+    animation: ny-burst 6.4s ease-out infinite;
+}
+
+// Rose, higher and to the right.
+html::after {
+    @extend %ny-burst;
+    left: 74%;
+    top: 15%;
+    width: 36vmin;
+    background: repeating-conic-gradient(from 11deg, rgba(255, 130, 170, 0.9) 0deg 1.3deg, transparent 1.3deg 13deg);
+    animation: ny-burst 6.4s ease-out infinite;
+    animation-delay: -2.1s;
+}
+
+// Ice blue, lower and centre-left.
+body::before {
+    @extend %ny-burst;
+    left: 46%;
+    top: 31%;
+    width: 30vmin;
+    background: repeating-conic-gradient(from 19deg, rgba(140, 215, 255, 0.9) 0deg 1.2deg, transparent 1.2deg 12deg);
+    animation: ny-burst 6.4s ease-out infinite;
+    animation-delay: -4.3s;
+}
+
+// Confetti. Each piece is its own element so it can spin on its own clock:
+// `i` falls, and its ::before sways, flips and tumbles. That is three animations on
+// three separate properties (translate / rotate / transform), which compose
+// instead of overwriting one another the way three `transform` animations would.
+.theme-decor i {
+    position: absolute;
+    top: -12vh;
+    left: calc(var(--r1) * 100%);
+    width: calc(6px + var(--r2) * 5px);
+    height: calc(10px + var(--r3) * 7px);
+    animation: ny-fall calc(7s + var(--r2) * 7s) linear infinite;
+    animation-delay: calc(var(--r3) * -14s);
+}
+
+.theme-decor i::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 1px;
+    background: #ffd766;
+    animation:
+        ny-sway calc(1.9s + var(--r1) * 2.3s) ease-in-out infinite alternate,
+        ny-flip calc(0.9s + var(--r2) * 1.7s) linear infinite,
+        ny-tumble calc(3.1s + var(--r3) * 3.4s) linear infinite;
+    animation-delay: calc(var(--r2) * -4s), calc(var(--r1) * -3s), calc(var(--r3) * -6s);
+}
+
+.theme-decor i:nth-child(6n + 1)::before { background: #ff6ea0; }
+.theme-decor i:nth-child(6n + 2)::before { background: #8cd7ff; }
+.theme-decor i:nth-child(6n + 3)::before { background: #7ee787; }
+.theme-decor i:nth-child(6n + 4)::before { background: #c39bff; }
+.theme-decor i:nth-child(6n + 5)::before { background: #ffd766; }
+.theme-decor i:nth-child(6n)::before { background: #ff9f5a; }
+
+// Gold tinsel strung under the bar.
+nav::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 16'><path d='M0 1h80v3H0z' fill='%23d4af37'/><path d='M0 4l10 10 10-10 10 10 10-10 10 10 10-10 10 10 10-10' fill='none' stroke='%23ffd766' stroke-width='2.4' stroke-linejoin='round'/></svg>") repeat-x top left / 80px 16px;
+    filter: drop-shadow(0 1px 3px rgba(255, 215, 102, 0.5));
+}
+
+h1,
+h2,
+h3 {
+    // Leaf-gold, swept by a highlight. Guarded, because text-clipped gradients
+    // leave the text invisible anywhere the clip is unsupported.
+    color: #ffe9a8 !important;
+    text-shadow: 0 0 16px rgba(255, 200, 80, 0.45), 0 2px 0 rgba(5, 6, 26, 0.6);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+
+    h1,
+    h2 {
+        background-image: linear-gradient(100deg, #b07d1a 0 22%, #ffe9a8 40%, #fffbe8 50%, #ffe9a8 60%, #b07d1a 78%);
+        background-size: 240% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent !important;
+        text-shadow: none;
+        animation: ny-sweep 5.5s linear infinite;
+    }
+}
+
+.day-banner {
+    padding-top: 1.9rem;
+    color: #ffe9a8;
+}
+
+@keyframes ny-burst {
+    0% { scale: 0.05; opacity: 0; }
+    5% { opacity: 1; }
+    58% { scale: 1; opacity: 0; }
+    100% { scale: 1; opacity: 0; }
+}
+
+@keyframes ny-fall {
+    from { transform: translateY(0); }
+    to { transform: translateY(124vh); }
+}
+
+// Side-to-side drift, eased so the piece lingers at the ends of each swing
+// the way a falling scrap actually does.
+@keyframes ny-sway {
+    from { translate: -18px 0; }
+    to { translate: 18px 0; }
+}
+
+// Edge-on flip. With no perspective this squashes to nothing and opens back
+// out, which is exactly how a thin piece of paper reads end-on.
+@keyframes ny-flip {
+    from { rotate: y 0deg; }
+    to { rotate: y 360deg; }
+}
+
+@keyframes ny-tumble {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes ny-sweep {
+    to { background-position: -240% 0; }
+}

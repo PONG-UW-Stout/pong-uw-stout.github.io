@@ -1,0 +1,109 @@
+@use "../variables" as *;
+
+/* April Fools. The gag is the whole theme: the site is covered by a blank
+   screen, and after the wait a notice owns up to it and hands the page back.
+   Nothing here restyles the site itself, so the moment the cover is dismissed
+   the visitor gets the ordinary PONG site, exactly as it is every other day.
+
+   Deliberately does NOT @use "surfaces": there is no scene to light. */
+
+.theme-takeover {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // The blank is the site's own empty background, so it reads as a page with
+    // nothing on it rather than a white sheet thrown over the top.
+    background: $light;
+}
+
+html[data-theme="dark"] .theme-takeover {
+    background: $dark-mode-bg;
+}
+
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) .theme-takeover {
+        background: $dark-mode-bg;
+    }
+}
+
+// Present for screen readers the whole time the cover is up. A sighted visitor
+// sees an empty page, which is the joke; someone on a screen reader would
+// otherwise have no way to tell the site from a broken one.
+.theme-takeover__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.theme-reveal {
+    max-width: 26rem;
+    margin: 1.5rem;
+    padding: 2rem 2rem 1.75rem;
+
+    background: $dark;
+    color: $light;
+    border-radius: 12px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    text-align: center;
+
+    animation: af-pop 0.3s ease both;
+}
+
+.theme-reveal__title {
+    margin: 0 0 0.6rem;
+    font-family: "pong_cocogoose";
+    font-size: 1.9rem;
+}
+
+.theme-reveal__body {
+    margin: 0 0 1.4rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.85;
+}
+
+.theme-reveal__button {
+    padding: 0.6rem 1.3rem;
+    background-color: $exec-color;
+    border: none;
+    border-radius: 7px;
+
+    color: $dark;
+    font: inherit;
+    font-family: "pong_cocogoose";
+    font-size: 0.9rem;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        opacity: 0.85;
+    }
+}
+
+@keyframes af-pop {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .theme-reveal {
+        animation: none;
+    }
+}

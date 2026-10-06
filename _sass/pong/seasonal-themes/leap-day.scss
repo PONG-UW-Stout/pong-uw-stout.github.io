@@ -1,0 +1,118 @@
+@use "../variables" as *;
+@use "surfaces";
+
+/* Leap Day only comes round every four years, so it gets treated as a bonus stage.
+   CRT arcade, scanlines, a slow roll bar, and extra lives floating up. */
+
+html {
+    background-image:
+        radial-gradient(ellipse 80vmax 44vmin at 50% 0%, rgba(57, 255, 106, 0.16) 0, rgba(57, 255, 106, 0) 100%),
+        radial-gradient(ellipse 60vmax 40vmin at 50% 100%, rgba(69, 224, 255, 0.1) 0, rgba(69, 224, 255, 0) 100%),
+        linear-gradient(178deg, #071226 0%, #0a1b33 40%, #050d1c 100%) !important;
+    background-attachment: fixed !important;
+    background-color: #050d1c !important;
+}
+
+// Scanlines and the corner falloff of a curved tube.
+html::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.32) 0 1px, rgba(0, 0, 0, 0) 1px 3px),
+        radial-gradient(ellipse 72% 64% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+// The roll bar drifting down the tube.
+html::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 22vh;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(160, 255, 200, 0) 0%, rgba(160, 255, 200, 0.07) 48%, rgba(160, 255, 200, 0) 100%);
+    animation: lp-roll 9s linear infinite;
+}
+
+// Extra lives and bonus points, drifting up out of the floor.
+body::before {
+    content: "";
+    position: fixed;
+    left: -10%;
+    right: -10%;
+    bottom: -340px;
+    height: calc(100vh + 340px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 340'><defs><g id='h'><rect x='1' y='0' width='2' height='1'/><rect x='6' y='0' width='2' height='1'/><rect x='0' y='1' width='4' height='1'/><rect x='5' y='1' width='4' height='1'/><rect x='0' y='2' width='9' height='1'/><rect x='0' y='3' width='9' height='1'/><rect x='1' y='4' width='7' height='1'/><rect x='2' y='5' width='5' height='1'/><rect x='3' y='6' width='3' height='1'/><rect x='4' y='7' width='1' height='1'/></g><g id='p'><rect x='2' y='0' width='1' height='1'/><rect x='7' y='0' width='1' height='1'/><rect x='2' y='1' width='1' height='1'/><rect x='6' y='1' width='2' height='1'/><rect x='0' y='2' width='5' height='1'/><rect x='7' y='2' width='1' height='1'/><rect x='2' y='3' width='1' height='1'/><rect x='7' y='3' width='1' height='1'/><rect x='2' y='4' width='1' height='1'/><rect x='7' y='4' width='1' height='1'/><rect x='7' y='5' width='1' height='1'/><rect x='6' y='6' width='3' height='1'/></g></defs><use href='%23h' fill='rgba(57,255,106,0.34)' transform='translate(24 54) scale(2) rotate(-14)'/><use href='%23p' fill='rgba(69,224,255,0.32)' transform='translate(206 16) scale(1.6) rotate(22)'/><use href='%23p' fill='rgba(255,225,77,0.3)' transform='translate(120 200) scale(2.4) rotate(-6)'/><use href='%23h' fill='rgba(255,79,216,0.26)' transform='translate(292 250) scale(1.8) rotate(38)'/></svg>");
+    background-size: 340px 340px;
+    animation: lp-rise-far 24s linear infinite;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    left: -10%;
+    right: -10%;
+    bottom: -400px;
+    height: calc(100vh + 400px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><g id='h'><rect x='1' y='0' width='2' height='1'/><rect x='6' y='0' width='2' height='1'/><rect x='0' y='1' width='4' height='1'/><rect x='5' y='1' width='4' height='1'/><rect x='0' y='2' width='9' height='1'/><rect x='0' y='3' width='9' height='1'/><rect x='1' y='4' width='7' height='1'/><rect x='2' y='5' width='5' height='1'/><rect x='3' y='6' width='3' height='1'/><rect x='4' y='7' width='1' height='1'/></g><g id='p'><rect x='2' y='0' width='1' height='1'/><rect x='7' y='0' width='1' height='1'/><rect x='2' y='1' width='1' height='1'/><rect x='6' y='1' width='2' height='1'/><rect x='0' y='2' width='5' height='1'/><rect x='7' y='2' width='1' height='1'/><rect x='2' y='3' width='1' height='1'/><rect x='7' y='3' width='1' height='1'/><rect x='2' y='4' width='1' height='1'/><rect x='7' y='4' width='1' height='1'/><rect x='7' y='5' width='1' height='1'/><rect x='6' y='6' width='3' height='1'/></g></defs><use href='%23p' fill='rgba(57,255,106,0.72)' transform='translate(38 24) scale(3.4) rotate(-10)'/><use href='%23h' fill='rgba(69,224,255,0.62)' transform='translate(250 150) scale(2.6) rotate(26)'/><use href='%23p' fill='rgba(255,79,216,0.58)' transform='translate(140 300) scale(3) rotate(-20)'/></svg>");
+    background-size: 400px 400px;
+    animation: lp-rise-near 15s linear infinite, lp-drift 5s ease-in-out infinite alternate;
+}
+
+// An 8-bit block border under the bar.
+nav::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 14'><rect width='64' height='14' fill='%23071226'/><g><rect x='0' y='0' width='8' height='7' fill='%2339ff6a'/><rect x='16' y='0' width='8' height='7' fill='%2345e0ff'/><rect x='32' y='0' width='8' height='7' fill='%23ff4fd8'/><rect x='48' y='0' width='8' height='7' fill='%23ffe14d'/><rect x='8' y='7' width='8' height='7' fill='%2345e0ff'/><rect x='24' y='7' width='8' height='7' fill='%23ff4fd8'/><rect x='40' y='7' width='8' height='7' fill='%23ffe14d'/><rect x='56' y='7' width='8' height='7' fill='%2339ff6a'/></g></svg>") repeat-x top left / 64px 14px;
+}
+
+h1,
+h2,
+h3 {
+    color: #39ff6a !important;
+    text-shadow: 0 0 10px rgba(57, 255, 106, 0.6), 0 0 26px rgba(57, 255, 106, 0.3);
+    animation: lp-flicker 6s steps(1, end) infinite;
+}
+
+.day-banner {
+    padding-top: 1.7rem;
+    color: #45e0ff;
+}
+
+@keyframes lp-roll {
+    from { transform: translateY(-24vh); }
+    to { transform: translateY(100vh); }
+}
+
+@keyframes lp-rise-far {
+    to { transform: translateY(-340px); }
+}
+
+@keyframes lp-rise-near {
+    from { translate: 0 0; }
+    to { translate: 0 -400px; }
+}
+
+@keyframes lp-drift {
+    from { rotate: -2.5deg; }
+    to { rotate: 2.5deg; }
+}
+
+@keyframes lp-flicker {
+    0%, 100% { opacity: 1; }
+    48% { opacity: 1; }
+    49% { opacity: 0.72; }
+    50% { opacity: 1; }
+    82% { opacity: 1; }
+    83% { opacity: 0.8; }
+    84% { opacity: 1; }
+}

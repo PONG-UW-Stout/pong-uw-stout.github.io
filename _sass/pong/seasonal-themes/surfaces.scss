@@ -1,0 +1,71 @@
+@use "../variables" as *;
+
+// Shared plumbing for the seasonal scenes.
+//
+// Each theme paints $light text over a dark scene and hangs its ornament off
+// five decorative layers: html::before, html::after, body::before, body::after
+// (fixed, z-index -1, so they sit above the root background and below every
+// bit of content) plus nav::before / nav::after for anything attached to the
+// bar itself. Nav pseudo-elements MUST be absolutely positioned: nav is a flex
+// container, so an in-flow pseudo-element would become a flex item and shove
+// the logo around.
+
+// Surfaces that normally turn light in light mode have to go dark here too, or
+// the light body text sitting on them disappears into the card.
+.post_card,
+.post-item,
+.gte_hints li {
+    background: rgba(10, 6, 16, 0.55) !important;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+// Ornament is ornament: it never eats a click.
+html::before,
+html::after,
+body::before,
+body::after,
+nav::before,
+nav::after {
+    pointer-events: none;
+}
+
+// Content sits above the decorative layers.
+#content,
+nav {
+    position: relative;
+    z-index: 1;
+}
+
+// Some scenes need real elements rather than a painted layer: an SVG used as a
+// background-image renders in secure static mode, so its own animation never
+// runs, and a background layer can only be transformed as one sheet. Themes
+// that set `decor` get this container of <i> sprites, each carrying three
+// random numbers (--r1..--r3) for their stylesheet to shape them with.
+.theme-decor {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+
+// The scene is scenery. Anyone who asked for less motion gets it still.
+@media (prefers-reduced-motion: reduce) {
+
+    html::before,
+    html::after,
+    body::before,
+    body::after,
+    nav::before,
+    nav::after,
+    h1,
+    h2,
+    h3 {
+        animation: none !important;
+    }
+
+    // Sprites exist only to move. Still ones are just litter on the page.
+    .theme-decor {
+        display: none;
+    }
+}
