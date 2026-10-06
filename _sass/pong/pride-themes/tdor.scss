@@ -1,0 +1,10 @@
+@use "../variables" as *;
+
+
+html {
+    background: linear-gradient(to left, #0d2a35, #342024, #363636, #342024, #0d2a35) !important;
+}
+
+body {
+    color: $light !important;
+}

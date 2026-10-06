@@ -1,0 +1,86 @@
+@use "../variables" as *;
+@use "surfaces";
+
+/* Valentine's Day. Hearts drifting up through warm blush light, a scalloped
+   lace edge under the nav, and a heartbeat under the headings. */
+
+html {
+    background-image:
+        radial-gradient(circle at 18% 78%, rgba(255, 138, 174, 0.2) 0, rgba(255, 138, 174, 0) 34vmin),
+        radial-gradient(circle at 84% 24%, rgba(255, 190, 210, 0.18) 0, rgba(255, 190, 210, 0) 30vmin),
+        radial-gradient(ellipse 80vmax 46vmin at 50% 0%, rgba(255, 150, 185, 0.22) 0, rgba(255, 150, 185, 0) 100%),
+        linear-gradient(178deg, #4a0c2c 0%, #67102f 32%, #3d0a20 70%, #230512 100%) !important;
+    background-attachment: fixed !important;
+    background-color: #230512 !important;
+}
+
+// Far hearts: small, faint, unhurried.
+html::before {
+    content: "";
+    position: fixed;
+    // Overhangs the viewport so drift never swings a bare corner into view.
+    left: -10%;
+    right: -10%;
+    top: -340px;
+    height: calc(100vh + 340px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 340'><defs><path id='s' d='M50 86C22 66 10 48 10 34 10 20 20 12 31 12c8 0 15 4 19 11 4-7 11-11 19-11 11 0 21 8 21 22 0 14-12 32-40 52z'/></defs><use href='%23s' fill='rgba(255,176,205,0.34)' transform='translate(24 54) scale(0.16) rotate(-14 50 50)'/><use href='%23s' fill='rgba(255,205,222,0.26)' transform='translate(206 16) scale(0.12) rotate(22 50 50)'/><use href='%23s' fill='rgba(255,160,195,0.30)' transform='translate(120 200) scale(0.19) rotate(-6 50 50)'/><use href='%23s' fill='rgba(255,190,212,0.22)' transform='translate(292 250) scale(0.14) rotate(38 50 50)'/></svg>");
+    background-size: 340px 340px;
+    animation: vd-rise-far 26s linear infinite;
+}
+
+// Near hearts: bigger, brighter, climbing faster.
+body::before {
+    content: "";
+    position: fixed;
+    // Overhangs the viewport so drift never swings a bare corner into view.
+    left: -10%;
+    right: -10%;
+    top: -400px;
+    height: calc(100vh + 400px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><path id='s' d='M50 86C22 66 10 48 10 34 10 20 20 12 31 12c8 0 15 4 19 11 4-7 11-11 19-11 11 0 21 8 21 22 0 14-12 32-40 52z'/></defs><use href='%23s' fill='rgba(255,104,152,0.62)' transform='translate(38 24) scale(0.3) rotate(-10 50 50)'/><use href='%23s' fill='rgba(255,70,124,0.5)' transform='translate(250 150) scale(0.22) rotate(26 50 50)'/><use href='%23s' fill='rgba(255,138,175,0.56)' transform='translate(140 300) scale(0.26) rotate(-20 50 50)'/></svg>");
+    background-size: 400px 400px;
+    animation: vd-rise-near 16s linear infinite;
+}
+
+// Scalloped lace hanging off the nav.
+nav::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 30'><path fill='%23ffd9e4' d='M0 0h80v8H0z'/><g fill='%23ffd9e4'><circle cx='10' cy='8' r='13'/><circle cx='30' cy='8' r='13'/><circle cx='50' cy='8' r='13'/><circle cx='70' cy='8' r='13'/></g><g fill='%2367102f'><circle cx='10' cy='10' r='4.5'/><circle cx='30' cy='10' r='4.5'/><circle cx='50' cy='10' r='4.5'/><circle cx='70' cy='10' r='4.5'/></g></svg>") repeat-x top left / 80px 30px;
+}
+
+h1,
+h2,
+h3 {
+    color: #ffe3ec !important;
+    text-shadow: 0 0 18px rgba(255, 120, 165, 0.55), 0 2px 0 rgba(60, 8, 30, 0.5);
+    // `scale` rather than `transform`: no reflow, so the double thump of a
+    // heartbeat costs nothing in layout.
+    animation: vd-beat 2.6s ease-in-out infinite;
+}
+
+.day-banner {
+    padding-top: 2.6rem;
+    color: #ffd9e4;
+}
+
+@keyframes vd-rise-far {
+    to { transform: translateY(-340px); }
+}
+
+@keyframes vd-rise-near {
+    to { transform: translateY(-400px); }
+}
+
+@keyframes vd-beat {
+    0%, 62%, 100% { scale: 1; }
+    8% { scale: 1.028; }
+    16% { scale: 1; }
+    24% { scale: 1.018; }
+}

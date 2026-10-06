@@ -1,0 +1,121 @@
+@use "../variables" as *;
+@use "surfaces";
+
+/* St. Patrick's Day. Deep emerald, a rainbow arcing out of the corner,
+   shamrocks tumbling down, and gold leaf on the headings. */
+
+html {
+    background-image:
+        radial-gradient(ellipse 80vmax 40vmin at 50% 0%, rgba(120, 230, 140, 0.16) 0, rgba(120, 230, 140, 0) 100%),
+        linear-gradient(178deg, #06301a 0%, #0b4c25 36%, #073d1d 72%, #042412 100%) !important;
+    background-attachment: fixed !important;
+    background-color: #042412 !important;
+}
+
+// The rainbow, banded straight out of one radial gradient. With the shamrocks
+// thinned out it finally has room to read.
+html::after {
+    content: "";
+    position: fixed;
+    left: -12vmin;
+    bottom: -14vmin;
+    width: 82vmin;
+    height: 82vmin;
+    z-index: -1;
+    background: radial-gradient(circle at 0 100%,
+            transparent 0 42vmin,
+            rgba(214, 40, 40, 0.4) 42vmin 45vmin,
+            rgba(243, 146, 55, 0.4) 45vmin 48vmin,
+            rgba(255, 224, 102, 0.4) 48vmin 51vmin,
+            rgba(106, 201, 101, 0.4) 51vmin 54vmin,
+            rgba(80, 160, 230, 0.4) 54vmin 57vmin,
+            rgba(150, 110, 210, 0.36) 57vmin 60vmin,
+            transparent 60vmin);
+    filter: blur(1.5px);
+}
+
+// Far shamrocks: small and slow.
+html::before {
+    content: "";
+    position: fixed;
+    // Overhangs the viewport so drift never swings a bare corner into view.
+    left: -10%;
+    right: -10%;
+    top: -340px;
+    height: calc(100vh + 340px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 340'><defs><g id='s'><circle cx='50' cy='30' r='16'/><circle cx='32' cy='54' r='16'/><circle cx='68' cy='54' r='16'/><path d='M47 62h6v32h-6z'/></g></defs><use href='%23s' fill='rgba(146,232,154,0.34)' transform='translate(24 54) scale(0.16) rotate(-14 50 50)'/><use href='%23s' fill='rgba(110,214,124,0.26)' transform='translate(206 16) scale(0.12) rotate(22 50 50)'/><use href='%23s' fill='rgba(168,240,170,0.30)' transform='translate(120 200) scale(0.19) rotate(-6 50 50)'/><use href='%23s' fill='rgba(126,224,140,0.24)' transform='translate(292 250) scale(0.14) rotate(38 50 50)'/></svg>");
+    background-size: 340px 340px;
+    animation: sp-fall-far 27s linear infinite;
+}
+
+// Near shamrocks: bigger, faster, on the breeze.
+body::after {
+    content: "";
+    position: fixed;
+    // Overhangs the viewport so drift never swings a bare corner into view.
+    left: -10%;
+    right: -10%;
+    top: -400px;
+    height: calc(100vh + 400px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><g id='s'><circle cx='50' cy='30' r='16'/><circle cx='32' cy='54' r='16'/><circle cx='68' cy='54' r='16'/><path d='M47 62h6v32h-6z'/></g></defs><use href='%23s' fill='rgba(66,198,92,0.66)' transform='translate(38 24) scale(0.3) rotate(-10 50 50)'/><use href='%23s' fill='rgba(104,220,120,0.56)' transform='translate(250 150) scale(0.22) rotate(26 50 50)'/><use href='%23s' fill='rgba(46,176,74,0.6)' transform='translate(140 300) scale(0.26) rotate(-20 50 50)'/></svg>");
+    background-size: 400px 400px;
+    animation: sp-fall-near 16s linear infinite, sp-drift 5.4s ease-in-out infinite alternate;
+}
+
+// Rainbow ribbon with a gold lip, hung off the bar.
+nav::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(90deg, #d62828 0 16.66%, #f39237 16.66% 33.33%, #ffe066 33.33% 50%, #6ac965 50% 66.66%, #50a0e6 66.66% 83.33%, #966ed2 83.33% 100%);
+    box-shadow: inset 0 -3px 0 rgba(212, 175, 55, 0.9);
+}
+
+h1,
+h2,
+h3 {
+    color: #ffe9a8 !important;
+    text-shadow: 0 0 16px rgba(255, 210, 90, 0.4), 0 2px 0 rgba(4, 36, 18, 0.6);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+
+    h1,
+    h2 {
+        background-image: linear-gradient(100deg, #a8761a 0 22%, #ffe9a8 40%, #fffbe8 50%, #ffe9a8 60%, #a8761a 78%);
+        background-size: 240% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent !important;
+        text-shadow: none;
+        animation: sp-sweep 5.5s linear infinite;
+    }
+}
+
+.day-banner {
+    padding-top: 1.6rem;
+    color: #c9f7cf;
+}
+
+@keyframes sp-fall-far {
+    to { transform: translateY(340px); }
+}
+
+@keyframes sp-fall-near {
+    from { translate: 0 0; }
+    to { translate: 0 400px; }
+}
+
+@keyframes sp-drift {
+    from { rotate: -3.5deg; }
+    to { rotate: 3.5deg; }
+}
+
+@keyframes sp-sweep {
+    to { background-position: -240% 0; }
+}

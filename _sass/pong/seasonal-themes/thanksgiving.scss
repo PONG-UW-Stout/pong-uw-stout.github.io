@@ -1,0 +1,91 @@
+@use "../variables" as *;
+@use "surfaces";
+
+/* Thanksgiving. A late-autumn dusk: low amber sun, leaves coming down in two
+   planes, and a woven plaid band with a scalloped edge under the nav.
+   The type stays still here; the leaves carry the motion. */
+
+html {
+    background-image:
+        radial-gradient(circle at 88% 86%, rgba(255, 186, 72, 0.28) 0, rgba(255, 186, 72, 0) 46vmin),
+        radial-gradient(ellipse 90vmax 40vmin at 50% 0%, rgba(255, 150, 60, 0.14) 0, rgba(255, 150, 60, 0) 100%),
+        linear-gradient(178deg, #3a1a08 0%, #5c2a0d 34%, #43200b 70%, #210f05 100%) !important;
+    background-attachment: fixed !important;
+    background-color: #210f05 !important;
+}
+
+// Far leaves: small, faded, taking their time.
+html::before {
+    content: "";
+    position: fixed;
+    // Overhangs the viewport so drift never swings a bare corner into view.
+    left: -10%;
+    right: -10%;
+    top: -340px;
+    height: calc(100vh + 340px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 340'><defs><g id='s'><path d='M50 10C32 26 22 46 27 64c3 13 12 22 23 26 11-4 20-13 23-26 5-18-5-38-23-54z'/><path fill='none' stroke-width='3' d='M50 16v80M50 44 37 34M50 44l13-10M50 62 35 51M50 62l15-11'/></g></defs><use href='%23s' fill='rgba(227,166,42,0.4)' stroke='rgba(90,40,10,0.3)' transform='translate(24 54) scale(0.16) rotate(-14 50 50)'/><use href='%23s' fill='rgba(181,64,28,0.34)' stroke='rgba(90,40,10,0.3)' transform='translate(206 16) scale(0.12) rotate(22 50 50)'/><use href='%23s' fill='rgba(206,116,34,0.36)' stroke='rgba(90,40,10,0.3)' transform='translate(120 200) scale(0.19) rotate(-6 50 50)'/><use href='%23s' fill='rgba(150,70,24,0.3)' stroke='rgba(90,40,10,0.3)' transform='translate(292 250) scale(0.14) rotate(38 50 50)'/></svg>");
+    background-size: 340px 340px;
+    animation: tg-fall-far 28s linear infinite;
+}
+
+// Near leaves: bigger, warmer, swinging down.
+body::after {
+    content: "";
+    position: fixed;
+    // Overhangs the viewport so drift never swings a bare corner into view.
+    left: -10%;
+    right: -10%;
+    top: -400px;
+    height: calc(100vh + 400px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><g id='s'><path d='M50 10C32 26 22 46 27 64c3 13 12 22 23 26 11-4 20-13 23-26 5-18-5-38-23-54z'/><path fill='none' stroke-width='3' d='M50 16v80M50 44 37 34M50 44l13-10M50 62 35 51M50 62l15-11'/></g></defs><use href='%23s' fill='rgba(222,122,32,0.8)' stroke='rgba(80,34,8,0.42)' transform='translate(38 24) scale(0.3) rotate(-10 50 50)'/><use href='%23s' fill='rgba(172,54,22,0.74)' stroke='rgba(80,34,8,0.42)' transform='translate(250 150) scale(0.22) rotate(26 50 50)'/><use href='%23s' fill='rgba(233,170,46,0.76)' stroke='rgba(80,34,8,0.42)' transform='translate(140 300) scale(0.26) rotate(-20 50 50)'/></svg>");
+    background-size: 400px 400px;
+    animation: tg-fall-near 17s linear infinite, tg-sway 6.2s ease-in-out infinite alternate;
+}
+
+// Woven plaid band. Vertical colour bands crossed by horizontal shading reads
+// as cloth; the mask notches the bottom edge into scallops.
+nav::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background-image:
+        repeating-linear-gradient(90deg, rgba(166, 53, 22, 0.96) 0 13px, rgba(227, 166, 42, 0.96) 13px 26px),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 5px, rgba(255, 255, 255, 0.09) 5px 10px);
+    mask-image: radial-gradient(circle 7px at 50% 100%, transparent 0 7px, #000 7.4px);
+    mask-size: 16px 100%;
+    mask-repeat: repeat-x;
+    -webkit-mask-image: radial-gradient(circle 7px at 50% 100%, transparent 0 7px, #000 7.4px);
+    -webkit-mask-size: 16px 100%;
+    -webkit-mask-repeat: repeat-x;
+}
+
+h1,
+h2,
+h3 {
+    color: #ffe4c0 !important;
+    text-shadow: 0 2px 0 rgba(50, 20, 6, 0.55), 0 0 22px rgba(255, 160, 60, 0.28);
+}
+
+.day-banner {
+    padding-top: 1.9rem;
+    color: #ffd9a8;
+}
+
+@keyframes tg-fall-far {
+    to { transform: translateY(340px); }
+}
+
+@keyframes tg-fall-near {
+    from { translate: 0 0; }
+    to { translate: 0 400px; }
+}
+
+@keyframes tg-sway {
+    from { rotate: -4deg; }
+    to { rotate: 4deg; }
+}

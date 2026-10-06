@@ -1,0 +1,96 @@
+@use "../variables" as *;
+@use "surfaces";
+
+/* Easter at dawn. Indigo overhead giving way to rose and a low sun at the
+   horizon, petals coming down, painted eggs sitting in the grass, and a
+   garland of them strung under the bar.
+
+   A sunrise rather than the usual pastel midday, so the scene stays dark
+   enough for $light text to hold its contrast. */
+
+html {
+    background-image:
+        radial-gradient(ellipse 70vmax 26vmin at 50% 100%, rgba(255, 198, 140, 0.34) 0, rgba(255, 198, 140, 0) 100%),
+        radial-gradient(circle at 50% 97%, rgba(255, 172, 118, 0.3) 0, rgba(255, 172, 118, 0) 38vmin),
+        linear-gradient(178deg, #211a42 0%, #3d2456 32%, #5e3356 66%, #3a1f38 100%) !important;
+    background-attachment: fixed !important;
+    background-color: #211a42 !important;
+}
+
+// Far petals: small, pale, unhurried.
+html::before {
+    content: "";
+    position: fixed;
+    left: -10%;
+    right: -10%;
+    top: -340px;
+    height: calc(100vh + 340px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 340'><defs><path id='s' d='M50 8C33 24 26 44 32 60c4 11 10 18 18 22 8-4 14-11 18-22 6-16-1-36-18-52z'/></defs><use href='%23s' fill='rgba(255,206,220,0.4)' transform='translate(24 54) scale(0.17) rotate(-14)'/><use href='%23s' fill='rgba(255,236,206,0.32)' transform='translate(206 16) scale(0.13) rotate(22)'/><use href='%23s' fill='rgba(236,206,240,0.34)' transform='translate(120 200) scale(0.2) rotate(-6)'/><use href='%23s' fill='rgba(255,220,228,0.28)' transform='translate(292 250) scale(0.15) rotate(38)'/></svg>");
+    background-size: 340px 340px;
+    animation: es-fall-far 26s linear infinite;
+}
+
+// Near petals: bigger, warmer, turning on the way down.
+body::after {
+    content: "";
+    position: fixed;
+    left: -10%;
+    right: -10%;
+    top: -400px;
+    height: calc(100vh + 400px);
+    z-index: -1;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><path id='s' d='M50 8C33 24 26 44 32 60c4 11 10 18 18 22 8-4 14-11 18-22 6-16-1-36-18-52z'/></defs><use href='%23s' fill='rgba(255,190,210,0.7)' transform='translate(38 24) scale(0.3) rotate(-10)'/><use href='%23s' fill='rgba(255,228,190,0.6)' transform='translate(250 150) scale(0.23) rotate(26)'/><use href='%23s' fill='rgba(228,196,238,0.62)' transform='translate(140 300) scale(0.27) rotate(-20)'/></svg>");
+    background-size: 400px 400px;
+    animation: es-fall-near 16s linear infinite, es-turn 5.8s ease-in-out infinite alternate;
+}
+
+// Grass along the foot of the viewport, with eggs tucked into it.
+body::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 15vmin;
+    z-index: -1;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 80'><defs><g id='e'><path d='M50 6c15 0 27 21 27 38 0 18-12 30-27 30S23 62 23 44C23 27 35 6 50 6z'/><g fill='rgba(255,255,255,0.6)'><rect x='29' y='26' width='42' height='6' rx='3'/><rect x='25' y='46' width='50' height='6' rx='3'/></g></g></defs><use href='%23e' fill='%23ffd6e0' transform='translate(36 38) scale(0.34)'/><use href='%23e' fill='%23cfe9ff' transform='translate(124 38) scale(0.34)'/><use href='%23e' fill='%23fff2bf' transform='translate(212 38) scale(0.34)'/><use href='%23e' fill='%23e7d6ff' transform='translate(268 38) scale(0.34)'/><rect y='70' width='300' height='10' fill='%2327512c'/><path fill='%232f5d33' d='M-1.30552 80Q0.0679826 66.8429 5.14916 56.0779 Q5.12875 68.039 3.75525 80Z'/><path fill='%233a7340' d='M5.7445 80Q1.72229 63.7706 -2.43415 50.4921 Q8.34906 65.246 12.3713 80Z'/><path fill='%2327512c' d='M11.2017 80Q7.28738 62.7989 2.58122 48.7252 Q12.4139 64.3626 16.3283 80Z'/><path fill='%2344854a' d='M19.5661 80Q16.1427 57.176 12.5867 38.5018 Q21.7463 59.2509 25.1697 80Z'/><path fill='%232f5d33' d='M27.0467 80Q27.7483 55.4478 32.1654 35.3596 Q33.9764 57.6798 33.2747 80Z'/><path fill='%233a7340' d='M35.6742 80Q38.9363 68.3339 47.9157 58.7889 Q44.7789 69.3944 41.5168 80Z'/><path fill='%2327512c' d='M37.9657 80Q36.2229 67.3156 36.8552 56.9374 Q43.9609 68.4687 45.7037 80Z'/><path fill='%2344854a' d='M45.8249 80Q47.089 60.6831 52.5069 44.8784 Q53.2296 62.4392 51.9655 80Z'/><path fill='%232f5d33' d='M54.6393 80Q50.6317 68.1021 45.9597 58.3675 Q56.1732 69.1837 60.1808 80Z'/><path fill='%233a7340' d='M61.4397 80Q59.7485 62.8854 60.0616 48.8826 Q66.6565 64.4413 68.3478 80Z'/><path fill='%2327512c' d='M67.1358 80Q69.8147 64.7133 78.4479 52.2061 Q77.1311 66.103 74.4522 80Z'/><path fill='%2344854a' d='M72.7988 80Q73.0281 60.7857 77.4291 45.065 Q80.9786 62.5325 80.7493 80Z'/><path fill='%232f5d33' d='M83.197 80Q87.5666 64.8825 98.2941 52.5136 Q92.7917 66.2568 88.4221 80Z'/><path fill='%233a7340' d='M88.0596 80Q84.8927 58.1729 82.2913 40.3143 Q91.4529 60.1572 94.6199 80Z'/><path fill='%2327512c' d='M93.1411 80Q95.5487 59.4445 103.451 42.6264 Q102.412 61.3132 100.004 80Z'/><path fill='%2344854a' d='M103.682 80Q105.459 64.5134 112.23 51.8426 Q112.399 65.9213 110.622 80Z'/><path fill='%232f5d33' d='M108.651 80Q111.745 62.4763 121.591 48.1387 Q119.946 64.0693 116.852 80Z'/><path fill='%233a7340' d='M115.523 80Q111.525 59.5026 107.763 42.732 Q118.851 61.366 122.849 80Z'/><path fill='%2327512c' d='M123.935 80Q126.865 54.7987 135.217 34.1795 Q132.689 57.0898 129.76 80Z'/><path fill='%2344854a' d='M129.366 80Q125.022 59.4383 120.184 42.615 Q131.484 61.3075 135.829 80Z'/><path fill='%232f5d33' d='M134.757 80Q130.743 67.3255 127.072 56.9555 Q138.309 68.4778 142.322 80Z'/><path fill='%233a7340' d='M141.301 80Q140.308 65.4591 142.434 53.562 Q148.245 66.781 149.238 80Z'/><path fill='%2327512c' d='M147.964 80Q148.414 62.5766 153.24 48.3211 Q156.395 64.1606 155.945 80Z'/><path fill='%2344854a' d='M158.957 80Q156.941 56.645 156.344 37.5364 Q163.236 58.7682 165.252 80Z'/><path fill='%232f5d33' d='M164.307 80Q168.472 56.356 178.88 37.011 Q173.816 58.5055 169.65 80Z'/><path fill='%233a7340' d='M169.802 80Q167.376 65.683 166.142 53.9691 Q173.922 66.9846 176.348 80Z'/><path fill='%2327512c' d='M178.638 80Q174.125 65.2427 168.899 53.1686 Q180.433 66.5843 184.946 80Z'/><path fill='%2344854a' d='M184.082 80Q188.205 60.9013 199.505 45.2751 Q195.491 62.6376 191.368 80Z'/><path fill='%232f5d33' d='M192.771 80Q194.374 60.1684 199.849 43.9426 Q199.369 61.9713 197.765 80Z'/><path fill='%233a7340' d='M200.022 80Q203.43 57.8464 213.595 39.7208 Q211.102 59.8604 207.694 80Z'/><path fill='%2327512c' d='M204.985 80Q201.377 63.2946 198.218 49.6266 Q208.46 64.8133 212.068 80Z'/><path fill='%2344854a' d='M211.282 80Q208.631 68.0369 206.402 58.249 Q214.016 69.1245 216.666 80Z'/><path fill='%232f5d33' d='M219.424 80Q214.876 68.2482 209.102 58.633 Q220.221 69.3165 224.769 80Z'/><path fill='%233a7340' d='M223.973 80Q219.655 63.8004 215.609 50.5461 Q227.602 65.2731 231.92 80Z'/><path fill='%2327512c' d='M234.077 80Q231.822 66.8757 230.661 56.1377 Q237.873 68.0688 240.127 80Z'/><path fill='%2344854a' d='M238.715 80Q241.89 67.2434 251.975 56.8061 Q250.265 68.4031 247.09 80Z'/><path fill='%232f5d33' d='M247.666 80Q243.898 62.0812 239.483 47.4203 Q249.066 63.7101 252.834 80Z'/><path fill='%233a7340' d='M253.917 80Q256.91 65.214 265.158 53.1163 Q262.291 66.5582 259.298 80Z'/><path fill='%2327512c' d='M259.438 80Q259.695 55.4009 262.836 35.2744 Q265.023 57.6372 264.766 80Z'/><path fill='%2344854a' d='M267.129 80Q267.384 68.6133 272.021 59.2969 Q275.707 69.6484 275.451 80Z'/><path fill='%232f5d33' d='M276.539 80Q274.365 59.0444 273.388 41.8989 Q280.485 60.9494 282.659 80Z'/><path fill='%233a7340' d='M279.633 80Q279.929 57.9613 284.282 39.9296 Q287.534 59.9648 287.237 80Z'/><path fill='%2327512c' d='M286.878 80Q289.712 65.8105 299.15 54.2009 Q298.058 67.1005 295.223 80Z'/><path fill='%2344854a' d='M296.52 80Q299.417 57.4731 308.528 39.042 Q306.88 59.521 303.983 80Z'/></svg>") repeat-x bottom center / 54vmin 15vmin;
+}
+
+// A garland of painted eggs hung off the bar.
+nav::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40'><defs><g id='e'><path d='M50 6c15 0 27 21 27 38 0 18-12 30-27 30S23 62 23 44C23 27 35 6 50 6z'/><g fill='rgba(255,255,255,0.6)'><rect x='29' y='26' width='42' height='6' rx='3'/><rect x='25' y='46' width='50' height='6' rx='3'/></g></g></defs><path d='M0 2Q50 26 100 2T200 2' fill='none' stroke='rgba(255,240,230,0.45)' stroke-width='1.4'/><use href='%23e' fill='%23ffd6e0' transform='translate(15 9.8) scale(0.2)'/><use href='%23e' fill='%23cfe9ff' transform='translate(40 15.8) scale(0.2)'/><use href='%23e' fill='%23fff2bf' transform='translate(65 9.8) scale(0.2)'/><use href='%23e' fill='%23d9f5d0' transform='translate(90 0.8) scale(0.2)'/><use href='%23e' fill='%23e7d6ff' transform='translate(115 9.8) scale(0.2)'/><use href='%23e' fill='%23ffd6e0' transform='translate(140 15.8) scale(0.2)'/><use href='%23e' fill='%23cfe9ff' transform='translate(165 9.8) scale(0.2)'/></svg>") repeat-x top left / 200px 40px;
+    filter: drop-shadow(0 2px 3px rgba(40, 20, 50, 0.4));
+}
+
+h1,
+h2,
+h3 {
+    color: #ffe9d6 !important;
+    text-shadow: 0 0 18px rgba(255, 180, 150, 0.45), 0 2px 0 rgba(33, 26, 66, 0.55);
+}
+
+.day-banner {
+    padding-top: 3rem;
+    color: #ffdfc9;
+}
+
+@keyframes es-fall-far {
+    to { transform: translateY(340px); }
+}
+
+@keyframes es-fall-near {
+    from { translate: 0 0; }
+    to { translate: 0 400px; }
+}
+
+@keyframes es-turn {
+    from { rotate: -3.5deg; }
+    to { rotate: 3.5deg; }
+}

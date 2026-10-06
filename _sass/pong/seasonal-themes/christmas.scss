@@ -1,0 +1,117 @@
+@use "../variables" as *;
+@use "surfaces";
+
+/* Christmas. A still winter night: snow falling in two planes, a pine
+   treeline on the horizon, and a string of lights twinkling under the nav. */
+
+html {
+    background-image:
+        // Moonglow, then the drift of snow banked along the bottom.
+        radial-gradient(ellipse 70vmax 30vmin at 50% 100%, rgba(226, 240, 255, 0.5) 0, rgba(226, 240, 255, 0) 100%),
+        radial-gradient(circle at 50% -10%, rgba(173, 216, 255, 0.16) 0, rgba(173, 216, 255, 0) 60vmin),
+        linear-gradient(178deg, #071a2e 0%, #0b2740 40%, #0d3330 78%, #08221f 100%) !important;
+    background-attachment: fixed !important;
+    background-color: #071a2e !important;
+}
+
+// Far snow: small, slow, slightly dimmed by distance.
+html::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -300px;
+    height: calc(100vh + 300px);
+    z-index: -1;
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.75) 1.1px, transparent 1.2px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.5) 0.9px, transparent 1px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.6) 1.3px, transparent 1.4px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.4) 1px, transparent 1.1px);
+    background-size: 150px 150px, 150px 150px, 300px 300px, 300px 300px;
+    background-position: 0 0, 74px 38px, 22px 112px, 196px 232px;
+    animation: xm-snow-far 26s linear infinite;
+}
+
+// Near snow: fatter flakes, falling faster.
+body::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -360px;
+    height: calc(100vh + 360px);
+    z-index: -1;
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.95) 2px, transparent 2.1px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.8) 1.6px, transparent 1.7px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.9) 2.4px, transparent 2.5px);
+    background-size: 180px 180px, 180px 180px, 360px 360px;
+    background-position: 30px 0, 128px 96px, 64px 210px;
+    animation: xm-snow-near 14s linear infinite;
+}
+
+// Pines along the horizon.
+body::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 17vmin;
+    z-index: -1;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'><g fill='%23051a18'><path d='M20 100 20 72 8 72 20 54 12 54 22 36 32 54 24 54 36 72 24 72 24 100z'/><path d='M62 100 62 64 48 64 62 42 52 42 64 20 76 42 66 42 80 64 66 64 66 100z'/><path d='M112 100 112 76 102 76 112 60 104 60 113 44 122 60 114 60 124 76 114 76 114 100z'/><path d='M158 100 158 68 144 68 158 46 148 46 160 24 172 46 162 46 176 68 162 68 162 100z'/><path d='M212 100 212 74 201 74 212 57 204 57 213 40 222 57 214 57 225 74 214 74 214 100z'/><path d='M262 100 262 66 248 66 262 44 252 44 264 22 276 44 266 44 280 66 266 66 266 100z'/></g><rect y='92' width='300' height='8' fill='%23051a18'/></svg>") repeat-x bottom center / 42vmin 17vmin;
+}
+
+// String lights: the wire and the warm bulbs.
+nav::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 44'><path d='M0 2Q50 28 100 2T200 2' fill='none' stroke='rgba(214,230,245,0.45)' stroke-width='1.5'/><g><rect x='23.5' y='10' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='25' cy='18' rx='4.6' ry='6' fill='%23ff4d4d'/><rect x='73.5' y='10' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='75' cy='18' rx='4.6' ry='6' fill='%23ffd34d'/><rect x='123.5' y='10' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='125' cy='18' rx='4.6' ry='6' fill='%23ff4d4d'/><rect x='173.5' y='10' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='175' cy='18' rx='4.6' ry='6' fill='%23ffd34d'/></g></svg>") repeat-x top left / 200px 44px;
+    filter: drop-shadow(0 0 5px rgba(255, 150, 80, 0.55));
+    animation: xm-twinkle 2.6s ease-in-out infinite;
+}
+
+// The cool bulbs, twinkling against the warm ones.
+nav::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 44'><g><rect x='-1.5' y='1' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='0' cy='9' rx='4.6' ry='6' fill='%234dd2ff'/><rect x='48.5' y='14' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='50' cy='22' rx='4.6' ry='6' fill='%235be06a'/><rect x='98.5' y='1' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='100' cy='9' rx='4.6' ry='6' fill='%234dd2ff'/><rect x='148.5' y='14' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='150' cy='22' rx='4.6' ry='6' fill='%235be06a'/><rect x='198.5' y='1' width='3' height='3' fill='%23cfd8e3'/><ellipse cx='200' cy='9' rx='4.6' ry='6' fill='%234dd2ff'/></g></svg>") repeat-x top left / 200px 44px;
+    filter: drop-shadow(0 0 5px rgba(90, 200, 255, 0.5));
+    animation: xm-twinkle 2.6s ease-in-out infinite;
+    animation-delay: -1.3s;
+}
+
+h1,
+h2,
+h3 {
+    color: #eaf4ff !important;
+    text-shadow: 0 0 16px rgba(150, 205, 255, 0.45), 0 2px 0 rgba(4, 20, 34, 0.6);
+}
+
+.day-banner {
+    // Clear the lights strung under the nav.
+    padding-top: 3.4rem;
+    color: #d9ecff;
+}
+
+@keyframes xm-snow-far {
+    to { transform: translateY(300px); }
+}
+
+@keyframes xm-snow-near {
+    to { transform: translateY(360px); }
+}
+
+@keyframes xm-twinkle {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(255, 190, 120, 0.6)) brightness(1.12); }
+    50% { opacity: 0.68; filter: drop-shadow(0 0 2px rgba(255, 190, 120, 0.3)) brightness(0.82); }
+}

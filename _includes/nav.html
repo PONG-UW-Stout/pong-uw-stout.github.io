@@ -1,4 +1,4 @@
-<nav class="flex dark_bg">
+<nav class="flex dark_bg" id="nav_bar_die_in_hell">
 
     <a href="/index.html"><img class="header_logo" src="/assets/pong_banner-logo_v1.webp" alt="pong logo"></a>
 
@@ -12,6 +12,25 @@
     </ul>
 
     <div class="nav-controls flex">
+        <div class="theme-picker" id="theme-picker" hidden>
+            <button id="theme-picker-toggle" aria-label="Pick your pride theme" aria-haspopup="true"
+                aria-expanded="false" aria-controls="theme-picker-menu">
+                <i class="fa-solid fa-palette"></i>
+            </button>
+            <ul class="theme-picker__menu" id="theme-picker-menu" role="menu"
+                aria-label="Pride themes"></ul>
+            <div class="theme-prompt" id="theme-prompt" role="dialog" aria-labelledby="theme-prompt-title"
+                hidden>
+                <p class="theme-prompt__title" id="theme-prompt-title">Happy Pride Month!</p>
+                <p class="theme-prompt__text">You can theme this site with the pride flag of your choice.</p>
+                <div class="theme-prompt__actions">
+                    <button type="button" class="theme-prompt__button theme-prompt__button--primary"
+                        id="theme-prompt-open">Pick a theme</button>
+                    <button type="button" class="theme-prompt__button" id="theme-prompt-dismiss">No
+                        thanks</button>
+                </div>
+            </div>
+        </div>
         <button id="theme-toggle" aria-label="Toggle dark mode">
             <i class="fa-solid fa-sun"></i>
             <i class="fa-solid fa-moon"></i>

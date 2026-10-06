@@ -159,7 +159,220 @@ html[data-theme="dark"] #theme-toggle {
     }
 }
 
+/* Pride theme picker, shown by custom-themes.js during June */
+.theme-picker:not([hidden]) {
+    display: flex;
+    align-items: center;
+    // Stretch to the nav's full height so the menu can hang off the bottom of
+    // the bar rather than the middle of the button.
+    align-self: stretch;
+    position: relative;
+    // Above #nav-menu's mobile overlay, matching #nav-toggle.
+    z-index: 1100;
+}
+
+#theme-picker-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: inherit;
+
+    i {
+        transition: opacity 0.2s ease;
+    }
+
+    &:hover i {
+        opacity: 0.7;
+    }
+}
+
+.theme-picker__menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 13rem;
+    max-height: 70vh;
+    overflow-y: auto;
+
+    margin: 0;
+    padding: 0.35rem;
+    list-style: none;
+
+    background: $dark;
+    border: 1px solid $dark-hover;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.theme-picker__menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.theme-picker__option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+
+    padding: 0.5rem 0.6rem;
+    background: none;
+    border: none;
+    border-radius: 6px;
+
+    color: inherit;
+    font: inherit;
+    font-size: 0.9rem;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background-color: $dark-hover;
+    }
+
+    .fa-check {
+        margin-left: auto;
+        font-size: 0.8rem;
+        opacity: 0;
+    }
+
+    &[aria-checked="true"] .fa-check {
+        opacity: 1;
+    }
+}
+
+.theme-picker__swatch {
+    flex: 0 0 auto;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    border: 1px solid rgba(249, 252, 255, 0.35);
+}
+
+.theme-picker__swatch--none {
+    border-style: dashed;
+}
+
+/* First-visit nudge toward the theme picker, shown once per Pride Month */
+.theme-prompt {
+    // Anchored to the viewport on mobile: the picker sits ~100px in from the
+    // right, so hanging a panel off it would run off the left edge.
+    position: fixed;
+    top: 4.5rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 1100;
+
+    padding: 0.9rem 1rem;
+    background: $dark;
+    border: 1px solid $dark-hover;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    color: $light;
+
+    animation: theme-prompt-in 0.25s ease both;
+}
+
+.theme-prompt__title {
+    margin: 0 0 0.35rem;
+    font-family: "pong_cocogoose";
+    font-size: 0.95rem;
+}
+
+.theme-prompt__text {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    opacity: 0.85;
+}
+
+.theme-prompt__actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.theme-prompt__button {
+    padding: 0.4rem 0.75rem;
+    background: none;
+    border: 1px solid $dark-hover;
+    border-radius: 6px;
+
+    color: inherit;
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background-color: $dark-hover;
+    }
+}
+
+.theme-prompt__button--primary {
+    background-color: $exec-color;
+    border-color: $exec-color;
+    color: $dark;
+    font-family: "pong_cocogoose";
+
+    &:hover,
+    &:focus-visible {
+        background-color: $exec-color;
+        opacity: 0.85;
+    }
+}
+
+@keyframes theme-prompt-in {
+    from {
+        opacity: 0;
+        transform: translateY(-0.4rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .theme-prompt {
+        animation: none;
+    }
+}
+
 @media (min-width: $breakpoint-tablet) {
+    // Wide enough to hang off the picker itself, with an arrow pointing at it.
+    .theme-prompt {
+        position: absolute;
+        top: 100%;
+        left: auto;
+        right: 0;
+        width: 17rem;
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: -0.3rem;
+            right: 0.5rem;
+            width: 0.6rem;
+            height: 0.6rem;
+            background: $dark;
+            border-top: 1px solid $dark-hover;
+            border-left: 1px solid $dark-hover;
+            transform: rotate(45deg);
+        }
+    }
+
     #nav-toggle {
         display: none;
     }
