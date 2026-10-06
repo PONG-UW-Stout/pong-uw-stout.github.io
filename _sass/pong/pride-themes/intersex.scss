@@ -1,0 +1,15 @@
+@use "../variables" as *;
+
+html {
+    background:
+        radial-gradient(
+            circle at center,
+            #ffd800 20vmin,
+            #7902aa 32vmin,
+            #ffd800 44vmin
+        ) fixed !important;
+}
+
+body {
+    color: $dark !important;
+}
