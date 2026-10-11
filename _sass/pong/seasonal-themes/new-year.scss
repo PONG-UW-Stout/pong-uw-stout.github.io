@@ -89,12 +89,29 @@ body::before {
     animation-delay: calc(var(--r2) * -4s), calc(var(--r1) * -3s), calc(var(--r3) * -6s);
 }
 
-.theme-decor i:nth-child(6n + 1)::before { background: #ff6ea0; }
-.theme-decor i:nth-child(6n + 2)::before { background: #8cd7ff; }
-.theme-decor i:nth-child(6n + 3)::before { background: #7ee787; }
-.theme-decor i:nth-child(6n + 4)::before { background: #c39bff; }
-.theme-decor i:nth-child(6n + 5)::before { background: #ffd766; }
-.theme-decor i:nth-child(6n)::before { background: #ff9f5a; }
+.theme-decor i:nth-child(6n + 1)::before {
+    background: #ff6ea0;
+}
+
+.theme-decor i:nth-child(6n + 2)::before {
+    background: #8cd7ff;
+}
+
+.theme-decor i:nth-child(6n + 3)::before {
+    background: #7ee787;
+}
+
+.theme-decor i:nth-child(6n + 4)::before {
+    background: #c39bff;
+}
+
+.theme-decor i:nth-child(6n + 5)::before {
+    background: #ffd766;
+}
+
+.theme-decor i:nth-child(6n)::before {
+    background: #ff9f5a;
+}
 
 // Gold tinsel strung under the bar.
 nav::after {
@@ -137,36 +154,72 @@ h3 {
 }
 
 @keyframes ny-burst {
-    0% { scale: 0.05; opacity: 0; }
-    5% { opacity: 1; }
-    58% { scale: 1; opacity: 0; }
-    100% { scale: 1; opacity: 0; }
+    0% {
+        scale: 0.05;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    58% {
+        scale: 1;
+        opacity: 0;
+    }
+
+    100% {
+        scale: 1;
+        opacity: 0;
+    }
 }
 
 @keyframes ny-fall {
-    from { transform: translateY(0); }
-    to { transform: translateY(124vh); }
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(124vh);
+    }
 }
 
 // Side-to-side drift, eased so the piece lingers at the ends of each swing
 // the way a falling scrap actually does.
 @keyframes ny-sway {
-    from { translate: -18px 0; }
-    to { translate: 18px 0; }
+    from {
+        translate: -18px 0;
+    }
+
+    to {
+        translate: 18px 0;
+    }
 }
 
 // Edge-on flip. With no perspective this squashes to nothing and opens back
 // out, which is exactly how a thin piece of paper reads end-on.
 @keyframes ny-flip {
-    from { rotate: y 0deg; }
-    to { rotate: y 360deg; }
+    from {
+        rotate: y 0deg;
+    }
+
+    to {
+        rotate: y 360deg;
+    }
 }
 
 @keyframes ny-tumble {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes ny-sweep {
-    to { background-position: -240% 0; }
+    to {
+        background-position: -240% 0;
+    }
 }

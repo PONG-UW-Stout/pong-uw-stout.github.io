@@ -1,5 +1,6 @@
 # _data/mentors.yml
 # Like # _data/execs.yml, but for mentors. Same layout
+# `key` is the join key blog post bylines look up; see _data/execs.yml.
 
 - name: Luke M.
   photo: /assets/images/mentor_photos/luke_m.png

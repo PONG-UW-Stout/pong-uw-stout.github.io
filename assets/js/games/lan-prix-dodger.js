@@ -27,7 +27,6 @@
     if (!linesEl || !trafficEl || !playerEl) return;
 
     const LANES = 4;
-    const STORE_KEY = 'pong:lan-prix-dodger';
 
     // speed -> top is where the field starts and where it tops out; spacing ->
     // tight is how far apart the cars arrive, start of run to full pace.
@@ -35,6 +34,10 @@
         pro:    { speed: 62, top: 130, spacing: 58, tight: 40 },
         rookie: { speed: 46, top: 95,  spacing: 72, tight: 52 },
     };
+
+    // What the leaderboard calls each mode, since the two keep separate tables
+    // and the table has to say which one it is showing.
+    const MODE_LABELS = { pro: 'Pro', rookie: 'Rookie' };
 
     // How long the field takes to reach full difficulty, in distance units.
     const RAMP_DISTANCE = 2600;
@@ -202,30 +205,22 @@
     /*  3. Run state                                                      */
     /* ------------------------------------------------------------------ */
 
-    let best = { rookie: 0, pro: 0 };
+    // The local top-score table under the court, mounted at the bottom of this
+    // file. Null if leaderboard.js didn't load, which the game runs on without.
+    let records = null;
 
-    // Guarded on both sides: private windows and blocked site data make
-    // localStorage throw, and a personal best should not break the game.
+    // The run to beat on the mode being played. Held as a plain number and
+    // refreshed only when it can have changed, because renderScore runs every
+    // frame and reading the store parses the whole thing.
+    let best = 0;
+
     function loadBest() {
-        try {
-            const raw = window.localStorage.getItem(STORE_KEY);
-            const saved = raw ? JSON.parse(raw) : null;
-            if (saved && typeof saved === 'object') {
-                best.rookie = Number(saved.rookie) || 0;
-                best.pro = Number(saved.pro) || 0;
-            }
-        } catch (err) { /* no stored best available */ }
-    }
-
-    function saveBest() {
-        try {
-            window.localStorage.setItem(STORE_KEY, JSON.stringify(best));
-        } catch (err) { /* the run still counts for this session */ }
+        best = records ? records.best() : 0;
     }
 
     function renderScore() {
         if (distEl) distEl.textContent = Math.floor(distance) + ' m';
-        if (bestEl) bestEl.textContent = 'BEST ' + Math.floor(best[mode]) + ' m';
+        if (bestEl) bestEl.textContent = 'BEST ' + best + ' m';
     }
 
     function message(text) {
@@ -240,14 +235,12 @@
         court.classList.add('is-crashed');
 
         const run = Math.floor(distance);
-        const record = run > Math.floor(best[mode]);
-        if (record) {
-            best[mode] = run;
-            saveBest();
-        }
+        const place = records ? records.submit(run) : 0;
+        loadBest();
         renderScore();
-        message((record ? 'New best, ' : 'Into the wall at ') + run +
-                ' m. Press space to go again');
+        message((place === 1 ? 'New best, ' : 'Into the wall at ') + run + ' m' +
+                (place > 1 ? ', your number ' + place : '') +
+                '. Press space to go again');
     }
 
     function resetRun() {
@@ -369,6 +362,8 @@
             btn.setAttribute('aria-pressed', active);
         });
 
+        loadBest();
+        if (records) records.refresh();
         resetRun();
     }
 
@@ -436,7 +431,7 @@
             return {
                 mode: mode, running: running, over: over, paused: paused,
                 distance: distance, speed: speed, cars: rivals.length,
-                best: best[mode], lanes: LANES,
+                best: best, lanes: LANES,
             };
         },
     };
@@ -451,6 +446,18 @@
         new ResizeObserver(remeasure).observe(court);
     } else {
         window.addEventListener('resize', remeasure);
+    }
+
+    if (window.PONG_SCORES) {
+        records = window.PONG_SCORES.mount({
+            game: 'lan-prix-dodger',
+            el: document.getElementById('dodger-scores'),
+            variant: function () {
+                return { key: mode, label: MODE_LABELS[mode] || mode };
+            },
+            format: function (run) { return window.PONG_SCORES.format(run) + ' m'; },
+            onClear: function () { loadBest(); renderScore(); },
+        });
     }
 
     loadBest();

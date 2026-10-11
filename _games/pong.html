@@ -31,10 +31,13 @@ description: Pong is a two-dimensional sports game that simulates table tennis
     </button>
 </div>
 
+{% include leaderboard.html id="pong-scores" %}
+
 <p class="game-note">
 Left plays with <kbd>W</kbd> and <kbd>S</kbd>, Right with the arrow keys.
 Drag inside either half to move that paddle. <kbd>Space</kbd> starts a match and pauses one.
 First to <span class="number">11</span> wins.
 </p>
 
+<script src="{{ '/assets/js/games/leaderboard.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/games/pong.js' | relative_url }}"></script>

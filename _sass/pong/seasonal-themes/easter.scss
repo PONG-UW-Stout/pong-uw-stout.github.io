@@ -82,15 +82,27 @@ h3 {
 }
 
 @keyframes es-fall-far {
-    to { transform: translateY(340px); }
+    to {
+        transform: translateY(340px);
+    }
 }
 
 @keyframes es-fall-near {
-    from { translate: 0 0; }
-    to { translate: 0 400px; }
+    from {
+        translate: 0 0;
+    }
+
+    to {
+        translate: 0 400px;
+    }
 }
 
 @keyframes es-turn {
-    from { rotate: -3.5deg; }
-    to { rotate: 3.5deg; }
+    from {
+        rotate: -3.5deg;
+    }
+
+    to {
+        rotate: 3.5deg;
+    }
 }

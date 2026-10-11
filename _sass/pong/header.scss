@@ -59,7 +59,6 @@ nav a {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
 
     margin: 0;
     padding: 0;
@@ -94,9 +93,11 @@ nav a {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+
     .fa-xmark {
         display: block;
     }
+
     .fa-bars {
         display: none;
     }
@@ -350,7 +351,14 @@ html[data-theme="dark"] #theme-toggle {
     }
 }
 
+// While a custom theme is up the palette is fixed to that scene, so the
+// light/dark toggle has nothing meaningful to switch between and leaves the bar.
+html[data-theme-locked] #theme-toggle {
+    display: none;
+}
+
 @media (min-width: $breakpoint-tablet) {
+
     // Wide enough to hang off the picker itself, with an arrow pointing at it.
     .theme-prompt {
         position: absolute;
@@ -388,5 +396,11 @@ html[data-theme="dark"] #theme-toggle {
         visibility: visible;
         pointer-events: auto;
         background: transparent;
+    }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .header_button a {
+        padding: 52px 20px !important;
     }
 }

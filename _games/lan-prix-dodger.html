@@ -72,10 +72,13 @@ description: Overtake the field on the LAN-Prix straight without collecting anyo
     </button>
 </div>
 
+{% include leaderboard.html id="dodger-scores" %}
+
 <p class="game-note">
 Change lanes with <kbd>&uarr;</kbd> <kbd>&darr;</kbd> or <kbd>W</kbd> <kbd>S</kbd>, or tap the lane you want.
 <kbd>Space</kbd> starts a run and pauses one. The field gets quicker the longer you stay out of the wall.
 See the <a href="{{ '/lans/LAN-Prix/' | relative_url }}">LAN-Prix</a> page for the real thing.
 </p>
 
+<script src="{{ '/assets/js/games/leaderboard.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/games/lan-prix-dodger.js' | relative_url }}"></script>

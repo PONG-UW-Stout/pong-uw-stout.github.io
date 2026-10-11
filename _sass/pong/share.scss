@@ -1,0 +1,240 @@
+// ===========================================================================
+//  Share row.
+//  The strip of share links under a post, from _includes/social-share.html.
+//
+//  Two kinds of control live in one row, and they are deliberately not equal
+//  weight. The platform links are icon-only circles-in-waiting: they are there
+//  for the person who wants them and otherwise stay quiet. The copy-link
+//  button is wide and labelled, because Discord -- the club's actual home --
+//  has no share url, so copying the link IS the Discord share, and it has to
+//  be the thing your eye lands on.
+//
+//  Brand colours are not written here. Each link carries its own as the
+//  --share-color custom property, pulled from _data/socials.yml by the
+//  include, so this file only ever says "fill with whatever colour you were
+//  handed" and a brand refresh never touches CSS.
+// ===========================================================================
+
+@use "variables" as *;
+
+// ---------------------------------------------------------------------------
+//  Theme.
+//  The data-theme attribute is ABSENT until a visitor picks a theme, so a rule
+//  written only for [data-theme="dark"] does nothing for the majority who
+//  never touch the toggle. The resting style below is therefore the light one
+//  (correct for both "no attribute" and "light"), and the dark treatment is
+//  applied twice: once for an explicit choice, once for the system preference
+//  when no choice has overridden it. Same shape as the takeover in
+//  pong/seasonal-themes/april-fools.
+// ---------------------------------------------------------------------------
+
+@mixin share-dark-surface {
+    background-color: $dark-card-bg;
+    border-color: rgba(255, 255, 255, 0.14);
+    color: $light;
+}
+
+.share {
+    // Lines up with the post's own reading column. pong/posts.scss centres the
+    // article at a 70ch measure, and the row is a footer to that article, so it
+    // has to sit on the same left edge wherever the layout drops it -- inside
+    // #post-container next to the <article>, or after it.
+    max-width: 70ch;
+    margin: 3rem auto 1rem;
+    padding-top: 1.5rem;
+
+    // A hairline rather than a full rule: the row is a footer to the post, not
+    // a new section of the page. Neutral grey at low alpha reads against both
+    // the light and the dark page, which saves a per-theme override.
+    border-top: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.share__heading {
+    margin: 0 0 0.85rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+
+    // Quieter than the post's own headings: it labels a toolbar, it is not a
+    // section anyone is reading for.
+    opacity: 0.65;
+}
+
+.share__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+// ---------------------------------------------------------------------------
+//  The buttons.
+//  One class for both the <a>nchors and the copy <button>, so they line up on
+//  the same baseline and share the hover behaviour. Resting state is a plain
+//  card-coloured chip; the brand colour only appears on hover and focus, which
+//  keeps six saturated logos from shouting at the bottom of every post.
+// ---------------------------------------------------------------------------
+
+.share-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    // Square by default, and comfortably past the 44px touch target once the
+    // row is on a phone.
+    min-width: 2.75rem;
+    height: 2.75rem;
+    padding: 0 0.75rem;
+
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    text-decoration: none;
+
+    background-color: $light-card-bg;
+    color: $dark;
+    border: 1px solid rgba(2, 2, 12, 0.15);
+    border-radius: 8px;
+    cursor: pointer;
+
+    transition: color 0.15s ease, background-color 0.15s ease,
+                border-color 0.15s ease, transform 0.15s ease;
+
+    html[data-theme="dark"] & {
+        @include share-dark-surface;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        html:not([data-theme="light"]) & {
+            @include share-dark-surface;
+        }
+    }
+
+    // Two of the brands in _data/socials.yml are #000000 (X, and the generic
+    // link colour email borrows). Filled black against a dark page the chip
+    // loses its edge entirely, so on dark the hover keeps a light hairline
+    // instead of taking the brand's border colour. Written for both dark
+    // states, same as the surface above.
+    html[data-theme="dark"] &:hover,
+    html[data-theme="dark"] &:focus-visible {
+        border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        html:not([data-theme="light"]) &:hover,
+        html:not([data-theme="light"]) &:focus-visible {
+            border-color: rgba(255, 255, 255, 0.28);
+        }
+    }
+
+    // The brand fill. --share-color is set per link by the include; the
+    // fallback keeps the hover from disappearing if a platform is ever added
+    // to the include without an entry in _data/socials.yml.
+    &:hover,
+    &:focus-visible {
+        background-color: var(--share-color, #{$exec-color});
+        border-color: var(--share-color, #{$exec-color});
+        color: $light;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    // Focus has to stay obvious and must not rely on the brand fill, since
+    // several of those colours are near-black and vanish against a dark page.
+    &:focus-visible {
+        outline: 2px solid $exec-color;
+        outline-offset: 3px;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+// ---------------------------------------------------------------------------
+//  Copy link.
+//  The Discord answer, so it gets the label, the width and the club's orange
+//  instead of a borrowed brand colour. It is still the same chip underneath --
+//  only its proportions and its fill differ.
+// ---------------------------------------------------------------------------
+
+.share-button--copy {
+    --share-color: #{$exec-color};
+
+    padding: 0 1.1rem;
+
+    font-family: "pong_cocogoose";
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    // Pushed away from the platform icons so it reads as its own control
+    // rather than the seventh logo in the row. margin-inline-start keeps that
+    // true if the row is ever mirrored.
+    margin-inline-start: 0.5rem;
+
+    // Confirmation. Green, held for a couple of seconds by assets/js/share.js,
+    // and sticky through hover: the pointer is still on the button at the
+    // moment it fires, and having the colour flip back to orange under the
+    // cursor would read as the copy having failed.
+    &.is-copied,
+    &.is-copied:hover,
+    &.is-copied:focus-visible {
+        background-color: $advisor-color;
+        border-color: $advisor-color;
+        color: $dark;
+        transform: translateY(0);
+    }
+
+    // The script sets this when there is no clipboard to write to -- an
+    // insecure origin, or a browser that refuses. The button says so instead
+    // of silently doing nothing.
+    &.is-copy-failed,
+    &.is-copy-failed:hover,
+    &.is-copy-failed:focus-visible {
+        background-color: $staff-color;
+        border-color: $staff-color;
+        color: $light;
+        transform: translateY(0);
+    }
+}
+
+// Announcement target for screen readers. The visible label change on the
+// button is for everyone else, so this never needs to be seen -- but it must
+// stay in the accessibility tree, which rules out display:none.
+.share__status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .share__buttons {
+        gap: 0.4rem;
+    }
+
+    // On a narrow screen the copy button wraps onto its own line, where a
+    // leading margin would only push it off-centre.
+    .share-button--copy {
+        margin-inline-start: 0;
+        flex: 1 1 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .share-button {
+        transition: none;
+
+        &:hover,
+        &:focus-visible,
+        &:active {
+            transform: none;
+        }
+    }
+}

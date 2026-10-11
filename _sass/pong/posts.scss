@@ -1,4 +1,44 @@
+@use "sass:color";
 @use "variables" as *;
+
+// ===========================================================================
+//  Posts.
+//  Two unrelated jobs in one partial, in the order a reader meets them:
+//    1. the index at /posts/, a grid of cards (.post-list / .post-item)
+//    2. the body of a single post, everything kramdown emits inside
+//       #post-container on a /posts/:title/ page
+// ===========================================================================
+
+// ---------------------------------------------------------------------------
+//  Shared tokens.
+// ---------------------------------------------------------------------------
+
+// The reading measure: about 70 characters of Cocogoose Light, which is inside
+// the 65-75 a line wants before the eye starts losing its place on the way
+// back to the left margin.
+//
+// Deliberately NOT in ch. Cocogoose's zero is far wider than its lowercase --
+// 70ch measures out at about 109 characters here, not 70 -- and worse, ch is
+// relative to each element's own font size, so the same `70ch` would resolve
+// to one width on the 16px header and a wider one on the 17px article, and the
+// post title would sit a few pixels left of the prose under it. A fixed rem
+// gives every block on the page the same edges.
+$post-measure: 42rem;
+
+// No monospace variable exists site-wide because nothing else on the site
+// needs one. The stack prefers whatever the OS ships as its UI mono so code
+// matches the reader's editor rather than falling back to Courier.
+$post-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+// $exec-color over the light page measures about 2.3:1 -- fine as a 2px rule,
+// unreadable as text. Links and meta copy in light mode get this darkened
+// version instead, which clears 4.5:1 while still reading as the same orange.
+$post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
+
+// ===========================================================================
+//  The index at /posts/.
+// ===========================================================================
 
 .post-list {
     list-style: none;
@@ -11,20 +51,29 @@
 }
 
 .post-item {
-    html[data-theme="light"] &{
-        background: $light-card-bg;
-    }
-    
+    // data-theme is ABSENT until a visitor picks a theme -- the inline script
+    // in _includes/head.html only stamps the attribute when localStorage
+    // already holds a choice. So a card painted only under the two explicit
+    // selectors had no background at all on a first visit: a bordered, empty
+    // rectangle. base.scss solves the same problem by painting bare html
+    // $light and overriding only for dark, so this follows it -- the light
+    // surface is the unguarded default and dark is the exception.
+    background: $light-card-bg;
+    border: 1px solid rgba($dark, 0.12);
+
     html[data-theme="dark"] & {
         background: $dark-card-bg;
+        // The light hairline above vanishes against a dark card; the dark one
+        // vanished against the light card. Each theme gets the one that shows.
+        border-color: rgba($light, 0.08);
     }
 
-    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 0.75rem;
     padding: 1.5rem;
     position: relative;
 
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .post-item:hover {
@@ -63,4 +112,584 @@
 .post-item p {
     margin: 0;
     line-height: 1.6;
+}
+
+// ===========================================================================
+//  A single post.
+//
+//  Scoped off .post-page, the wrapper _layouts/post.md puts around the whole
+//  page, rather than plain #post-container -- because that id is NOT unique to
+//  posts. _layouts/lan.md wraps the LAN pages in it too, and those carry
+//  bespoke full-bleed designs (pong/lans/lan-tasy, pong/lans/lan-prix) that a
+//  reading measure would wreck.
+//
+//  A class rather than a :has() test on the markup's shape: the byline is
+//  conditional on the post having authors, so a guard keyed to it would drop
+//  the entire reading layout on an author-less post.
+// ===========================================================================
+
+.post-page {
+
+    // One place for everything that differs between themes, so no rule below
+    // has to repeat the light/dark pair. Light is the unguarded default for
+    // the same reason .post-item needs it -- see the comment up there.
+    --post-accent: #{$post-accent-ink};
+    --post-rule: #{rgba($dark, 0.14)};
+    --post-muted: #{rgba($dark, 0.62)};
+    --post-quote-bg: #{rgba($dark, 0.04)};
+    --post-inline-bg: #{rgba($dark, 0.06)};
+    --post-inline-border: #{rgba($dark, 0.12)};
+
+    html[data-theme="dark"] & {
+        --post-accent: #{$exec-color};
+        --post-rule: #{rgba($light, 0.16)};
+        --post-muted: #{rgba($light, 0.65)};
+        --post-quote-bg: #{rgba($light, 0.04)};
+        --post-inline-bg: #{rgba($light, 0.09)};
+        --post-inline-border: #{rgba($light, 0.14)};
+    }
+
+    // -----------------------------------------------------------------------
+    //  Title block.
+    //  The layout puts the header and its rule outside #post-container, so
+    //  without this they'd sit hard against the left edge while the article
+    //  below them was centred -- the page would look like two documents.
+    //
+    //  Matched on .post-head rather than on `header`, because .post-page is
+    //  also worn by /authors/:key/ (so a bio inherits the prose stack below),
+    //  and that page's header is a hero with its own width, its own h1 size
+    //  and paragraphs that are not a byline. A bare `> header` reached into it
+    //  and set the role line in uppercase 0.85rem meta type.
+    // -----------------------------------------------------------------------
+
+    > .post-head,
+    > hr {
+        max-width: $post-measure;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    > .post-head {
+        margin-bottom: 1.25rem;
+
+        h1 {
+            // typography.scss pins every h1 to 24px, which is the right size
+            // for a section heading on a tab page and too small for the one
+            // piece of text a post is named after.
+            font-size: clamp(1.75rem, 5vw, 2.6rem);
+            line-height: 1.12;
+            margin: 0 0 0.6rem;
+        }
+
+        // Date and byline are one meta line, not two sentences: same size,
+        // same muted ink, so the eye skips straight past them to the prose.
+        time,
+        p {
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--post-muted);
+        }
+
+        time {
+            color: var(--post-accent);
+        }
+
+        p {
+            margin: 0.35rem 0 0;
+            // Tighter than the article's 1.75: a byline that wraps to two
+            // lines should read as one block of meta, not as two paragraphs.
+            // Also beats typography.scss's fixed 20px, which at this size
+            // leaves the two lines almost touching.
+            line-height: 1.5;
+        }
+
+        // The <br> after <time> would stack the byline a full line lower than
+        // the margin above wants it. The margin does the spacing instead.
+        br {
+            display: none;
+        }
+    }
+
+    > hr {
+        height: 0;
+        border: 0;
+        border-top: 1px solid var(--post-rule);
+        margin-bottom: 2.5rem;
+    }
+
+    // -----------------------------------------------------------------------
+    //  The article.
+    // -----------------------------------------------------------------------
+
+    #post-container article {
+        max-width: $post-measure;
+        margin: 0 auto 4rem;
+        // Slightly larger than the site default: the body face is Cocogoose
+        // Light, whose thin strokes get hard to follow at 16px.
+        font-size: 1.0625rem;
+        line-height: 1.75;
+
+        // Headings land as fragment targets from the table of contents, and a
+        // jump that parks one flush against the top of the viewport reads as
+        // if the page scrolled too far.
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            scroll-margin-top: 1.5rem;
+        }
+
+        // The whole heading scale below leans on one idea: the gap ABOVE a
+        // heading is much larger than the gap below it, so a heading reads as
+        // belonging to the text that follows rather than floating between two
+        // blocks. typography.scss has to be overridden for h2 because it sets
+        // a flat 20px there.
+        h2 {
+            position: relative;
+            font-size: 1.55rem;
+            line-height: 1.25;
+            letter-spacing: 0.01em;
+            margin: 3rem 0 1rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid var(--post-rule);
+
+            // A stub of the section rule in the accent colour. Cheap way to
+            // make the top-level sections scan as chapter breaks, and it reads
+            // the same over a light page, a dark page or a custom theme's
+            // scene because the accent never changes meaning.
+            &::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -1px;
+                width: 2.75rem;
+                height: 2px;
+                background: $exec-color;
+            }
+        }
+
+        // First heading in the article has no preceding paragraph to be pushed
+        // away from, and the <hr> above already supplies the break.
+        > h2:first-child,
+        > h3:first-child {
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            line-height: 1.3;
+            margin: 2.25rem 0 0.6rem;
+        }
+
+        // An h2 immediately followed by its first h3 would otherwise get the
+        // full 2.25rem section gap between two headings with nothing in it.
+        h2 + h3 {
+            margin-top: 1.25rem;
+        }
+
+        h4 {
+            font-size: 0.95rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--post-muted);
+            margin: 1.75rem 0 0.5rem;
+        }
+
+        p {
+            // typography.scss sets a fixed `line-height: 20px` on every p,
+            // which stops the measure from breathing as the font size grows.
+            line-height: inherit;
+            margin: 0 0 1.2rem;
+        }
+
+        // Only Cocogoose Light and PONG Cocogoose (regular) are loaded, so
+        // `font-weight: bold` on body copy is faux bold -- the browser smears
+        // the light face. Borrowing the regular face instead gives <strong> a
+        // real weight difference, and it's the same family the headings use.
+        strong,
+        b {
+            font-family: "pong_cocogoose";
+            font-weight: normal;
+        }
+
+        // Likewise no italic face ships, so the browser shears the upright
+        // one. The slant alone is weak at this size; a hair of tracking makes
+        // the emphasis land without reaching for a colour.
+        em,
+        i {
+            font-style: italic;
+            letter-spacing: 0.015em;
+        }
+
+        // ---------------------------------------------------------------
+        //  Prose elements are matched with :not([class]), because kramdown
+        //  never puts a class on anything it generates from Markdown while
+        //  every component that might end up inside a post does -- the
+        //  _includes/post-toc.html nav, for one, is an <ol> of <li>s with
+        //  classes. An id-anchored selector here would otherwise outrank
+        //  that component's own stylesheet and restyle it from underneath.
+        // ---------------------------------------------------------------
+
+        a:not([class]) {
+            color: var(--post-accent);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.18em;
+            transition: text-decoration-thickness 0.1s ease;
+
+            &:hover,
+            &:focus-visible {
+                text-decoration-thickness: 2px;
+            }
+        }
+
+        ul:not([class]),
+        ol:not([class]) {
+            // Markers hang in the gutter rather than inside the measure, so
+            // the text edge of a list lines up with the paragraphs round it.
+            padding-left: 1.4rem;
+            margin: 0 0 1.2rem;
+        }
+
+        li:not([class]) {
+            margin-bottom: 0.45rem;
+
+            // A nested list belongs to its parent item, so it loses the full
+            // block gap and keeps only enough room to read as a sub-level.
+            > ul:not([class]),
+            > ol:not([class]) {
+                margin: 0.45rem 0 0;
+            }
+
+            &::marker {
+                color: var(--post-accent);
+            }
+        }
+
+        // Numerals in the body face are the problem the global .number class
+        // exists for, and an <ol> marker is a numeral nobody can wrap in a
+        // span -- the browser generates it. Same fix, applied to the marker.
+        ol:not([class]) > li:not([class])::marker {
+            font-family: "pong_cocogoose";
+        }
+
+        // .number swaps in the regular face mid-sentence, which is heavier
+        // than the surrounding Light and so reads a size larger than it is.
+        // Nudging it down puts the digits back on the same optical line.
+        .number {
+            font-size: 0.95em;
+            letter-spacing: 0.01em;
+        }
+
+        blockquote:not([class]) {
+            margin: 1.75rem 0;
+            padding: 0.9rem 1.25rem;
+            border-left: 3px solid $exec-color;
+            border-radius: 0 4px 4px 0;
+            background: var(--post-quote-bg);
+            color: var(--post-muted);
+
+            // kramdown wraps quoted text in its own <p>, which would add a
+            // paragraph gap inside the box on top of the padding.
+            > :first-child {
+                margin-top: 0;
+            }
+
+            > :last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        // Inline code arrives as a bare <code class="language-plaintext
+        // highlighter-rouge"> with no <pre> around it, while a fenced block
+        // buries its <code> inside .highlight -- so "not in a pre" is what
+        // separates the two, and it keeps working for raw <code> in a post's
+        // own HTML.
+        :not(pre) > code {
+            font-family: $post-mono;
+            // Mono faces run optically large next to Cocogoose.
+            font-size: 0.88em;
+            padding: 0.1em 0.38em;
+            border-radius: 3px;
+            background: var(--post-inline-bg);
+            border: 1px solid var(--post-inline-border);
+            // Without this a long identifier at the end of a line forces the
+            // whole measure wider instead of wrapping.
+            overflow-wrap: break-word;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            display: block;
+            margin: 1.75rem auto;
+        }
+
+        // A thematic break the author wrote in the Markdown, as opposed to the
+        // layout's rule above the article.
+        hr {
+            height: 0;
+            border: 0;
+            border-top: 1px solid var(--post-rule);
+            margin: 2.5rem 0;
+        }
+
+        // Markdown tables aren't in the sample post, but kramdown emits them
+        // unclassed and a table with no styling at all is unreadable, so they
+        // get the minimum: aligned columns and a visible header row.
+        table:not([class]) {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.75rem 0;
+            font-size: 0.95em;
+
+            th,
+            td {
+                padding: 0.5rem 0.75rem;
+                text-align: left;
+                border-bottom: 1px solid var(--post-rule);
+            }
+
+            th {
+                font-family: "pong_cocogoose";
+                font-size: 0.8rem;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                border-bottom-width: 2px;
+            }
+        }
+
+        // -------------------------------------------------------------------
+        //  Fenced code blocks.
+        //
+        //  _config.yml runs rouge with css_class: highlight AND
+        //  line_numbers: true, and that combination emits a deep nest:
+        //
+        //    div.language-xx.highlighter-rouge
+        //      div.highlight
+        //        pre.highlight
+        //          code
+        //            table.rouge-table
+        //              td.rouge-gutter > pre.lineno   (the numbers)
+        //              td.rouge-code   > pre          (the code)
+        //
+        //  Two <pre>s inside a third, so the outer two have to be stripped of
+        //  their own box or the padding compounds three times over. The card
+        //  is painted on div.highlight; everything inside it is flattened.
+        //
+        //  It stays dark in all three theme states, the way the game courts in
+        //  pong/games/arcade do. Syntax colours are picked for a dark ground,
+        //  and a block that flipped to a light ground would need a second
+        //  palette to stay legible for no real gain.
+        // -------------------------------------------------------------------
+
+        // Qualified `div.`, because `highlight` is on BOTH the wrapper div and
+        // the pre inside it -- a bare .highlight would paint the card twice,
+        // nesting one inside the other.
+        div.highlight {
+            margin: 1.75rem 0;
+            padding: 1rem;
+            background: $dark;
+            color: $light;
+            border: 1px solid rgba($light, 0.12);
+            border-left: 3px solid $exec-color;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            // Long lines scroll inside the card. Without this they'd widen the
+            // whole page, since the measure above is a max-width, not a clamp.
+            overflow-x: auto;
+        }
+
+        // pre.highlight and its <code> are wrappers rouge puts around the
+        // table and nothing else -- flattened so their boxes, and the UA's
+        // default pre background, don't stack up inside the card. The
+        // padding lives on the card, so a block that arrives WITHOUT the
+        // line-number table -- a Liquid highlight tag, which goes through
+        // Jekyll's own highlighter rather than kramdown and so never sees the
+        // line_numbers setting -- still sits off the border correctly.
+        pre.highlight,
+        pre.highlight > code {
+            display: block;
+            margin: 0;
+            padding: 0;
+            background: none;
+            border: 0;
+            border-radius: 0;
+            font: inherit;
+            color: inherit;
+            // The card is the only scroll container; a second one here would
+            // scroll the gutter and the code independently of each other.
+            overflow: visible;
+        }
+
+        .rouge-table {
+            width: 100%;
+            margin: 0;
+            border: 0;
+            border-collapse: collapse;
+
+            td {
+                padding: 0;
+                border: 0;
+                vertical-align: top;
+            }
+
+            // Shrink-wrapped to the widest line number so the code column
+            // takes whatever is left, and unselectable so dragging a snippet
+            // out of the page doesn't bring the numbering with it.
+            td.rouge-gutter {
+                width: 1%;
+                white-space: nowrap;
+                text-align: right;
+                padding-right: 0.9rem;
+                border-right: 1px solid rgba($light, 0.12);
+                color: rgba($light, 0.45);
+                user-select: none;
+                -webkit-user-select: none;
+            }
+
+            td.rouge-code {
+                padding-left: 0.9rem;
+            }
+
+            pre {
+                margin: 0;
+                font-family: $post-mono;
+            }
+        }
+
+        // ---------------------------------------------------------------
+        //  Rouge token colours.
+        //  Nothing in the repo shipped any, so until now a highlighted block
+        //  rendered as one flat colour and the line_numbers setting was the
+        //  only visible effect of turning the highlighter on. Drawn from the
+        //  site palette rather than a stock theme so a code block looks like
+        //  it belongs to PONG: the role colours already mean something here.
+        // ---------------------------------------------------------------
+
+        .highlight {
+
+            // Comments recede: they're the one thing a reader skips.
+            .c, .c1, .cm, .cs, .cd, .cp, .cpf {
+                color: rgba($light, 0.45);
+                font-style: italic;
+            }
+
+            // Keywords take the accent, the same job it does everywhere else
+            // on the page.
+            .k, .kc, .kd, .kn, .kp, .kr, .kt, .kv {
+                color: $exec-color;
+            }
+
+            // Strings and anything string-shaped.
+            .s, .s1, .s2, .sb, .sc, .sd, .se, .sh, .si, .sr, .ss, .sx, .dl {
+                color: $advisor-color;
+            }
+
+            // Literals: numbers, and the booleans/nulls that behave like them.
+            .m, .mb, .mf, .mh, .mi, .mo, .il, .no, .nb, .bp {
+                color: $mentor-color;
+            }
+
+            // Definitions and calls -- the names worth finding in a hurry.
+            .nf, .fm, .nc, .nn, .nd {
+                color: $diamond-color;
+            }
+
+            // Tags, attributes and CSS selectors, which read as structure.
+            .nt, .na, .nv, .vc, .vg, .vi {
+                color: $platinum-color;
+            }
+
+            // Punctuation and operators are scaffolding, not content.
+            .o, .ow, .p, .pi {
+                color: rgba($light, 0.65);
+            }
+
+            // Rouge marks what it couldn't lex. Loud on purpose: a red run in
+            // a block means the fence has the wrong language on it.
+            .err, .gr {
+                color: $staff-color;
+            }
+
+            // Diffs, for a post walking through a change.
+            .gi {
+                color: $advisor-color;
+            }
+
+            .gd {
+                color: $staff-color;
+            }
+
+            .gh, .gu {
+                color: $diamond-color;
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    //  Phones.
+    //  #content keeps a 5% gutter either side, so the measure is already
+    //  narrower than the text wants here; what's left to fix is the heading
+    //  scale, which at desktop sizes eats a third of a small screen, and the
+    //  horizontal padding on the full-width boxes.
+    // -----------------------------------------------------------------------
+
+    @media (max-width: $breakpoint-mobile) {
+
+        > header h1 {
+            margin-bottom: 0.4rem;
+        }
+
+        > hr {
+            margin-bottom: 1.75rem;
+        }
+
+        #post-container article {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+
+            h2 {
+                font-size: 1.3rem;
+                margin-top: 2.25rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+                margin-top: 1.75rem;
+            }
+
+            ul:not([class]),
+            ol:not([class]) {
+                padding-left: 1.15rem;
+            }
+
+            blockquote:not([class]) {
+                padding: 0.75rem 1rem;
+            }
+
+            .highlight {
+                font-size: 0.78rem;
+            }
+
+            div.highlight {
+                padding: 0.75rem;
+            }
+
+            // The gutter costs about four characters of a code column that
+            // has none to spare at this width, so it gives back what it can.
+            .rouge-table td.rouge-gutter {
+                padding-right: 0.6rem;
+            }
+
+            .rouge-table td.rouge-code {
+                padding-left: 0.6rem;
+            }
+        }
+    }
 }

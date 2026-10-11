@@ -1,11 +1,12 @@
 // ===========================================================================
 //  Shared game controls.
-//  The mode buttons and the explainer line under them, used by every page in
-//  _games/ whether or not it has a playfield. Games with a court pull this in
-//  via pong/games/arcade, which @use's it.
+//  The mode buttons, the explainer line under them and the local leaderboard,
+//  used by every page in _games/ whether or not it has a playfield. Games with
+//  a court pull this in via pong/games/arcade, which @use's it.
 // ===========================================================================
 
 @use "pong/variables" as *;
+@use "pong/games/leaderboard";
 
 .game-note {
     max-width: 46rem;

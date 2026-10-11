@@ -1,0 +1,301 @@
+// ===========================================================================
+//  Post table of contents.
+//  The outline block that _includes/post-toc.html drops in above the article
+//  body on anything in _posts with `toc: true` (which _config.yml sets for
+//  every post by default). Entirely self-contained: it claims no grid column
+//  and no sidebar slot, because this file does not own _layouts/post.md and
+//  must not assume a layout that might change under it.
+// ===========================================================================
+
+@use "variables" as *;
+
+// ---------------------------------------------------------------------------
+//  Theme handling.
+//  html[data-theme] is ABSENT until a visitor actually picks a theme, so the
+//  bare rules below have to stand on their own as the light look -- that is
+//  what base.scss paints by default ($light page, dark ink). Only the dark
+//  override gets a [data-theme] selector, and an explicit light choice simply
+//  falls back to these defaults. Three states, two rule sets.
+// ---------------------------------------------------------------------------
+
+.post-toc {
+    // Capped rather than full-bleed: a TOC that runs the whole width of a wide
+    // screen puts a mile of dead space between the number and its heading.
+    max-width: 34rem;
+    margin: 0 0 2.5rem;
+
+    background: $light-card-bg;
+    border: 1px solid rgba(2, 2, 12, 0.08);
+
+    // Matches the radius .post-item uses on the index, so a reader arriving
+    // from the post list sees the same card vocabulary.
+    border-radius: 0.75rem;
+
+    // The exec orange spine is the one strong signal that this block is
+    // navigation and not part of the prose.
+    border-left: 4px solid $exec-color;
+
+    html[data-theme="dark"] & {
+        background: $dark-card-bg;
+        border-color: rgba(249, 252, 255, 0.12);
+        border-left-color: $exec-color;
+    }
+}
+
+// ---------------------------------------------------------------------------
+//  The <details>/<summary> shell.
+//  <details> is the whole collapse mechanism -- no JS, works on a static page.
+// ---------------------------------------------------------------------------
+
+.post-toc__summary {
+    // list-style strips the default disclosure triangle in Firefox/Chrome;
+    // ::-webkit-details-marker is still needed for older WebKit.
+    list-style: none;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.1rem;
+
+    font-family: "pong_cocogoose";
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+
+    &::-webkit-details-marker {
+        display: none;
+    }
+
+    // Keyboard users tab onto <summary>, so the focus ring has to be loud.
+    &:focus-visible {
+        outline: 2px solid $exec-color;
+        outline-offset: 2px;
+    }
+}
+
+.post-toc__icon {
+    color: $exec-color;
+
+    // We dropped the native triangle, so rotate the icon instead to show the
+    // open/closed state. Scoped to the icon so the label never moves.
+    transition: transform 0.15s ease;
+
+    .post-toc__shell[open] & {
+        transform: rotate(90deg);
+    }
+}
+
+// ---------------------------------------------------------------------------
+//  The lists.
+//  CSS counters do the numbering instead of the browser's own list markers,
+//  for two reasons: the h2/h3 split needs a "2.1" style compound number that
+//  no single list-style can produce, and generated content lets us pin the
+//  digits to "pong_cocogoose" -- the body face mangles numerals, which is why
+//  the rest of the site has a .number class.
+// ---------------------------------------------------------------------------
+
+.post-toc__list {
+    counter-reset: toc-h2;
+    list-style: none;
+    margin: 0;
+    padding: 0 1.1rem 1rem;
+}
+
+.post-toc__sublist {
+    counter-reset: toc-h3;
+    list-style: none;
+    margin: 0.35rem 0 0.1rem;
+
+    // Indent the children and hang a hairline down the left so the nesting is
+    // readable even when a parent's label wraps to two lines.
+    padding: 0 0 0 1rem;
+    border-left: 1px solid rgba(2, 2, 12, 0.12);
+
+    html[data-theme="dark"] & {
+        border-left-color: rgba(249, 252, 255, 0.15);
+    }
+}
+
+.post-toc__item {
+    margin: 0.3rem 0;
+    line-height: 1.4;
+}
+
+.post-toc__item--h2 {
+    counter-increment: toc-h2;
+}
+
+.post-toc__item--h3 {
+    counter-increment: toc-h3;
+    font-size: 0.95em;
+}
+
+.post-toc__link {
+    // Hanging indent: the number sits in the gutter and wrapped label text
+    // lines up under the first word instead of under the number.
+    display: inline-block;
+    text-indent: -1.9rem;
+    padding-left: 1.9rem;
+
+    text-decoration: none;
+    color: inherit;
+
+    &:hover,
+    &:focus-visible {
+        color: $exec-color;
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $exec-color;
+        outline-offset: 2px;
+    }
+}
+
+// Numbers live in ::before so they are decoration, not link text -- a screen
+// reader announcing the link reads the heading, not "one point two".
+.post-toc__item--h2 > .post-toc__link::before {
+    content: counter(toc-h2) ". ";
+    font-family: "pong_cocogoose";
+    color: $exec-color;
+}
+
+.post-toc__item--h3 > .post-toc__link::before {
+    content: counter(toc-h2) "." counter(toc-h3) " ";
+    font-family: "pong_cocogoose";
+    color: $exec-color;
+    opacity: 0.75;
+}
+
+// An h3 that appears before any h2 gets promoted to the top level by the
+// include. It has no parent section, so there is no "1.x" it could honestly
+// claim -- give it a dash and leave the numbering to the headings that have a
+// place in the hierarchy.
+.post-toc__item--orphan > .post-toc__link::before {
+    content: "\2014\00a0";
+    opacity: 0.6;
+}
+
+// ---------------------------------------------------------------------------
+//  Small screens.
+//  Full width and a little tighter; the cap above is pointless once the
+//  viewport is narrower than it.
+// ---------------------------------------------------------------------------
+
+@media (max-width: $breakpoint-tablet) {
+    .post-toc {
+        max-width: none;
+        margin-bottom: 1.75rem;
+    }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .post-toc__summary {
+        letter-spacing: 0.08em;
+    }
+
+    .post-toc__list {
+        padding: 0 0.85rem 0.85rem;
+    }
+
+    .post-toc__sublist {
+        padding-left: 0.75rem;
+    }
+}
+
+// Anchor jumps are instant by default; make them glide only for readers who
+// have not asked for less motion. Scoped with :has() so a partial named "toc"
+// cannot quietly change scrolling on every page of the site -- and browsers
+// without :has() just drop the rule and keep the instant jump, which is a fine
+// outcome. If this is ever wanted site-wide it belongs in base.scss, not here.
+@media (prefers-reduced-motion: no-preference) {
+    html:has(.post-toc) {
+        scroll-behavior: smooth;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .post-toc__icon {
+        transition: none;
+    }
+}
+
+// ===========================================================================
+//  Sticky sidebar.
+//  Wide screens only: the TOC leaves the flow, moves into the right-hand
+//  gutter and travels with the reader instead of scrolling away at the top of
+//  the post.
+//
+//  The grid is three columns, not two, and that is the whole trick. A two
+//  column layout would put the article in a column of its own and shift it off
+//  the page's centre line -- but the post title and the rule above it are
+//  centred on the reading measure by pong/posts.scss, and they sit OUTSIDE
+//  #post-container where this grid can't reach them. The article would end up
+//  a few centimetres left of its own heading. A middle column pinned to the
+//  same measure keeps the prose exactly where it was and spends only the
+//  leftover gutter on the TOC.
+//
+//  Below the breakpoint there is no gutter to spend, so the TOC stays where it
+//  was: in the flow, above the article, collapsible by tapping it.
+// ===========================================================================
+
+// 42rem of measure + 2.5rem of gap + 16rem of sidebar is 60.5rem, and #content
+// takes 5% padding off each side, so the sidebar only earns its place a good
+// way past that. Below this the stacked layout is the better one anyway.
+$toc-sidebar-from: 72rem;
+$toc-sidebar-width: 16rem;
+
+@media (min-width: $toc-sidebar-from) {
+    .post-page #post-container {
+        display: grid;
+        // The centre column is the reading measure, duplicated from
+        // pong/posts.scss's $post-measure. Kept as a literal because that
+        // variable is private to the other partial and @use'ing a whole
+        // stylesheet to borrow one number would pull its rules in too.
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 42rem)
+            minmax(0, 1fr);
+        column-gap: 2.5rem;
+    }
+
+    // Everything is placed explicitly. Grid auto-placement would deal the
+    // three children into the three columns in source order, which would put
+    // the article in the middle by luck and the share row in the gutter.
+    .post-page #post-container > article {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .post-page #post-container > .share {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .post-toc {
+        grid-column: 3;
+        // Spanning both rows gives the sticky element a tall enough containing
+        // block to travel the whole length of the article. Pinned to row 1
+        // alone it would stop moving at the share row.
+        grid-row: 1 / -1;
+        // Without this the grid item stretches to the full row height and
+        // there is nothing for sticky to move within.
+        align-self: start;
+
+        position: sticky;
+        top: 1.5rem;
+
+        // A long TOC on a short window scrolls inside itself rather than
+        // running off the bottom of the screen where it can't be reached.
+        max-height: calc(100vh - 3rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+
+        width: $toc-sidebar-width;
+        max-width: none;
+        margin: 0;
+        justify-self: start;
+    }
+}

@@ -34,7 +34,6 @@
     const boardsEl  = document.getElementById('frogger-boards');
     if (!rowsEl || !trafficEl || !frogEl) return;
 
-    const STORE_KEY = 'pong:frogger';
     const KINDS = ['home', 'bank', 'road', 'river'];
 
     // Used when the data file is missing, empty or unreadable, so the page is
@@ -66,6 +65,10 @@
         chill:   { lives: 5, time: 45, pace: 0.75 },
     };
 
+    // What the leaderboard calls each pace. A board keeps one table per mode,
+    // so the table has to say which it is showing.
+    const MODE_LABELS = { classic: 'Classic', chill: 'Chill' };
+
     const LEVEL_PACE = 1.12;  // lane speed multiplier per level cleared
     const ROW_POINTS = 10;    // for each new row of ground gained
     const BAY_POINTS = 50;
@@ -83,6 +86,10 @@
     let level   = 1;
     let time    = cfg.time;
     let best    = 0;
+
+    // The local top-score table under the court, mounted at the bottom of this
+    // file. Null if leaderboard.js didn't load, which the game runs on without.
+    let records = null;
 
     /* ------------------------------------------------------------------ */
     /*  1. Boards                                                         */
@@ -507,21 +514,13 @@
     /*  6. Score, lives, clock, state                                     */
     /* ------------------------------------------------------------------ */
 
-    function bestKey() {
-        return STORE_KEY + ':' + board.slug;
-    }
-
+    // Held as a plain number, because renderScore runs on every hop and
+    // reading the store parses the whole thing. Called whenever the board or
+    // the mode changes, since each pairing keeps its own table, and it redraws
+    // that table as well as re-reading the run to beat.
     function loadBest() {
-        best = 0;
-        try {
-            best = Number(window.localStorage.getItem(bestKey())) || 0;
-        } catch (err) { /* no stored best available */ }
-    }
-
-    function saveBest() {
-        try {
-            window.localStorage.setItem(bestKey(), String(best));
-        } catch (err) { /* the run still counts for this session */ }
+        best = records ? records.best() : 0;
+        if (records) records.refresh();
     }
 
     function renderScore() {
@@ -570,12 +569,12 @@
         if (lives <= 0) {
             over = true;
             started = false;
-            if (score > best) {
-                best = score;
-                saveBest();
-            }
-            message('Game over. ' + score + ' points, best ' + best +
-                    ' on ' + board.name + '. Press space to play again');
+            const place = records ? records.submit(score) : 0;
+            best = Math.max(best, score);
+            message('Game over. ' + score + ' points' +
+                    (place ? ', your number ' + place : '') +
+                    ', best ' + best + ' on ' + board.name +
+                    '. Press space to play again');
             return;
         }
         placeFrog();
@@ -749,6 +748,7 @@
         cfg = MODES[mode];
         window.FROGGER.mode = mode;
         markButtons('data-mode', mode);
+        loadBest();
         resetGame();
     }
 
@@ -844,6 +844,21 @@
             };
         },
     };
+
+    if (window.PONG_SCORES) {
+        records = window.PONG_SCORES.mount({
+            game: 'frogger',
+            el: document.getElementById('frogger-scores'),
+            variant: function () {
+                if (!board) return null;
+                return {
+                    key: board.slug + ':' + mode,
+                    label: board.name + ' \u00b7 ' + (MODE_LABELS[mode] || mode),
+                };
+            },
+            onClear: function () { best = 0; },
+        });
+    }
 
     const shared = boardFromQuery();
     if (shared) {

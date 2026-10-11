@@ -1,0 +1,20 @@
+@use "../variables" as *;
+
+// Shared surface for the flag themes that print dark body text.
+//
+// The site is pinned to dark while a custom theme is up, which hands those
+// themes `$dark-card-bg` for cards: a 35% alpha dark fill. Dark text on a
+// translucent dark card over a flag gradient measured as low as 1.66:1, so the
+// card is given an opaque light fill of its own instead. It no longer depends
+// on the colour scheme at all, which is the point: the card is the one surface
+// that can promise contrast regardless of which stripe it lands on.
+//
+// tdor and idor do NOT use this. They print $light text on sombre scenes, so
+// the dark card they inherit is already correct for them.
+.post_card,
+.post-item,
+.gte_hints li {
+    background: rgba(249, 252, 255, 0.93) !important;
+    border-color: rgba(2, 2, 12, 0.14);
+    color: $dark;
+}

@@ -1,0 +1,146 @@
+// ===========================================================================
+//  Local leaderboard.
+//  The top-score table under a game, from _includes/leaderboard.html. Styled
+//  after the court rather than the page, like the mode buttons it sits below:
+//  the court stays dark in both themes, so the table under it does too.
+//
+//  Pulled in by pong/games/controls, which every page in _games/ already uses,
+//  so a game page gets this without touching its entry point.
+// ===========================================================================
+
+@use "pong/variables" as *;
+
+.leaderboard {
+    // The court caps at 58rem and centres; the table is narrower so it reads as
+    // a panel belonging to the court rather than a second court.
+    max-width: 26rem;
+    margin: 0 auto 2.5rem;
+    padding: 1.25rem 1.5rem 1rem;
+    color: $light;
+    background-color: $dark;
+    border: 3px solid $light;
+    border-radius: 4px;
+}
+
+.leaderboard_title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin: 0 0 0.9rem;
+    font-family: "pong_cocogoose";
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+// Which board these five scores belong to: the mode for Breakout and the
+// Dodger, the board and the mode together for Frogger.
+.leaderboard_variant {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: $exec-color;
+}
+
+.leaderboard_list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// Rank and date are fixed columns so the scores line up down the middle
+// however many digits they run to.
+.leaderboard_row {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr auto;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+
+    & + & {
+        border-top: 1px solid rgba(249, 252, 255, 0.14);
+    }
+}
+
+.leaderboard_rank {
+    font-family: "pong_cocogoose";
+    font-size: 0.8rem;
+    opacity: 0.55;
+}
+
+// Digits get the display face here for the same reason .number does elsewhere
+// on the site: the body font mangles them.
+.leaderboard_score {
+    font-family: "pong_cocogoose";
+    font-size: 1.1rem;
+}
+
+.leaderboard_date {
+    font-size: 0.75rem;
+    opacity: 0.55;
+}
+
+// A place not yet taken. The score cell is left empty and the row keeps its
+// height from the rank beside it, so the table still shows five places to fill
+// without putting a glyph in them.
+.leaderboard_row.is-empty .leaderboard_rank {
+    opacity: 0.25;
+}
+
+// The run that just landed, picked out so a player can see where it went.
+.leaderboard_row.is-new {
+    .leaderboard_score {
+        color: $exec-color;
+    }
+
+    .leaderboard_rank {
+        opacity: 1;
+        color: $exec-color;
+    }
+}
+
+.leaderboard_actions {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0.9rem 0 0;
+}
+
+// Quiet enough not to compete with the mode buttons above the table, since
+// clearing a board is not something anyone comes here to do.
+.leaderboard_clear {
+    padding: 0.15rem 0.5rem;
+    font-family: "pong_cocogoose";
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $light;
+    background-color: transparent;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+        color: $staff-color;
+    }
+
+    // Space and the arrows are game controls, so players tab onto whatever is
+    // under the court. Focus has to stay visible, same as the mode buttons.
+    &:focus-visible {
+        outline: 2px solid $exec-color;
+        outline-offset: 2px;
+    }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .leaderboard {
+        padding: 1rem 1.1rem 0.9rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .leaderboard_clear {
+        transition: none;
+    }
+}

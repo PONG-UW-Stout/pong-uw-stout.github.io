@@ -55,3 +55,10 @@ facebook:
 bluesky:
   icon: "fa-brands fa-bluesky"
   color: "#0886fe"
+
+# Reddit has no person-card use yet; it is here for the post share row in
+# _includes/social-share.html, which reads its icon and colour from this file
+# like every other platform.
+reddit:
+  icon: "fa-brands fa-reddit-alien"
+  color: "#FF4500"

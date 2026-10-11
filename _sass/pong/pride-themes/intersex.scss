@@ -1,13 +1,12 @@
 @use "../variables" as *;
+@use "surfaces";
 
 html {
     background:
-        radial-gradient(
-            circle at center,
+        radial-gradient(circle at center,
             #ffd800 20vmin,
             #7902aa 32vmin,
-            #ffd800 44vmin
-        ) fixed !important;
+            #ffd800 44vmin) fixed !important;
 }
 
 body {

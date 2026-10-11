@@ -27,6 +27,8 @@ description: Clear the sponsor wall without dropping the ball
     </button>
 </div>
 
+{% include leaderboard.html id="breakout-scores" %}
+
 <p class="game-note">
 Move with <kbd>&larr;</kbd> <kbd>&rarr;</kbd> or <kbd>A</kbd> <kbd>D</kbd>, or just drag inside the court.
 <kbd>Space</kbd> launches the ball and pauses. The wall is worth more at the top:
@@ -35,4 +37,12 @@ Every wall you clear comes back as a different shape with a quicker ball, and br
 bright outline take two hits for double the points.
 </p>
 
+<p class="game-note">
+Bricks sometimes leave a capsule behind. It falls straight down and only counts if the paddle
+catches it: <span class="number">3</span> splits the rally into three more balls,
+<kbd>W</kbd> widens the paddle and <kbd>S</kbd> narrows it until the wall is cleared, and the rare
+<kbd>+</kbd> is a spare life. You only lose a life when the last ball goes.
+</p>
+
+<script src="{{ '/assets/js/games/leaderboard.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/games/breakout.js' | relative_url }}"></script>
