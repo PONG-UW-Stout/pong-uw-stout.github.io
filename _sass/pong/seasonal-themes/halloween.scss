@@ -93,28 +93,63 @@ h3 {
 }
 
 @keyframes hw-ooze {
-    from { scale: 1 0.9; }
-    to { scale: 1 1.1; }
+    from {
+        scale: 1 0.9;
+    }
+
+    to {
+        scale: 1 1.1;
+    }
 }
 
 @keyframes hw-spider {
-    0%, 100% { transform: translateY(-9vmin); }
-    50% { transform: translateY(1vmin); }
+
+    0%,
+    100% {
+        transform: translateY(-9vmin);
+    }
+
+    50% {
+        transform: translateY(1vmin);
+    }
 }
 
 @keyframes hw-bats {
-    from { translate: 115vw 0; }
-    to { translate: -75vw 0; }
+    from {
+        translate: 115vw 0;
+    }
+
+    to {
+        translate: -75vw 0;
+    }
 }
 
 @keyframes hw-flap {
-    from { scale: 1 1; }
-    to { scale: 1 0.78; }
+    from {
+        scale: 1 1;
+    }
+
+    to {
+        scale: 1 0.78;
+    }
 }
 
 @keyframes hw-flicker {
-    0%, 100% { text-shadow: 0 0 14px rgba(255, 137, 38, 0.75), 0 0 34px rgba(255, 92, 0, 0.35); }
-    34% { text-shadow: 0 0 9px rgba(255, 137, 38, 0.5), 0 0 22px rgba(255, 92, 0, 0.22); }
-    52% { text-shadow: 0 0 18px rgba(255, 160, 60, 0.85), 0 0 44px rgba(255, 92, 0, 0.45); }
-    61% { text-shadow: 0 0 7px rgba(255, 137, 38, 0.42), 0 0 18px rgba(255, 92, 0, 0.18); }
+
+    0%,
+    100% {
+        text-shadow: 0 0 14px rgba(255, 137, 38, 0.75), 0 0 34px rgba(255, 92, 0, 0.35);
+    }
+
+    34% {
+        text-shadow: 0 0 9px rgba(255, 137, 38, 0.5), 0 0 22px rgba(255, 92, 0, 0.22);
+    }
+
+    52% {
+        text-shadow: 0 0 18px rgba(255, 160, 60, 0.85), 0 0 44px rgba(255, 92, 0, 0.45);
+    }
+
+    61% {
+        text-shadow: 0 0 7px rgba(255, 137, 38, 0.42), 0 0 18px rgba(255, 92, 0, 0.18);
+    }
 }

@@ -89,30 +89,69 @@ h3 {
 }
 
 @keyframes lp-roll {
-    from { transform: translateY(-24vh); }
-    to { transform: translateY(100vh); }
+    from {
+        transform: translateY(-24vh);
+    }
+
+    to {
+        transform: translateY(100vh);
+    }
 }
 
 @keyframes lp-rise-far {
-    to { transform: translateY(-340px); }
+    to {
+        transform: translateY(-340px);
+    }
 }
 
 @keyframes lp-rise-near {
-    from { translate: 0 0; }
-    to { translate: 0 -400px; }
+    from {
+        translate: 0 0;
+    }
+
+    to {
+        translate: 0 -400px;
+    }
 }
 
 @keyframes lp-drift {
-    from { rotate: -2.5deg; }
-    to { rotate: 2.5deg; }
+    from {
+        rotate: -2.5deg;
+    }
+
+    to {
+        rotate: 2.5deg;
+    }
 }
 
 @keyframes lp-flicker {
-    0%, 100% { opacity: 1; }
-    48% { opacity: 1; }
-    49% { opacity: 0.72; }
-    50% { opacity: 1; }
-    82% { opacity: 1; }
-    83% { opacity: 0.8; }
-    84% { opacity: 1; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    48% {
+        opacity: 1;
+    }
+
+    49% {
+        opacity: 0.72;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    82% {
+        opacity: 1;
+    }
+
+    83% {
+        opacity: 0.8;
+    }
+
+    84% {
+        opacity: 1;
+    }
 }

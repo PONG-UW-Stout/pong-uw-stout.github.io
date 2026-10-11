@@ -54,7 +54,15 @@
     background-color: $light;
     border-radius: 2px;
     transform: translateX(-50%);
+    // Capsules change the width from the game code, so animate the change
+    // rather than letting the paddle snap to its new size.
+    transition: width 0.15s ease, background-color 0.15s ease;
 }
+
+// A paddle a capsule has resized borrows that capsule's colour, so the reason
+// it is the wrong size is still on screen after the capsule is gone.
+.paddle.is-wide   { background-color: $advisor-color; }
+.paddle.is-narrow { background-color: $staff-color; }
 
 // White ball. The bricks have all the colour on this page.
 .ball {
@@ -88,6 +96,33 @@
     box-shadow: inset 0 -0.35rem 0 rgba(0, 0, 0, 0.28);
 }
 
+// Capsules a broken brick leaves behind. The game code positions them and owns
+// the fall; this only says what each kind looks like. Its half extents are
+// CAPSULE in assets/js/games/breakout.js, so the two have to move together.
+// Colour alone can't carry the difference between four kinds, so each one wears
+// its initial: 3 balls, Widen, Shrink, and + for a life.
+.capsule {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.4%;
+    height: 5.2%;
+    border: 2px solid rgba(2, 2, 12, 0.5);
+    border-radius: 999px;
+    font-family: "pong_cocogoose";
+    font-size: clamp(0.45rem, 1.5vw, 0.85rem);
+    line-height: 1;
+    color: $dark;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.capsule--multi  { background-color: $diamond-color; }
+.capsule--widen  { background-color: $advisor-color; }
+.capsule--shrink { background-color: $staff-color; }
+.capsule--life   { background-color: $mentor-color; }
+
 .brick--diamond  { background-color: $diamond-color; }
 .brick--platinum { background-color: $platinum-color; }
 .brick--gold     { background-color: $gold-color; }
@@ -95,7 +130,8 @@
 .brick--staff    { background-color: $staff-color; }
 
 @media (prefers-reduced-motion: reduce) {
-    .brick {
+    .brick,
+    .paddle {
         transition: none;
     }
 }

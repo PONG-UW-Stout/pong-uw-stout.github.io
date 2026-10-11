@@ -1,0 +1,155 @@
+{%- comment -%}
+===============================================================================
+  Post table of contents.
+
+  Pure Liquid, no plugin and no JavaScript. GitHub Pages only runs the gems on
+  its allowlist and this site's `plugins:` list is just jekyll-watch, so
+  jekyll-toc is off the table -- we scrape the headings out of the already
+  rendered post HTML instead.
+
+  Why scrape the rendered HTML rather than the Markdown source: kramdown's
+  auto_ids is on (it ships on by default and nothing in _config.yml turns it
+  off), so every heading already arrives here carrying the exact `id` the
+  browser needs for the fragment jump. Reading those ids back out means we can
+  never disagree with the anchor we are linking to -- including kramdown's own
+  collision handling, where a second "Games" heading becomes id="games-1". If
+  we slugged the heading text ourselves we would have to re-implement that
+  de-duplication and would still drift the moment kramdown changed its rules.
+
+  Honours the `toc: true` default that _config.yml sets for everything in
+  _posts, so an individual post can opt out with `toc: false` in its front
+  matter.
+
+  Usage (from a layout, where `content` is in scope):
+
+      {% raw %}{% include post-toc.html %}{% endraw %}
+
+  or pass the markup explicitly:
+
+      {% raw %}{% include post-toc.html content=content %}{% endraw %}
+===============================================================================
+{%- endcomment -%}
+
+{%- if page.toc -%}
+
+  {%- comment -%}
+    `content` is inherited from the calling layout's scope, but accept it as a
+    parameter too so this include can be pointed at any blob of HTML.
+  {%- endcomment -%}
+  {%- assign toc_source = include.content | default: content -%}
+
+  {%- comment -%}
+    Splitting on "<h" leaves one chunk per heading, each starting with its
+    level digit, e.g. `2 id="games">Games</h2>...`. Closing tags are "</h" so
+    they never match, and <header>/<hr>/<html> chunks start with a letter and
+    get filtered out below. Any literal "<h2" a post shows off inside a code
+    block arrives escaped as "&lt;h2", so code samples cannot produce phantom
+    entries.
+  {%- endcomment -%}
+  {%- assign toc_chunks = toc_source | split: '<h' -%}
+
+  {%- comment -%}
+    Hand-rolled nesting. Liquid has no recursion, so we walk the headings in
+    document order and track which tags we have left open:
+      li2_open  -- an h2 <li> is open and may still gain a sublist
+      sub_open  -- that <li> has an <ol> of h3s inside it
+      li3_open  -- an h3 <li> inside that sublist is open
+    Every branch below only ever closes what it knows is open, so the markup
+    comes out balanced no matter what order the headings arrive in.
+  {%- endcomment -%}
+  {%- assign li2_open = false -%}
+  {%- assign sub_open = false -%}
+  {%- assign li3_open = false -%}
+
+  {%- capture toc_body -%}
+    {%- for chunk in toc_chunks -%}
+      {%- assign level = chunk | slice: 0, 1 -%}
+      {%- assign next_char = chunk | slice: 1, 1 -%}
+
+      {%- comment -%}
+        Only h2 and h3: the layout emits the post title as the page's lone h1,
+        and h4+ is deeper than anyone wants to skim. The next_char test makes
+        sure we really are at a tag boundary ("<h2 " or "<h2>") and not at the
+        head of the chunk that precedes the first heading.
+      {%- endcomment -%}
+      {%- if level == '2' or level == '3' -%}
+      {%- if next_char == ' ' or next_char == '>' -%}
+
+        {%- assign open_tag = chunk | split: '>' | first -%}
+
+        {%- comment -%}
+          No id means no anchor to jump to, so the entry would be a dead link.
+          Skip it rather than invent an id we cannot put on the heading itself
+          (this include never touches the post body).
+        {%- endcomment -%}
+        {%- if open_tag contains 'id="' -%}
+          {%- assign id = open_tag | split: 'id="' | last | split: '"' | first -%}
+
+          {%- comment -%}
+            Everything between the ">" of the opening tag and "</h" is the
+            heading's inner HTML. strip_html flattens any inline markup a
+            heading might carry (<code>, <em>, a footnote link) down to plain
+            text, because a <a> inside our <a> would be invalid HTML.
+          {%- endcomment -%}
+          {%- assign label = chunk | remove_first: open_tag | remove_first: '>' | split: '</h' | first | strip_html | strip -%}
+
+          {%- if level == '2' -%}
+            {%- comment -%} A new h2 closes the whole previous branch. {%- endcomment -%}
+            {%- if li3_open %}</li>{% assign li3_open = false %}{% endif -%}
+            {%- if sub_open %}</ol>{% assign sub_open = false %}{% endif -%}
+            {%- if li2_open %}</li>{% assign li2_open = false %}{% endif -%}
+            <li class="post-toc__item post-toc__item--h2"><a class="post-toc__link" href="#{{ id }}">{{ label }}</a>
+            {%- assign li2_open = true -%}
+
+          {%- else -%}
+            {%- if li2_open -%}
+              {%- comment -%} Normal case: nest under the open h2. {%- endcomment -%}
+              {%- unless sub_open %}<ol class="post-toc__sublist">{% assign sub_open = true %}{% endunless -%}
+              {%- if li3_open %}</li>{% assign li3_open = false %}{% endif -%}
+              <li class="post-toc__item post-toc__item--h3"><a class="post-toc__link" href="#{{ id }}">{{ label }}</a>
+              {%- assign li3_open = true -%}
+            {%- else -%}
+              {%- comment -%}
+                An h3 before any h2. There is no parent to nest it under, so
+                promote it to the top level as a self-contained entry and let
+                the stylesheet mark it with a dash instead of a number -- it has
+                no "1.2" to claim. The state flags stay untouched, so a later h2
+                still starts a clean branch.
+              {%- endcomment -%}
+              <li class="post-toc__item post-toc__item--h3 post-toc__item--orphan"><a class="post-toc__link" href="#{{ id }}">{{ label }}</a></li>
+            {%- endif -%}
+          {%- endif -%}
+
+        {%- endif -%}
+      {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%} Close whatever the last heading left open. {%- endcomment -%}
+    {%- if li3_open %}</li>{% endif -%}
+    {%- if sub_open %}</ol>{% endif -%}
+    {%- if li2_open %}</li>{% endif -%}
+  {%- endcapture -%}
+
+  {%- comment -%}
+    A post with no headings (or only headings we had to skip) produces an empty
+    body -- emit nothing at all rather than an empty, pointless <nav>.
+  {%- endcomment -%}
+  {%- assign toc_check = toc_body | strip -%}
+  {%- if toc_check != '' -%}
+<nav class="post-toc" aria-label="Table of contents">
+  {%- comment -%}
+    <details> gives us a collapsible TOC with no JavaScript at all. It starts
+    open so the outline is the first thing a reader sees, and on a phone -- where
+    a long TOC would push the article off screen -- one tap folds it away.
+  {%- endcomment -%}
+  <details class="post-toc__shell" open>
+    <summary class="post-toc__summary">
+      <i class="fa-solid fa-list-ol post-toc__icon" aria-hidden="true"></i>
+      <span>Contents</span>
+    </summary>
+    <ol class="post-toc__list">{{ toc_body }}</ol>
+  </details>
+</nav>
+  {%- endif -%}
+{%- endif -%}

@@ -13,7 +13,7 @@ order: 5
         <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
       </h2>
       <time datetime="{{ post.date | date_to_xmlschema }}">
-        {{ post.author }} - {{ post.date | date: "%B %d, %Y" }}
+        {{ post.authors | join: ", " }} - {{ post.date | date: "%B %d, %Y" }}
       </time>
       {% if post.description %}
         <p>{{ post.description | strip_html }}</p>

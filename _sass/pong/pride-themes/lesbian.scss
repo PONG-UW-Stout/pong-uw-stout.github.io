@@ -1,4 +1,5 @@
 @use "../variables" as *;
+@use "surfaces";
 
 html {
     background: linear-gradient(to left, #d52d00, #ef7627, #ffffff, #d162a4, #a30262) !important;

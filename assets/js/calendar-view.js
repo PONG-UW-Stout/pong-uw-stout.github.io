@@ -1,5 +1,5 @@
 (function () {
-  var MOBILE_BREAKPOINT = 480; 
+  var MOBILE_BREAKPOINT = 480;
   var iframe = document.getElementById('gcal-embed');
   if (!iframe) return;
 
@@ -11,7 +11,7 @@
     var isMobile = window.innerWidth <= MOBILE_BREAKPOINT;
     var mode = isMobile ? 'agenda' : 'month';
 
-    if (mode === currentMode) return; 
+    if (mode === currentMode) return;
 
     iframe.src = isMobile ? agendaSrc : monthSrc;
     currentMode = mode;
@@ -20,7 +20,7 @@
   var resizeTimer;
   function onResize() {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(applyView, 150); 
+    resizeTimer = setTimeout(applyView, 150);
   }
 
   applyView();

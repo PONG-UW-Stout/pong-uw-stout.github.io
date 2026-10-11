@@ -19,6 +19,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 30px;
+	justify-content: center;
 }
 
 .capsule {
@@ -145,6 +146,6 @@
 @media (max-width: $breakpoint-tablet) {
 	.about_page_text_container {
 		margin-left: 0%;
-		margin-right: 0%; 
+		margin-right: 0%;
 	}
 }

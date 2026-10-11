@@ -77,15 +77,27 @@ h3 {
 }
 
 @keyframes tg-fall-far {
-    to { transform: translateY(340px); }
+    to {
+        transform: translateY(340px);
+    }
 }
 
 @keyframes tg-fall-near {
-    from { translate: 0 0; }
-    to { translate: 0 400px; }
+    from {
+        translate: 0 0;
+    }
+
+    to {
+        translate: 0 400px;
+    }
 }
 
 @keyframes tg-sway {
-    from { rotate: -4deg; }
-    to { rotate: 4deg; }
+    from {
+        rotate: -4deg;
+    }
+
+    to {
+        rotate: 4deg;
+    }
 }

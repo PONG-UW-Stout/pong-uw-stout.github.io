@@ -451,6 +451,14 @@
     let paused = false;
     let over = false;
 
+    // The local top-score table under the court, mounted at the bottom of this
+    // file. Null if leaderboard.js didn't load, which the game runs on without.
+    //
+    // Only one player mode has anything to rank. A two player match is two
+    // people in a room and the result belongs to them, not to whichever
+    // browser they happened to use, so that mode shows no table at all.
+    let records = null;
+
     function renderScore() {
         Object.keys(scores).forEach(function (id) {
             if (scoreEls[id]) scoreEls[id].textContent = scores[id];
@@ -472,7 +480,17 @@
             ball.vx = 0;
             ball.vy = 0;
             ball.wait = 0;
+
+            // The human has the left paddle in one player mode, so only a win
+            // on that side is a run of the player's own. The margin is what
+            // gets recorded, since every win ends on the same eleven.
+            let place = 0;
+            if (records && mode === 'one-player' && scorer === 'yaoi') {
+                place = records.submit(WIN_SCORE - scores.yuri);
+            }
+
             message(LABELS[scorer] + ' wins ' + scores.yaoi + '-' + scores.yuri +
+                    (place ? ', your number ' + place : '') +
                     '. Press space to play again');
             return;
         }
@@ -527,6 +545,7 @@
             btn.setAttribute('aria-pressed', active);
         });
 
+        if (records) records.refresh();
         resetMatch();
     }
 
@@ -579,6 +598,22 @@
         new ResizeObserver(remeasure).observe(court);
     } else {
         window.addEventListener('resize', remeasure);
+    }
+
+    if (window.PONG_SCORES) {
+        records = window.PONG_SCORES.mount({
+            game: 'pong',
+            el: document.getElementById('pong-scores'),
+            variant: function () {
+                if (mode !== 'one-player') return null;
+                return { key: 'one-player', label: 'One Player' };
+            },
+            // Stored as the margin so the table sorts, shown as the scoreline
+            // it came from, which is what the court said at the time.
+            format: function (margin) {
+                return WIN_SCORE + '\u2013' + (WIN_SCORE - margin);
+            },
+        });
     }
 
     measureBall();

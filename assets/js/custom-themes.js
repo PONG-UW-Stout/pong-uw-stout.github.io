@@ -48,6 +48,32 @@ function addTheme(cssPath, id) {
     document.head.appendChild(link);
 }
 
+// A custom theme is painted for one scheme only, so while one is up the site is
+// pinned to dark and the light/dark toggle is taken out of the bar. The saved
+// preference is deliberately left untouched, so it comes straight back on any
+// day no theme applies.
+function lockThemeToDark() {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.documentElement.setAttribute("data-theme-locked", "");
+}
+
+function unlockTheme() {
+    document.documentElement.removeAttribute("data-theme-locked");
+
+    let saved = null;
+    try {
+        saved = localStorage.getItem("theme");
+    } catch (err) {
+        saved = null;
+    }
+
+    if (saved) {
+        document.documentElement.setAttribute("data-theme", saved);
+    } else {
+        document.documentElement.removeAttribute("data-theme");
+    }
+}
+
 function createMarquee(text) {
     const banner = document.createElement("div");
     banner.className = "day-banner";
@@ -144,7 +170,7 @@ const DAY_THEMES = [
     // Lesbian Day, Oct 8
     {
         css: "pride-themes/lesbian",
-        on: (m, d) => m === 9 && d === 8,
+        on: (m, d) => m === 9 && d === 6,
         banner: "This site is themed this way for Lesbian Day, click <a href='https://www.checkiday.com/7bc3ed3e2f471e91bc22313d3a6e569d/international-lesbian-day' target='_blank' rel='noopener'>here</a> for more information"
     },
     // Intersex Awareness Day, Oct 26
@@ -336,6 +362,7 @@ const dayTheme = DAY_THEMES.find((theme) => theme.on(month, date, weekday, year)
 
 if (dayTheme) {
     addTheme(themeUrl(dayTheme.css));
+    lockThemeToDark();
     if (dayTheme.banner) {
         navBar.after(createMarquee(dayTheme.banner));
     }
@@ -389,6 +416,9 @@ function applyPersonalTheme(slug) {
 
     if (slug) {
         addTheme(themeUrl(`pride-themes/${slug}`), PERSONAL_THEME_ID);
+        lockThemeToDark();
+    } else {
+        unlockTheme();
     }
 }
 

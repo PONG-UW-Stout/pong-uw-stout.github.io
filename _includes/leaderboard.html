@@ -1,0 +1,21 @@
+{% comment %}
+  The top-score table that sits under a game. Shared so all five courts get the
+  same table, and so the one place to change the wording is this file.
+
+  Takes one parameter, `id`, which the game's own script looks up to mount its
+  board against. Starts hidden and is unhidden by assets/js/games/leaderboard.js,
+  so a visitor without JavaScript never sees an empty box of dashes.
+{% endcomment %}
+
+<section class="leaderboard" id="{{ include.id }}" aria-labelledby="{{ include.id }}-title" hidden>
+    <h2 class="leaderboard_title" id="{{ include.id }}-title">
+        Your Top Scores
+        <span class="leaderboard_variant" data-leaderboard="variant"></span>
+    </h2>
+
+    <ol class="leaderboard_list" data-leaderboard="list"></ol>
+
+    <div class="leaderboard_actions">
+        <button type="button" class="leaderboard_clear" data-leaderboard="clear">Clear</button>
+    </div>
+</section>

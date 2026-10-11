@@ -1,5 +1,67 @@
 title: PONG
 
+# ---------------------------------------------------------------------------
+#  Site identity for link previews (consumed by _includes/head.html)
+# ---------------------------------------------------------------------------
+
+# The absolute origin of the production site.
+#
+# This has to exist. Open Graph requires og:url and og:image to be ABSOLUTE
+# urls, and with no `url` set Jekyll's `absolute_url` filter quietly falls back
+# to emitting a root-relative path ("/posts/foo/"). Every crawler that matters
+# -- Discord, Slack, Bluesky, iMessage, X, Facebook, LinkedIn -- discards a
+# relative og:image outright, so the preview would come back with no picture
+# and, on the stricter ones, no card at all.
+#
+# The club's own domain, which the CNAME file at the repo root points GitHub
+# Pages at. Change these two together or previews break: the CNAME decides what
+# the site answers on, this decides what it claims to be.
+#
+# `jekyll serve` overrides this with http://localhost:4000 while you work, so
+# local builds still link to themselves.
+url: "https://ponglan.net"
+
+# The site is served from the root of its own domain, not from a /repo-name/
+# subpath, so there is no baseurl. Written out rather than left absent so nobody
+# has to wonder whether it was forgotten.
+baseurl: ""
+
+# Fallback description for pages whose front matter has none. Posts, games and
+# LANs all set their own `description:`; the tabs (home, about, events, games,
+# posts, lans) do not, and this is what their previews say instead. Keep it
+# under ~200 characters -- Discord and X both truncate past roughly that.
+description: >-
+  The People's Organization of Network Gaming: UW-Stout's student gaming club,
+  and the people behind the 48-hour LAN parties in the Memorial Student Center.
+
+# Preview-image defaults. Overridable per page with `image:` / `image_alt:` in
+# front matter, which nothing uses yet but a LAN page would want.
+social:
+  # STOPGAP. This is the nav banner, which is the only image in the repo: it is
+  # 376x120 and it is a white wordmark on TRANSPARENCY. Open Graph wants
+  # roughly 1200x630 on an opaque background, so this is both the wrong shape
+  # and the wrong kind of file for the job -- see the long note in
+  # _includes/head.html. It is pointed at here anyway because a real image in
+  # the wrong shape still beats no image, and because swapping in a proper one
+  # is then a one-line change.
+  image: /assets/pong_banner-logo_v1.webp
+  # Declared so crawlers can reserve the right box before the image lands;
+  # these must be kept in step with whatever `image` actually points at.
+  image_width: 376
+  image_height: 120
+  image_type: image/webp
+  image_alt: "The PONG logo: PONG in white block letters, with a game controller D-pad as the O"
+
+  # X picks the card shape from this. summary_large_image is what the club
+  # wants once a 1200x630 image exists; until then X may drop the picture and
+  # show a text-only card, because the banner is below X's 300x157 minimum.
+  # Discord, Slack, Bluesky and Facebook ignore this and read og:image.
+  twitter_card: summary_large_image
+
+  # Uncomment when PONG has an X account. It only drives the "via @handle"
+  # attribution on an X card; leaving it out costs nothing.
+  # twitter_handle: "@ponguwstout"
+
 markdown: kramdown
 kramdown:
   syntax_highlighter: rouge

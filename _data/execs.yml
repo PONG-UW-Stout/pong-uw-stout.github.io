@@ -4,6 +4,7 @@
 # `type` should match an icon filename in /assets/icons/
 # (e.g. type: twitter -> /assets/icons/twitter.svg)
 # url: "#" is a placeholder, swap in the real link when you have it.
+#
 
 - name: Max C.
   role: President

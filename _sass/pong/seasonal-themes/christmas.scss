@@ -104,14 +104,27 @@ h3 {
 }
 
 @keyframes xm-snow-far {
-    to { transform: translateY(300px); }
+    to {
+        transform: translateY(300px);
+    }
 }
 
 @keyframes xm-snow-near {
-    to { transform: translateY(360px); }
+    to {
+        transform: translateY(360px);
+    }
 }
 
 @keyframes xm-twinkle {
-    0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(255, 190, 120, 0.6)) brightness(1.12); }
-    50% { opacity: 0.68; filter: drop-shadow(0 0 2px rgba(255, 190, 120, 0.3)) brightness(0.82); }
+
+    0%,
+    100% {
+        opacity: 1;
+        filter: drop-shadow(0 0 6px rgba(255, 190, 120, 0.6)) brightness(1.12);
+    }
+
+    50% {
+        opacity: 0.68;
+        filter: drop-shadow(0 0 2px rgba(255, 190, 120, 0.3)) brightness(0.82);
+    }
 }

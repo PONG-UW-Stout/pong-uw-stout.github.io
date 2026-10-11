@@ -103,19 +103,33 @@ h3 {
 }
 
 @keyframes sp-fall-far {
-    to { transform: translateY(340px); }
+    to {
+        transform: translateY(340px);
+    }
 }
 
 @keyframes sp-fall-near {
-    from { translate: 0 0; }
-    to { translate: 0 400px; }
+    from {
+        translate: 0 0;
+    }
+
+    to {
+        translate: 0 400px;
+    }
 }
 
 @keyframes sp-drift {
-    from { rotate: -3.5deg; }
-    to { rotate: 3.5deg; }
+    from {
+        rotate: -3.5deg;
+    }
+
+    to {
+        rotate: 3.5deg;
+    }
 }
 
 @keyframes sp-sweep {
-    to { background-position: -240% 0; }
+    to {
+        background-position: -240% 0;
+    }
 }

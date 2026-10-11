@@ -49,6 +49,8 @@ description: Cross the traffic and the river to fill every bay, on any board you
     </button>
 </div>
 
+{% include leaderboard.html id="frogger-scores" %}
+
 <p class="game-note">
 Hop with <kbd>&larr;</kbd> <kbd>&uarr;</kbd> <kbd>&darr;</kbd> <kbd>&rarr;</kbd> or
 <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>, or tap the side of the frog you want to go.
@@ -116,5 +118,6 @@ Want a different board? Pick one above, or build your own below.
     </div>
 </details>
 
+<script src="{{ '/assets/js/games/leaderboard.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/games/frogger.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/games/frogger-builder.js' | relative_url }}"></script>

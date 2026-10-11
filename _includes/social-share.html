@@ -1,0 +1,140 @@
+{%- comment -%}
+===========================================================================
+  Share row for a post.
+
+  Usage, from a layout or a page:
+
+      {% include social-share.html %}
+
+  Optional overrides, for anything that isn't the current page:
+
+      {% include social-share.html url=some.url title="..." description="..." %}
+
+  Every target here is a plain "share intent" link: a url the platform
+  publishes that opens its composer with the post already filled in. There
+  is no SDK, no tracking pixel and no third-party script -- the whole row
+  is six anchors and one button, and it keeps working with JavaScript off
+  (except the copy button, which announces itself as broken rather than
+  lying, see assets/js/share.js).
+
+  Discord is deliberately absent. It has no share-intent url at all -- you
+  paste a link into a channel and Discord unfurls it from the Open Graph
+  tags in _includes/head.html. Since Discord is where this club actually
+  talks, the copy-link button is the most important control in the row and
+  is the one styled to look like it.
+
+  Icons and brand colours come from _data/socials.yml, the same file the
+  person cards on /about/ read, so a brand refresh happens in one place.
+===========================================================================
+{%- endcomment -%}
+
+{%- comment -%}
+  Resolve what we are sharing. absolute_url is what makes this a link
+  someone else can open: site.url is set in _config.yml precisely so these
+  (and the og: tags) come out absolute. A url passed in that is already
+  absolute is left alone by the filter.
+{%- endcomment -%}
+{%- assign share_url = include.url | default: page.url | absolute_url -%}
+{%- assign share_title = include.title | default: page.title | default: site.title -%}
+{%- assign share_summary = include.description | default: page.description | default: site.description -%}
+{%- assign share_summary = share_summary | normalize_whitespace | strip -%}
+
+{%- comment -%}
+  Encode once, up front. url_encode is form encoding, so a space becomes a
+  "+" -- which is correct inside a query string (every target below but
+  one) and wrong inside a mailto:, where the mail client would show a
+  literal plus. The two mailto values therefore get the pluses turned back
+  into %20, and the line breaks are written as %0A by hand because Liquid
+  has no escape for a newline inside a string.
+{%- endcomment -%}
+{%- comment -%}
+  The "&amp;" separating query parameters below is deliberate: this is HTML
+  source, where a bare "&" inside an attribute is a parse error and, for the
+  wrong parameter name, silently becomes a character reference. The browser
+  hands the platform a plain "&".
+{%- endcomment -%}
+{%- assign enc_url = share_url | url_encode -%}
+{%- assign enc_title = share_title | url_encode -%}
+{%- assign enc_post = share_title | append: " " | append: share_url | url_encode -%}
+{%- assign mail_subject = share_title | url_encode | replace: "+", "%20" -%}
+{%- assign mail_body = share_summary | url_encode | replace: "+", "%20" | append: "%0A%0A" | append: enc_url -%}
+
+<section class="share" aria-labelledby="share-heading">
+    <h2 class="share__heading" id="share-heading">Share this post</h2>
+
+    <div class="share__buttons">
+        {%- comment -%}
+          The order is the club's reach, roughly: the two places PONG
+          posts land, then the aggregators, then email. Each pass pulls
+          its icon and colour out of _data/socials.yml and hands the
+          colour to the stylesheet as a custom property, so the hover
+          fill is the brand's own without a class per platform.
+        {%- endcomment -%}
+        {%- assign share_targets = "bluesky,twitter,facebook,reddit,linkedin,email" | split: "," -%}
+        {%- for target in share_targets -%}
+            {%- case target -%}
+                {%- when "bluesky" -%}
+                    {%- comment -%} Bluesky composes from one text field, so the link rides inside it. {%- endcomment -%}
+                    {%- assign share_href = "https://bsky.app/intent/compose?text=" | append: enc_post -%}
+                    {%- assign share_label = "Share on Bluesky" -%}
+                {%- when "twitter" -%}
+                    {%- assign share_href = "https://twitter.com/intent/tweet?text=" | append: enc_title | append: "&amp;url=" | append: enc_url -%}
+                    {%- assign share_label = "Share on X" -%}
+                {%- when "facebook" -%}
+                    {%- comment -%} Facebook takes the url only and reads the title and picture from the og: tags. {%- endcomment -%}
+                    {%- assign share_href = "https://www.facebook.com/sharer/sharer.php?u=" | append: enc_url -%}
+                    {%- assign share_label = "Share on Facebook" -%}
+                {%- when "reddit" -%}
+                    {%- assign share_href = "https://www.reddit.com/submit?url=" | append: enc_url | append: "&amp;title=" | append: enc_title -%}
+                    {%- assign share_label = "Share on Reddit" -%}
+                {%- when "linkedin" -%}
+                    {%- assign share_href = "https://www.linkedin.com/sharing/share-offsite/?url=" | append: enc_url -%}
+                    {%- assign share_label = "Share on LinkedIn" -%}
+                {%- when "email" -%}
+                    {%- assign share_href = "mailto:?subject=" | append: mail_subject | append: "&amp;body=" | append: mail_body -%}
+                    {%- assign share_label = "Share by email" -%}
+            {%- endcase -%}
+            {%- assign brand = site.data.socials[target] -%}
+            <a class="share-button"
+               href="{{ share_href }}"
+               target="_blank"
+               rel="noopener"
+               aria-label="{{ share_label }}"
+               title="{{ share_label }}"
+               style="--share-color: {{ brand.color }};">
+                {%- comment -%} Icon-only, so the accessible name is the aria-label above and the glyph is hidden from assistive tech. {%- endcomment -%}
+                <i class="{{ brand.icon }}" aria-hidden="true"></i>
+            </a>
+        {%- endfor -%}
+
+        {%- comment -%}
+          Copy link. The one control here that needs script, and the one
+          that matters most, because pasting into Discord is how a PONG
+          link actually travels. It carries a visible label rather than
+          being another anonymous circle: it is the thing most people
+          want, and "copy" is not a glyph anyone reliably recognises.
+
+          data-share-url holds the absolute url so the script never has
+          to reason about location.href (which on a local build, or a
+          page reached with a tracking query string, is not what we want
+          pasted). The button starts disabled-looking only in the sense
+          that the script enables its behaviour; with JS off it still
+          shows the url in a tooltip via title.
+        {%- endcomment -%}
+        <button type="button"
+                class="share-button share-button--copy"
+                data-share-copy
+                data-share-url="{{ share_url }}"
+                title="{{ share_url }}">
+            <i class="{{ site.data.socials.link.icon }}" aria-hidden="true" data-share-icon></i>
+            <span data-share-label>Copy link</span>
+        </button>
+
+        {%- comment -%}
+          Where the script announces the result. A screen reader hears
+          "Link copied" because this is a live region; everyone else sees
+          the button's own label change, so this stays off-screen.
+        {%- endcomment -%}
+        <span class="share__status" role="status" aria-live="polite" data-share-status></span>
+    </div>
+</section>

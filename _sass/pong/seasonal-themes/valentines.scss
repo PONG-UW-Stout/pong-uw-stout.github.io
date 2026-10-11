@@ -71,16 +71,34 @@ h3 {
 }
 
 @keyframes vd-rise-far {
-    to { transform: translateY(-340px); }
+    to {
+        transform: translateY(-340px);
+    }
 }
 
 @keyframes vd-rise-near {
-    to { transform: translateY(-400px); }
+    to {
+        transform: translateY(-400px);
+    }
 }
 
 @keyframes vd-beat {
-    0%, 62%, 100% { scale: 1; }
-    8% { scale: 1.028; }
-    16% { scale: 1; }
-    24% { scale: 1.018; }
+
+    0%,
+    62%,
+    100% {
+        scale: 1;
+    }
+
+    8% {
+        scale: 1.028;
+    }
+
+    16% {
+        scale: 1;
+    }
+
+    24% {
+        scale: 1.018;
+    }
 }

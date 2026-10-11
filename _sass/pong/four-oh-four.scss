@@ -27,10 +27,8 @@
     left: 50%;
     width: 4px;
     margin-left: -2px;
-    background-image: linear-gradient(
-        $light 0 50%,
-        transparent 50% 100%
-    );
+    background-image: linear-gradient($light 0 50%,
+            transparent 50% 100%);
     background-size: 100% 7%;
     opacity: 0.55;
 }
@@ -56,7 +54,7 @@
 
 .pong404_paddle {
     position: absolute;
-    top: 37%;          // 50% less half the paddle height
+    top: 37%; // 50% less half the paddle height
     width: 2.5%;
     height: 26%;
     background-color: $light;
@@ -90,42 +88,122 @@
    Lengths are measured in court-widths: the court is 2:1, so a vertical
    percentage covers half the distance a horizontal one does. */
 @keyframes pong404-ball {
+
     /* served from centre court */
-    0%     { left: 50%;   top: 50%;   opacity: 1; }
+    0% {
+        left: 50%;
+        top: 50%;
+        opacity: 1;
+    }
+
     /* top wall, left half */
-    15.4%  { left: 18%;   top: 3.5%;  opacity: 1; }
+    15.4% {
+        left: 18%;
+        top: 3.5%;
+        opacity: 1;
+    }
+
     /* the left paddle gets a racket on it */
-    24.3%  { left: 8%;    top: 44%;   opacity: 1; }
+    24.3% {
+        left: 8%;
+        top: 44%;
+        opacity: 1;
+    }
+
     /* bottom wall */
-    38.7%  { left: 34%;   top: 96.5%; opacity: 1; }
+    38.7% {
+        left: 34%;
+        top: 96.5%;
+        opacity: 1;
+    }
+
     /* top wall, right half */
-    62.1%  { left: 72%;   top: 3.5%;  opacity: 1; }
+    62.1% {
+        left: 72%;
+        top: 3.5%;
+        opacity: 1;
+    }
+
     /* past the right paddle and out of play, at the same speed as the rally */
-    80%    { left: 108%;  top: 60%;   opacity: 1; }
-    80.01% { left: 108%;  top: 60%;   opacity: 0; }
+    80% {
+        left: 108%;
+        top: 60%;
+        opacity: 1;
+    }
+
+    80.01% {
+        left: 108%;
+        top: 60%;
+        opacity: 0;
+    }
+
     /* back to centre court, out of sight, to serve again */
-    80.02% { left: 50%;   top: 50%;   opacity: 0; }
-    91%    { left: 50%;   top: 50%;   opacity: 1; }
-    100%   { left: 50%;   top: 50%;   opacity: 1; }
+    80.02% {
+        left: 50%;
+        top: 50%;
+        opacity: 0;
+    }
+
+    91% {
+        left: 50%;
+        top: 50%;
+        opacity: 1;
+    }
+
+    100% {
+        left: 50%;
+        top: 50%;
+        opacity: 1;
+    }
 }
 
 /* Paddle offsets are percentages of the paddle's own height (26% of the
    court), so -23% lifts its centre from 50% to 44%, onto the ball. */
 @keyframes pong404-rally-left {
-    0%        { transform: translateY(0); }
-    15.4%     { transform: translateY(-10%); }
-    24.3%     { transform: translateY(-23%); }
-    38.7%     { transform: translateY(-10%); }
-    70%, 100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+
+    15.4% {
+        transform: translateY(-10%);
+    }
+
+    24.3% {
+        transform: translateY(-23%);
+    }
+
+    38.7% {
+        transform: translateY(-10%);
+    }
+
+    70%,
+    100% {
+        transform: translateY(0);
+    }
 }
 
 @keyframes pong404-rally-right {
-    0%        { transform: translateY(0); }
-    38.7%     { transform: translateY(10%); }
-    62.1%     { transform: translateY(35%); }
+    0% {
+        transform: translateY(0);
+    }
+
+    38.7% {
+        transform: translateY(10%);
+    }
+
+    62.1% {
+        transform: translateY(35%);
+    }
+
     /* still reaching low as the ball crosses the goal line above it */
-    80%       { transform: translateY(45%); }
-    91%, 100% { transform: translateY(0); }
+    80% {
+        transform: translateY(45%);
+    }
+
+    91%,
+    100% {
+        transform: translateY(0);
+    }
 }
 
 .pong404_title {
@@ -194,6 +272,7 @@ html[data-theme="dark"] .pong404_btn:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .pong404_ball,
     .pong404_paddle {
         animation: none !important;

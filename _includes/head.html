@@ -1,7 +1,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title | append: " | " | append: site.title }}</title>    <link rel="icon" type="image/x-icon" href="/assets/images/favicon/pong_logo-icon_v2.ico" alt="favicon">
+
+    {%- comment -%}
+    =======================================================================
+      Link previews.
+
+      Everything between here and the stylesheet exists so that a PONG link
+      dropped in Discord, Slack, Bluesky, iMessage or X unfurls into a card
+      with a title, a sentence and a picture, instead of showing up as a
+      bare url. Chat is how this club actually shares things, and chat
+      clients only read the <head>.
+
+      One set of values feeds three vocabularies -- plain <meta name>,
+      Open Graph (og:), and Twitter cards -- because the crawlers disagree
+      about which to read. Discord, Slack, Bluesky, iMessage, Facebook and
+      LinkedIn all read Open Graph; X reads twitter: first and falls back to
+      og:; search engines want the plain description. So the values are
+      resolved once below and then printed three times.
+
+      Resolution order for each value: this page's front matter, then
+      something sensible derived from the page, then the site-wide default
+      from _config.yml. Nothing here may assume front matter exists -- the
+      tabs (home, about, events, games, posts) carry neither a title nor a
+      description, and they get previewed too.
+    =======================================================================
+    {%- endcomment -%}
+
+    {%- comment -%}
+      Title. "Page | PONG" where there is a page title, bare "PONG" where
+      there is not -- the old version appended unconditionally and left
+      title-less pages reading " | PONG".
+    {%- endcomment -%}
+    {%- if page.title -%}
+        {%- assign page_title = page.title | append: " | " | append: site.title -%}
+        {%- assign social_title = page.title -%}
+    {%- else -%}
+        {%- assign page_title = site.title -%}
+        {%- assign social_title = site.title -%}
+    {%- endif -%}
+
+    {%- comment -%}
+      Description. Posts and games set one; the tabs do not. The excerpt is
+      only trusted as a fallback for posts: a post's excerpt is prose, while
+      a tab's would be the opening of a markup blob (/games even opens with
+      a <script>, whose contents strip_html would hand straight to the
+      crawler). normalize_whitespace flattens the folded YAML scalars that
+      _lans uses, which would otherwise put raw newlines inside a content="".
+    {%- endcomment -%}
+    {%- if page.description -%}
+        {%- assign social_description = page.description -%}
+    {%- elsif page.collection == "posts" and page.excerpt -%}
+        {%- assign social_description = page.excerpt | strip_html -%}
+    {%- else -%}
+        {%- assign social_description = site.description -%}
+    {%- endif -%}
+    {%- assign social_description = social_description | normalize_whitespace | strip | truncate: 200 | escape -%}
+
+    {%- comment -%}
+      Canonical absolute url for this page. absolute_url is what turns
+      site.url (set in _config.yml) plus page.url into the full address the
+      crawlers insist on.
+    {%- endcomment -%}
+    {%- assign social_url = page.url | absolute_url -%}
+
+    {%- comment -%}
+      Preview image.
+
+      THE IMAGE IS THE WEAK POINT OF ALL THIS. The only image asset in the
+      repo is the nav banner: 376x120, and a white wordmark on a transparent
+      background. Open Graph consumers want about 1200x630 (a 1.91:1 card),
+      and the ones that composite transparency onto a light surface -- Slack
+      in light mode, iMessage, Bluesky -- will render a white logo onto
+      white. Discord happens to get away with it because its own background
+      is dark.
+
+      It is also a .webp, which Discord, Bluesky, X and Apple handle but
+      Facebook's and LinkedIn's crawlers still do not reliably fetch.
+
+      So: what is emitted below is the best available, not the right thing.
+      The fix is an asset, not code -- a 1200x630 PNG or JPEG with an opaque
+      PONG-coloured background. Drop it in /assets/images/social/ and point
+      _config.yml's social.image (and width/height/type) at it; nothing in
+      this file has to change.
+
+      A page may override with `image:` / `image_alt:` in its front matter --
+      a LAN poster is the obvious candidate. Width, height and type are only
+      declared for the site default, since those are the only dimensions
+      this file can actually vouch for.
+    {%- endcomment -%}
+    {%- if page.image -%}
+        {%- assign social_image = page.image | absolute_url -%}
+        {%- assign social_image_alt = page.image_alt | default: social_title -%}
+        {%- assign social_image_known = false -%}
+    {%- else -%}
+        {%- assign social_image = site.social.image | absolute_url -%}
+        {%- assign social_image_alt = site.social.image_alt -%}
+        {%- assign social_image_known = true -%}
+    {%- endif -%}
+
+    <title>{{ page_title }}</title>
+    <link rel="canonical" href="{{ social_url }}">
+    <meta name="description" content="{{ social_description }}">
+
+    <!-- Open Graph: read by Discord, Slack, Bluesky, iMessage, Facebook, LinkedIn. -->
+    <meta property="og:site_name" content="{{ site.title }}">
+    <meta property="og:title" content="{{ social_title | escape }}">
+    <meta property="og:description" content="{{ social_description }}">
+    <meta property="og:url" content="{{ social_url }}">
+    <meta property="og:locale" content="en_US">
+    {%- comment -%}
+      og:type is "article" for anything with a publication date and an
+      author -- posts today, and nothing else. Everything else is a
+      "website", which is what the spec's own default is anyway.
+    {%- endcomment -%}
+    {%- if page.collection == "posts" %}
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+    {%- comment -%}
+      article:author officially wants a profile url. Names are what this
+      site has and what the crawlers display, so names are what it gets;
+      point these at profile pages if the club ever makes any.
+    {%- endcomment -%}
+    {%- for author in page.authors %}
+    <meta property="article:author" content="{{ author | escape }}">
+    {%- endfor %}
+    {%- if page.authors %}
+    <meta name="author" content="{{ page.authors | join: ', ' | escape }}">
+    {%- endif %}
+    {%- else %}
+    <meta property="og:type" content="website">
+    {%- endif %}
+    <meta property="og:image" content="{{ social_image }}">
+    {%- if social_image_alt %}
+    <meta property="og:image:alt" content="{{ social_image_alt | escape }}">
+    {%- endif %}
+    {%- if social_image_known %}
+    <meta property="og:image:type" content="{{ site.social.image_type }}">
+    <meta property="og:image:width" content="{{ site.social.image_width }}">
+    <meta property="og:image:height" content="{{ site.social.image_height }}">
+    {%- endif %}
+
+    <!-- Twitter cards: X only. Everyone else above ignores these. -->
+    <meta name="twitter:card" content="{{ site.social.twitter_card | default: 'summary_large_image' }}">
+    <meta name="twitter:title" content="{{ social_title | escape }}">
+    <meta name="twitter:description" content="{{ social_description }}">
+    <meta name="twitter:image" content="{{ social_image }}">
+    {%- if social_image_alt %}
+    <meta name="twitter:image:alt" content="{{ social_image_alt | escape }}">
+    {%- endif %}
+    {%- if site.social.twitter_handle %}
+    <meta name="twitter:site" content="{{ site.social.twitter_handle }}">
+    {%- endif %}
+
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon/pong_logo-icon_v2.ico" alt="favicon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="{{ "/assets/css/pong.css" | relative_url }}">
     <script>
