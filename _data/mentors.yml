@@ -19,3 +19,10 @@
       url: https://steamcommunity.com/id/astrogwomp/  
     - type: instagram
       url: https://www.instagram.com/a_mayx
+
+- name: Ian H.
+  photo: /assets/images/mentor_photos/ian_h.png
+  role: Mentor
+  socials:
+    - type: discord
+      url: https://discord.com/users/476576588402786314
