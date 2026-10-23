@@ -1,6 +1,12 @@
-<script src="/assets/js/theme-toggle.js"></script>
-<script src="/assets/js/nav-controls.js"></script>
-<script src="/assets/js/calendar-view.js"></script>
-<script src="/assets/js/custom-themes.js"></script>
-<script src="/assets/js/share.js"></script>
+{%- comment -%}
+  ?v= is the build stamp, for the reason set out in _includes/head.html: these
+  are served with a four hour max-age, so without it a deploy can leave a
+  visitor running yesterday's script against today's markup.
+{%- endcomment -%}
+{%- assign asset_v = site.time | date: "%s" -%}
+<script src="/assets/js/theme-toggle.js?v={{ asset_v }}"></script>
+<script src="/assets/js/nav-controls.js?v={{ asset_v }}"></script>
+<script src="/assets/js/calendar-view.js?v={{ asset_v }}"></script>
+<script src="/assets/js/custom-themes.js?v={{ asset_v }}"></script>
+<script src="/assets/js/share.js?v={{ asset_v }}"></script>
 {%include goatcounter.html %}

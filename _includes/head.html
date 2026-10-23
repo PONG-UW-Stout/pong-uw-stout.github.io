@@ -155,7 +155,21 @@
 
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon/pong_logo-icon_v2.ico" alt="favicon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="{{ "/assets/css/pong.css" | relative_url }}">
+    {%- comment -%}
+      ?v= is cache-busting, and it is load-bearing rather than tidy. GitHub
+      Pages serves everything under /assets with cache-control: max-age=14400,
+      and the html is revalidated far more often than that, so a deploy that
+      changes a page AND its stylesheet leaves anyone who visited in the last
+      four hours holding new markup styled by old css. That is how the footer
+      shipped looking like an unstyled list of blue links.
+
+      site.time is the build time, so the value changes on everCatch upy deploy and
+      every visitor fetches css that matches the html it came with. It also
+      changes when the file did not, which costs one 33KB request per deploy
+      and is the right trade at this size.
+    {%- endcomment -%}
+    {%- assign asset_v = site.time | date: "%s" -%}
+    <link rel="stylesheet" href="{{ "/assets/css/pong.css" | relative_url }}?v={{ asset_v }}">
     <script>
         // Dark mode script
         (function () {
@@ -164,5 +178,9 @@
                 document.documentElement.setAttribute('data-theme', saved);
             }
         })();
+
+        // Same build stamp, for the theme stylesheets that
+        // assets/js/custom-themes.js injects after load.
+        window.PONG_ASSET_V = "{{ asset_v }}";
     </script>
 </head>
