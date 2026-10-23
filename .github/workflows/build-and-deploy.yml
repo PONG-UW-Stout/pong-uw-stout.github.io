@@ -25,10 +25,18 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3"
+          # Read from .ruby-version, so the version this is checked on and
+          # the version it deploys on cannot drift apart. They were 3.4 and
+          # 3.3 respectively before this.
+          ruby-version: .ruby-version
           bundler-cache: true
 
+      # JEKYLL_ENV=production is what switches jekyll-minifier on; without it
+      # the gem is installed and does nothing. jekyll-feed and jekyll-sitemap
+      # do not care either way.
       - name: Build site
+        env:
+          JEKYLL_ENV: production
         run: bundle exec jekyll build
 
       - name: Upload Pages artifact

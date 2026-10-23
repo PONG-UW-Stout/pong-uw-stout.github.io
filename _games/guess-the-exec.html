@@ -24,7 +24,11 @@ description: Like wordle, but not, and with people
 <div class="gte">
     <div class="gte_stage">
         <div class="mugshot" id="mugshot">
-            <img id="mugshot-img" src="" alt="">
+            <!-- src and alt are set per round by
+                 assets/js/games/guess-the-exec.js, so both start empty.
+                 data-proofer-ignore keeps html-proofer from failing the build
+                 over the empty src. -->
+            <img id="mugshot-img" src="" alt="" data-proofer-ignore>
         </div>
 
         <div class="gte_side">

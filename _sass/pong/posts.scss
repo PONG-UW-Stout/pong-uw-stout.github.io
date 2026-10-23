@@ -18,7 +18,7 @@
 // back to the left margin.
 //
 // Deliberately NOT in ch. Cocogoose's zero is far wider than its lowercase --
-// 70ch measures out at about 109 characters here, not 70 -- and worse, ch is
+// 70ch measures out at about 109 characters here, not 70, and worse, ch is
 // relative to each element's own font size, so the same `70ch` would resolve
 // to one width on the 16px header and a wider one on the 17px article, and the
 // post title would sit a few pixels left of the prose under it. A fixed rem
@@ -31,7 +31,7 @@ $post-measure: 42rem;
 $post-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
 
-// $exec-color over the light page measures about 2.3:1 -- fine as a 2px rule,
+// $exec-color over the light page measures about 2.3:1, fine as a 2px rule but
 // unreadable as text. Links and meta copy in light mode get this darkened
 // version instead, which clears 4.5:1 while still reading as the same orange.
 $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
@@ -51,12 +51,12 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
 }
 
 .post-item {
-    // data-theme is ABSENT until a visitor picks a theme -- the inline script
-    // in _includes/head.html only stamps the attribute when localStorage
-    // already holds a choice. So a card painted only under the two explicit
+    // data-theme is ABSENT until a visitor picks a theme: the inline script in
+    // _includes/head.html only stamps the attribute when localStorage already
+    // holds a choice. So a card painted only under the two explicit
     // selectors had no background at all on a first visit: a bordered, empty
     // rectangle. base.scss solves the same problem by painting bare html
-    // $light and overriding only for dark, so this follows it -- the light
+    // $light and overriding only for dark, so this follows it: the light
     // surface is the unguarded default and dark is the exception.
     background: $light-card-bg;
     border: 1px solid rgba($dark, 0.12);
@@ -118,7 +118,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
 //  A single post.
 //
 //  Scoped off .post-page, the wrapper _layouts/post.md puts around the whole
-//  page, rather than plain #post-container -- because that id is NOT unique to
+//  page, rather than plain #post-container, because that id is NOT unique to
 //  posts. _layouts/lan.md wraps the LAN pages in it too, and those carry
 //  bespoke full-bleed designs (pong/lans/lan-tasy, pong/lans/lan-prix) that a
 //  reading measure would wreck.
@@ -132,7 +132,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
 
     // One place for everything that differs between themes, so no rule below
     // has to repeat the light/dark pair. Light is the unguarded default for
-    // the same reason .post-item needs it -- see the comment up there.
+    // the same reason .post-item needs it; see the comment up there.
     --post-accent: #{$post-accent-ink};
     --post-rule: #{rgba($dark, 0.14)};
     --post-muted: #{rgba($dark, 0.62)};
@@ -153,7 +153,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
     //  Title block.
     //  The layout puts the header and its rule outside #post-container, so
     //  without this they'd sit hard against the left edge while the article
-    //  below them was centred -- the page would look like two documents.
+    //  below them was centred, the page would look like two documents.
     //
     //  Matched on .post-head rather than on `header`, because .post-page is
     //  also worn by /authors/:key/ (so a bio inherits the prose stack below),
@@ -305,7 +305,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
         }
 
         // Only Cocogoose Light and PONG Cocogoose (regular) are loaded, so
-        // `font-weight: bold` on body copy is faux bold -- the browser smears
+        // `font-weight: bold` on body copy is faux bold: the browser smears
         // the light face. Borrowing the regular face instead gives <strong> a
         // real weight difference, and it's the same family the headings use.
         strong,
@@ -326,7 +326,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
         // ---------------------------------------------------------------
         //  Prose elements are matched with :not([class]), because kramdown
         //  never puts a class on anything it generates from Markdown while
-        //  every component that might end up inside a post does -- the
+        //  every component that might end up inside a post does. The
         //  _includes/post-toc.html nav, for one, is an <ol> of <li>s with
         //  classes. An id-anchored selector here would otherwise outrank
         //  that component's own stylesheet and restyle it from underneath.
@@ -370,7 +370,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
 
         // Numerals in the body face are the problem the global .number class
         // exists for, and an <ol> marker is a numeral nobody can wrap in a
-        // span -- the browser generates it. Same fix, applied to the marker.
+        // span, since the browser generates it. Same fix, applied to the marker.
         ol:not([class]) > li:not([class])::marker {
             font-family: "pong_cocogoose";
         }
@@ -404,7 +404,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
 
         // Inline code arrives as a bare <code class="language-plaintext
         // highlighter-rouge"> with no <pre> around it, while a fenced block
-        // buries its <code> inside .highlight -- so "not in a pre" is what
+        // buries its <code> inside .highlight, so "not in a pre" is what
         // separates the two, and it keeps working for raw <code> in a post's
         // own HTML.
         :not(pre) > code {
@@ -487,7 +487,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
         // -------------------------------------------------------------------
 
         // Qualified `div.`, because `highlight` is on BOTH the wrapper div and
-        // the pre inside it -- a bare .highlight would paint the card twice,
+        // the pre inside it; a bare .highlight would paint the card twice,
         // nesting one inside the other.
         div.highlight {
             margin: 1.75rem 0;
@@ -505,12 +505,12 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
         }
 
         // pre.highlight and its <code> are wrappers rouge puts around the
-        // table and nothing else -- flattened so their boxes, and the UA's
+        // table and nothing else, flattened so their boxes, and the UA's
         // default pre background, don't stack up inside the card. The
         // padding lives on the card, so a block that arrives WITHOUT the
-        // line-number table -- a Liquid highlight tag, which goes through
+        // line-number table (a Liquid highlight tag, which goes through
         // Jekyll's own highlighter rather than kramdown and so never sees the
-        // line_numbers setting -- still sits off the border correctly.
+        // line_numbers setting) still sits off the border correctly.
         pre.highlight,
         pre.highlight > code {
             display: block;
@@ -595,7 +595,7 @@ $post-accent-ink: color.scale($exec-color, $lightness: -36%, $saturation: 8%);
                 color: $mentor-color;
             }
 
-            // Definitions and calls -- the names worth finding in a hurry.
+            // Definitions and calls: the names worth finding in a hurry.
             .nf, .fm, .nc, .nn, .nd {
                 color: $diamond-color;
             }

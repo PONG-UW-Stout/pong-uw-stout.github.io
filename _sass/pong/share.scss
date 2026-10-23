@@ -5,9 +5,9 @@
 //  Two kinds of control live in one row, and they are deliberately not equal
 //  weight. The platform links are icon-only circles-in-waiting: they are there
 //  for the person who wants them and otherwise stay quiet. The copy-link
-//  button is wide and labelled, because Discord -- the club's actual home --
-//  has no share url, so copying the link IS the Discord share, and it has to
-//  be the thing your eye lands on.
+//  button is wide and labelled, because Discord (the club's actual home) has
+//  no share url, so copying the link IS the Discord share, and it has to be
+//  the thing your eye lands on.
 //
 //  Brand colours are not written here. Each link carries its own as the
 //  --share-color custom property, pulled from _data/socials.yml by the
@@ -37,7 +37,7 @@
 .share {
     // Lines up with the post's own reading column. pong/posts.scss centres the
     // article at a 70ch measure, and the row is a footer to that article, so it
-    // has to sit on the same left edge wherever the layout drops it -- inside
+    // has to sit on the same left edge wherever the layout drops it: inside
     // #post-container next to the <article>, or after it.
     max-width: 70ch;
     margin: 3rem auto 1rem;
@@ -187,7 +187,7 @@
         transform: translateY(0);
     }
 
-    // The script sets this when there is no clipboard to write to -- an
+    // The script sets this when there is no clipboard to write to, meaning an
     // insecure origin, or a browser that refuses. The button says so instead
     // of silently doing nothing.
     &.is-copy-failed,
@@ -201,7 +201,7 @@
 }
 
 // Announcement target for screen readers. The visible label change on the
-// button is for everyone else, so this never needs to be seen -- but it must
+// button is for everyone else, so this never needs to be seen, but it must
 // stay in the accessibility tree, which rules out display:none.
 .share__status {
     position: absolute;

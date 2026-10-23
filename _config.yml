@@ -9,7 +9,7 @@ title: PONG
 # This has to exist. Open Graph requires og:url and og:image to be ABSOLUTE
 # urls, and with no `url` set Jekyll's `absolute_url` filter quietly falls back
 # to emitting a root-relative path ("/posts/foo/"). Every crawler that matters
-# -- Discord, Slack, Bluesky, iMessage, X, Facebook, LinkedIn -- discards a
+# (Discord, Slack, Bluesky, iMessage, X, Facebook, LinkedIn) discards a
 # relative og:image outright, so the preview would come back with no picture
 # and, on the stricter ones, no card at all.
 #
@@ -29,7 +29,7 @@ baseurl: ""
 # Fallback description for pages whose front matter has none. Posts, games and
 # LANs all set their own `description:`; the tabs (home, about, events, games,
 # posts, lans) do not, and this is what their previews say instead. Keep it
-# under ~200 characters -- Discord and X both truncate past roughly that.
+# under ~200 characters; Discord and X both truncate past roughly that.
 description: >-
   The People's Organization of Network Gaming: UW-Stout's student gaming club,
   and the people behind the 48-hour LAN parties in the Memorial Student Center.
@@ -40,7 +40,7 @@ social:
   # STOPGAP. This is the nav banner, which is the only image in the repo: it is
   # 376x120 and it is a white wordmark on TRANSPARENCY. Open Graph wants
   # roughly 1200x630 on an opaque background, so this is both the wrong shape
-  # and the wrong kind of file for the job -- see the long note in
+  # and the wrong kind of file for the job. See the long note in
   # _includes/head.html. It is pointed at here anyway because a real image in
   # the wrong shape still beats no image, and because swapping in a proper one
   # is then a one-line change.
@@ -71,7 +71,125 @@ kramdown:
       line_numbers: true
 
 plugins:
+  # https://github.com/jekyll/jekyll-watch
   - jekyll-watch
+  # https://github.com/jekyll/jekyll-sitemap
+  - jekyll-sitemap
+  # https://github.com/jekyll/jekyll-feed
+  - jekyll-feed
+  # https://github.com/jekyll/jekyll-compose
+  - jekyll-compose
+  # https://github.com/jekyll/jekyll-archives
+  - jekyll-archives
+  # https://github.com/jekyll/jekyll-redirect-from
+  - jekyll-redirect-from
+  # https://github.com/benbalter/jekyll-include-cache
+  - jekyll-include-cache
+  # https://github.com/digitalsparky/jekyll-minifier
+  - jekyll-minifier
+
+# ---------------------------------------------------------------------------
+#  Plugin configuration
+# ---------------------------------------------------------------------------
+#
+# Only three of the plugins above read anything from this file. Of the rest,
+# two are worth knowing about.
+#
+# jekyll-sitemap takes no options but reads `url` at the top of this file, so
+# that has to stay correct.
+#
+# jekyll-redirect-from is driven per page from front matter. Put the OLD path
+# on the NEW page when renaming one and every link already posted to Discord
+# keeps working:
+#
+#     ---
+#     title: LAN-Prix
+#     redirect_from:
+#       - /lans/lan-prix-2026/
+#     ---
+#
+# jekyll-include-cache is installed but unused; see the note at the bottom.
+
+# Tag and category pages. `enabled` is the only setting that matters: with it
+# unset the plugin generates nothing at all.
+#
+# With nothing in _posts tagged, this generates zero pages and costs nothing.
+# It starts producing /tags/<name>/ the moment a post declares a tag.
+jekyll-archives:
+  enabled:
+    - tags
+    - categories
+
+  # Both archive kinds share _layouts/archive.html, which reuses the same
+  # post-list markup as /posts/ and /lans/.
+  layouts:
+    tag: archive
+    category: archive
+
+  # Trailing slashes to match the rest of the site (`permalink: /:name/` on the
+  # tabs collection, /posts/:title/ on posts).
+  permalinks:
+    tag: /tags/:name/
+    category: /categories/:name/
+
+# RSS. Every value here is jekyll-feed's own default, written out so the next
+# person can see what the knobs are without going to the README.
+feed:
+  # Where the feed is written, and what _includes/head.html should point an
+  # <link rel="alternate"> at if we ever add one.
+  path: feed.xml
+
+  # How many of the most recent posts go in the feed.
+  posts_limit: 10
+
+# Minification. Inert unless JEKYLL_ENV=production is set, which both workflows
+# in .github/workflows do and a local `jekyll serve` does not.
+#
+# These are jekyll-minifier's defaults, with two departures flagged in place.
+jekyll-minifier:
+  compress_css: true
+  compress_javascript: true
+  compress_json: true
+
+  remove_multi_spaces: true
+  remove_intertag_spaces: false
+  remove_spaces_inside_tags: true
+  remove_quotes: false
+  preserve_line_breaks: false
+  simple_doctype: false
+
+  # CHANGED FROM THE DEFAULT (true). This repo keeps a lot of its reasoning in
+  # HTML comments (the bacon note in _tabs/games.md, the message to the next
+  # webadmin above the games list), and stripping them from the served page
+  # means nobody who views source ever finds them. They cost a few hundred
+  # bytes. Flip to true if payload ever actually matters.
+  remove_comments: false
+
+  # Leave the generated XML alone. Minifying feed.xml and sitemap.xml saves
+  # almost nothing and makes both annoying to eyeball when a crawler complains.
+  exclude:
+    - "feed.xml"
+    - "sitemap.xml"
+    - "robots.txt"
+
+# A note on jekyll-include-cache, since it is installed and unused:
+#
+# {% include_cached %} renders an include ONCE and reuses that output everywhere.
+# That only works for includes whose output does not depend on the page. Neither
+# of this site's two big includes qualifies:
+#
+#   head.html  reads page.title, page.description, page.url, page.image,
+#              page.date and page.authors. Caching it would give every page the
+#              first-built page's <title>, canonical url and og: tags, which is
+#              precisely the link-preview breakage the long comments at the top
+#              of this file and in head.html exist to prevent. Do not.
+#   nav.html   reads page.url, to put .active on the current tab. Caching it
+#              would freeze the highlight on one tab. Passing page.url as a
+#              parameter fixes the correctness problem but creates one cache
+#              entry per page, which is no faster than not caching.
+#
+# It is worth keeping installed for a future include that is genuinely static
+# (a footer, a sponsor strip built from _data), where it does help.
 
 exclude:
   - "*.gem"

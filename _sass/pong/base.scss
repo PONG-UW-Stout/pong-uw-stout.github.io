@@ -23,11 +23,24 @@ html {
 body {
     margin: 0px;
     padding: 0px;
+
+    // Sticky footer. On any page shorter than the viewport (/posts/ and
+    // /lans/ both are) the footer would otherwise stop wherever the content
+    // ended, leaving a band of page background below it that reads as a page
+    // that failed to finish rendering. A column flex body with the content
+    // taking up the slack pins it to the bottom instead.
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 #content {
     padding: 0% 5%;
     margin: 15px;
+
+    // Takes the leftover height, so on a short page the footer is pushed to
+    // the bottom and on a long one it simply follows the content.
+    flex: 1 0 auto;
 }
 
 h1,

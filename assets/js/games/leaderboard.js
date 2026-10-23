@@ -130,7 +130,7 @@
     //
     // Returns the place the run took, or 0 if it didn't make the table. Sorting
     // is stable and the new row goes in last, so matching your own record
-    // leaves the older run ahead of it — a tie doesn't demote the run that got
+    // leaves the older run ahead of it, so a tie doesn't demote the run that got
     // there first.
     function submit(game, variant, score) {
         const value = Math.floor(Number(score));
@@ -168,7 +168,7 @@
     // left where they are. Without this, shipping the table would silently
     // retire everyone's records.
     //
-    // Frogger's old key was the board alone, with no mode in it — which is the
+    // Frogger's old key was the board alone, with no mode in it, which is the
     // bug that prompted the shared store, since a gentle Chill run set the
     // record a Classic player then had to beat. There is no way to tell now
     // which mode an old score came from, so it lands on Classic, the default.

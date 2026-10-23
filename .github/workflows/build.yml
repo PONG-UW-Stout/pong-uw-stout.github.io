@@ -7,18 +7,40 @@ on:
 permissions:
   contents: read
 
+# A PR that gets three pushes in a minute does not need three full runs. Only
+# the newest matters, so supersede the ones still going.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          # `rake images` compares against the base branch to work out which
+          # images the PR actually touches, which needs history. The default
+          # fetch-depth of 1 has none, and the task would skip itself.
+          fetch-depth: 0
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          # Read from .ruby-version, so the version a PR is checked on and the
+          # version it deploys on cannot drift apart.
+          ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Build site
-        run: bundle exec jekyll build
+      # `rake` is build + htmlproofer + validate + images, so a broken link, a
+      # social type with no icon, a photo path with a typo or a 20 MB PNG all
+      # fail the PR rather than reaching main.
+      #
+      # JEKYLL_ENV matches the deploy workflow, so what gets checked here is the
+      # minified HTML that actually ships.
+      - name: Build and check
+        env:
+          JEKYLL_ENV: production
+          BASE_REF: origin/${{ github.base_ref }}
+        run: bundle exec rake

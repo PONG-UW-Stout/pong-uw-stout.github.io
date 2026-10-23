@@ -35,3 +35,10 @@
   socials:
     - type: steam
       url: https://steamcommunity.com/profiles/76561198159209167/
+
+- name: Mahalia S.
+  photo: /assets/images/staff_photos/mahalia_s.png
+  role: Staff
+  socials:
+    - type: steam
+      url: https://steamcommunity.com/profiles/76561199068964849/
