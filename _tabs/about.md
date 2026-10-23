@@ -21,7 +21,7 @@ order: 2
         <div class="flex container">
             {% for exec in site.data.execs %}
                 <div class="flex capsule">
-                    <img src="{{ exec.photo }}" alt="photo of {{exec.name}}">
+                    <img src="{{ exec.photo }}" alt="photo of {{exec.name}}" loading="lazy">
                     <div class="block">
                         <div class="capsule_header exec">
                             <div class="capsule_header_text_container">
@@ -54,7 +54,7 @@ order: 2
         <div class="flex container">
             {% for staff in site.data.staff %}
                 <div class="flex capsule">
-                    <img src="{{ staff.photo }}" alt="photo of {{staff.name}}">
+                    <img src="{{ staff.photo }}" alt="photo of {{staff.name}}" loading="lazy">
                     <div class="block">
                         <div class="capsule_header staff">
                             <div class="capsule_header_text_container">
@@ -88,7 +88,7 @@ order: 2
         <div class="flex container">
             {% for advisor in site.data.advisors %}
                 <div class="flex capsule">
-                    <img src="{{ advisor.photo }}" alt="photo of {{advisor.name}}">
+                    <img src="{{ advisor.photo }}" alt="photo of {{advisor.name}}" loading="lazy">
                     <div class="block">
                         <div class="capsule_header advisor">
                             <div class="capsule_header_text_container">
@@ -121,7 +121,7 @@ order: 2
         <div class="flex container">
             {% for mentor in site.data.mentors %}
                 <div class="flex capsule">
-                    <img src="{{ mentor.photo }}" alt="photo of {{mentor.name}}">
+                    <img src="{{ mentor.photo }}" alt="photo of {{mentor.name}}" loading="lazy">
                     <div class="block">
                         <div class="capsule_header mentor">
                             <div class="capsule_header_text_container">
@@ -154,7 +154,7 @@ order: 2
     <div class="flex container">
       {% for sponsor in site.data.pong_info.sponsors.tiers['platinum'] %}
         <div class="flex capsule">
-          <img src="{{ sponsor.logo }}" alt="logo for {{ sponsor.name }}">
+          <img src="{{ sponsor.logo }}" alt="logo for {{ sponsor.name }}" loading="lazy">
           <div class="block">
             <div class="capsule_header platinum">
               <div class="capsule_header_text_container">
@@ -186,7 +186,7 @@ order: 2
     <div class="flex container">
       {% for sponsor in site.data.pong_info.sponsors.tiers['diamond'] %}
         <div class="flex capsule">
-          <img src="{{ sponsor.logo }}" alt="logo for {{ sponsor.name }}">
+          <img src="{{ sponsor.logo }}" alt="logo for {{ sponsor.name }}" loading="lazy">
           <div class="block">
             <div class="capsule_header diamond">
               <div class="capsule_header_text_container">
@@ -218,7 +218,7 @@ order: 2
     <div class="flex container">
       {% for sponsor in site.data.pong_info.sponsors.tiers['gold'] %}
         <div class="flex capsule">
-          <img src="{{ sponsor.logo }}" alt="logo for {{ sponsor.name }}">
+          <img src="{{ sponsor.logo }}" alt="logo for {{ sponsor.name }}" loading="lazy">
           <div class="block">
             <div class="capsule_header gold">
               <div class="capsule_header_text_container">
