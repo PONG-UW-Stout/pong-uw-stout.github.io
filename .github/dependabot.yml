@@ -12,3 +12,14 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+
+  # The gems matter as much as the actions: one of them rewrites every page on
+  # build, another gates every PR. Gemfile.lock is gitignored, so these PRs only
+  # ever touch the pinned versions in the Gemfile itself.
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
