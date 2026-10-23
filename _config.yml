@@ -9,7 +9,7 @@ title: PONG
 # This has to exist. Open Graph requires og:url and og:image to be ABSOLUTE
 # urls, and with no `url` set Jekyll's `absolute_url` filter quietly falls back
 # to emitting a root-relative path ("/posts/foo/"). Every crawler that matters
-# -- Discord, Slack, Bluesky, iMessage, X, Facebook, LinkedIn -- discards a
+# (Discord, Slack, Bluesky, iMessage, X, Facebook, LinkedIn) discards a
 # relative og:image outright, so the preview would come back with no picture
 # and, on the stricter ones, no card at all.
 #
@@ -29,7 +29,7 @@ baseurl: ""
 # Fallback description for pages whose front matter has none. Posts, games and
 # LANs all set their own `description:`; the tabs (home, about, events, games,
 # posts, lans) do not, and this is what their previews say instead. Keep it
-# under ~200 characters -- Discord and X both truncate past roughly that.
+# under ~200 characters; Discord and X both truncate past roughly that.
 description: >-
   The People's Organization of Network Gaming: UW-Stout's student gaming club,
   and the people behind the 48-hour LAN parties in the Memorial Student Center.
@@ -40,7 +40,7 @@ social:
   # STOPGAP. This is the nav banner, which is the only image in the repo: it is
   # 376x120 and it is a white wordmark on TRANSPARENCY. Open Graph wants
   # roughly 1200x630 on an opaque background, so this is both the wrong shape
-  # and the wrong kind of file for the job -- see the long note in
+  # and the wrong kind of file for the job. See the long note in
   # _includes/head.html. It is pointed at here anyway because a real image in
   # the wrong shape still beats no image, and because swapping in a proper one
   # is then a one-line change.

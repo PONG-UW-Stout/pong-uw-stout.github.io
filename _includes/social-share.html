@@ -12,12 +12,12 @@
 
   Every target here is a plain "share intent" link: a url the platform
   publishes that opens its composer with the post already filled in. There
-  is no SDK, no tracking pixel and no third-party script -- the whole row
+  is no SDK, no tracking pixel and no third-party script. The whole row
   is six anchors and one button, and it keeps working with JavaScript off
   (except the copy button, which announces itself as broken rather than
   lying, see assets/js/share.js).
 
-  Discord is deliberately absent. It has no share-intent url at all -- you
+  Discord is deliberately absent. It has no share-intent url at all; you
   paste a link into a channel and Discord unfurls it from the Open Graph
   tags in _includes/head.html. Since Discord is where this club actually
   talks, the copy-link button is the most important control in the row and
@@ -41,7 +41,7 @@
 
 {%- comment -%}
   Encode once, up front. url_encode is form encoding, so a space becomes a
-  "+" -- which is correct inside a query string (every target below but
+  "+", which is correct inside a query string (every target below but
   one) and wrong inside a mailto:, where the mail client would show a
   literal plus. The two mailto values therefore get the pluses turned back
   into %20, and the line breaks are written as %0A by hand because Liquid

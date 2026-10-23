@@ -5,7 +5,7 @@
 //  composer and works with JavaScript off; this one cannot, because there is
 //  no markup that copies text.
 //
-//  It exists because Discord -- where this club actually posts -- publishes no
+//  It exists because Discord, where this club actually posts, publishes no
 //  share-intent url. You share a PONG link on Discord by pasting it, so the
 //  job here is to get the right url onto the clipboard and then SAY SO, since
 //  a clipboard write leaves nothing on screen to prove it happened.
@@ -13,8 +13,8 @@
 //  Three ways to copy, tried in order, because the modern one is unavailable
 //  more often than people expect:
 //    1. navigator.clipboard, which browsers only expose on a secure origin.
-//       A site served over plain http -- someone previewing a build on the LAN
-//       at an event, say -- does not get it.
+//       A site served over plain http (someone previewing a build on the LAN
+//       at an event, say) does not get it.
 //    2. document.execCommand('copy') over a temporary textarea. Deprecated,
 //       still implemented everywhere, and the only option on http.
 //    3. Select the url and tell the visitor to press the keys themselves.
@@ -106,7 +106,7 @@
         var text = copied ? 'Copied!' : 'Press Ctrl+C';
         var announcement = copied
             ? 'Link copied to the clipboard'
-            : 'Copying failed. The link is selected -- press Control C, or Command C, to copy it.';
+            : 'Copying failed. The link is selected: press Control C, or Command C, to copy it.';
 
         button.classList.toggle('is-copied', copied);
         button.classList.toggle('is-copy-failed', !copied);

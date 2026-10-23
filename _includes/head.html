@@ -12,8 +12,8 @@
       bare url. Chat is how this club actually shares things, and chat
       clients only read the <head>.
 
-      One set of values feeds three vocabularies -- plain <meta name>,
-      Open Graph (og:), and Twitter cards -- because the crawlers disagree
+      One set of values feeds three vocabularies (plain <meta name>,
+      Open Graph (og:), and Twitter cards) because the crawlers disagree
       about which to read. Discord, Slack, Bluesky, iMessage, Facebook and
       LinkedIn all read Open Graph; X reads twitter: first and falls back to
       og:; search engines want the plain description. So the values are
@@ -21,7 +21,7 @@
 
       Resolution order for each value: this page's front matter, then
       something sensible derived from the page, then the site-wide default
-      from _config.yml. Nothing here may assume front matter exists -- the
+      from _config.yml. Nothing here may assume front matter exists, since the
       tabs (home, about, events, games, posts) carry neither a title nor a
       description, and they get previewed too.
     =======================================================================
@@ -29,7 +29,7 @@
 
     {%- comment -%}
       Title. "Page | PONG" where there is a page title, bare "PONG" where
-      there is not -- the old version appended unconditionally and left
+      there is not. The old version appended unconditionally and left
       title-less pages reading " | PONG".
     {%- endcomment -%}
     {%- if page.title -%}
@@ -70,8 +70,8 @@
       THE IMAGE IS THE WEAK POINT OF ALL THIS. The only image asset in the
       repo is the nav banner: 376x120, and a white wordmark on a transparent
       background. Open Graph consumers want about 1200x630 (a 1.91:1 card),
-      and the ones that composite transparency onto a light surface -- Slack
-      in light mode, iMessage, Bluesky -- will render a white logo onto
+      and the ones that composite transparency onto a light surface (Slack
+      in light mode, iMessage, Bluesky) will render a white logo onto
       white. Discord happens to get away with it because its own background
       is dark.
 
@@ -79,7 +79,7 @@
       Facebook's and LinkedIn's crawlers still do not reliably fetch.
 
       So: what is emitted below is the best available, not the right thing.
-      The fix is an asset, not code -- a 1200x630 PNG or JPEG with an opaque
+      The fix is an asset, not code: a 1200x630 PNG or JPEG with an opaque
       PONG-coloured background. Drop it in /assets/images/social/ and point
       _config.yml's social.image (and width/height/type) at it; nothing in
       this file has to change.
@@ -111,7 +111,7 @@
     <meta property="og:locale" content="en_US">
     {%- comment -%}
       og:type is "article" for anything with a publication date and an
-      author -- posts today, and nothing else. Everything else is a
+      author, which today means posts and nothing else. Everything else is a
       "website", which is what the spec's own default is anyway.
     {%- endcomment -%}
     {%- if page.collection == "posts" %}

@@ -4,14 +4,14 @@
 
   Pure Liquid, no plugin and no JavaScript. GitHub Pages only runs the gems on
   its allowlist and this site's `plugins:` list is just jekyll-watch, so
-  jekyll-toc is off the table -- we scrape the headings out of the already
+  jekyll-toc is off the table, so we scrape the headings out of the already
   rendered post HTML instead.
 
   Why scrape the rendered HTML rather than the Markdown source: kramdown's
   auto_ids is on (it ships on by default and nothing in _config.yml turns it
   off), so every heading already arrives here carrying the exact `id` the
   browser needs for the fragment jump. Reading those ids back out means we can
-  never disagree with the anchor we are linking to -- including kramdown's own
+  never disagree with the anchor we are linking to, including kramdown's own
   collision handling, where a second "Games" heading becomes id="games-1". If
   we slugged the heading text ourselves we would have to re-implement that
   de-duplication and would still drift the moment kramdown changed its rules.
@@ -51,9 +51,9 @@
   {%- comment -%}
     Hand-rolled nesting. Liquid has no recursion, so we walk the headings in
     document order and track which tags we have left open:
-      li2_open  -- an h2 <li> is open and may still gain a sublist
-      sub_open  -- that <li> has an <ol> of h3s inside it
-      li3_open  -- an h3 <li> inside that sublist is open
+      li2_open:  an h2 <li> is open and may still gain a sublist
+      sub_open:  that <li> has an <ol> of h3s inside it
+      li3_open:  an h3 <li> inside that sublist is open
     Every branch below only ever closes what it knows is open, so the markup
     comes out balanced no matter what order the headings arrive in.
   {%- endcomment -%}
@@ -112,7 +112,7 @@
               {%- comment -%}
                 An h3 before any h2. There is no parent to nest it under, so
                 promote it to the top level as a self-contained entry and let
-                the stylesheet mark it with a dash instead of a number -- it has
+                the stylesheet mark it with a dash instead of a number, as it has
                 no "1.2" to claim. The state flags stay untouched, so a later h2
                 still starts a clean branch.
               {%- endcomment -%}
@@ -133,15 +133,15 @@
 
   {%- comment -%}
     A post with no headings (or only headings we had to skip) produces an empty
-    body -- emit nothing at all rather than an empty, pointless <nav>.
+    body, emit nothing at all rather than an empty, pointless <nav>.
   {%- endcomment -%}
   {%- assign toc_check = toc_body | strip -%}
   {%- if toc_check != '' -%}
 <nav class="post-toc" aria-label="Table of contents">
   {%- comment -%}
     <details> gives us a collapsible TOC with no JavaScript at all. It starts
-    open so the outline is the first thing a reader sees, and on a phone -- where
-    a long TOC would push the article off screen -- one tap folds it away.
+    open so the outline is the first thing a reader sees, and on a phone, where
+    a long TOC would push the article off screen, one tap folds it away.
   {%- endcomment -%}
   <details class="post-toc__shell" open>
     <summary class="post-toc__summary">
