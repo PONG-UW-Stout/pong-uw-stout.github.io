@@ -1,0 +1,135 @@
+{% comment %}
+  The site footer: a Pong court laid on its side.
+
+  This borrows the visual vocabulary the 404 page already established (two
+  paddles, a dashed net, a ball in play), so the bottom of every page reads as
+  the same site as /404.html rather than as a generic link strip. The court
+  elements are decorative and carry aria-hidden; everything a screen reader
+  needs is in the two columns and the link rows.
+
+  Like the nav and the home page's LAN section, the footer stays dark in BOTH
+  themes. That is deliberate and it is why there is no light-mode variant
+  below: the dark band is what separates the chrome from the page.
+
+  Everything here is read from _data, so a new social account or a new LAN is a
+  data edit and never a template edit:
+
+    site.data.pong_info.socials   the row of icons
+    site.data.pong_info.next_lan  the "next LAN" block
+    site.data.socials             each platform's icon and brand colour
+    site.tabs                     the quick links, same source as the nav
+{% endcomment %}
+
+{%- assign email_url = "" -%}
+{%- for social in site.data.pong_info.socials -%}
+    {%- if social.type == "email" -%}{%- assign email_url = social.url -%}{%- endif -%}
+{%- endfor -%}
+
+<footer class="pong_footer dark_bg">
+
+    {% comment %}
+      The court. Paddles and ball are absolutely positioned against this box,
+      so it has to stay the positioning context for them.
+    {% endcomment %}
+    <div class="pong_footer_court">
+        <div class="pong_footer_paddle pong_footer_paddle--left" aria-hidden="true"></div>
+        <div class="pong_footer_paddle pong_footer_paddle--right" aria-hidden="true"></div>
+        <div class="pong_footer_ball" aria-hidden="true"></div>
+
+        <div class="pong_footer_sides">
+
+            <div class="pong_footer_side">
+                <p class="pong_footer_wordmark">PONG</p>
+                <p class="pong_footer_expand">
+                    People's Organization<br>of Network Gaming
+                </p>
+
+                {% comment %}
+                  A div with role="navigation" rather than a <nav>, which is
+                  what this would otherwise be. Every bare `nav` selector in
+                  the stylesheets was written when the navbar was the only nav
+                  on the page, and a second one picks all of them up:
+                  pong/header gives it the navbar's flex layout, 60px min
+                  height and 30px bottom margin, pong/lans/* add a coloured
+                  border under it, and nine of pong/seasonal-themes hang
+                  Christmas lights or Halloween slime off it through
+                  nav::before and nav::after. The role is equivalent to the
+                  element for assistive tech and matches none of that CSS.
+                {% endcomment %}
+                <div class="pong_footer_links" role="navigation" aria-label="Footer">
+                    {%- for tab in site.tabs -%}
+                        <a href="{{ tab.url | relative_url }}">{{ tab.title }}</a>
+                    {%- endfor -%}
+                </div>
+            </div>
+
+            <div class="pong_footer_side pong_footer_side--right">
+                {% comment %}
+                  Mirrors the guard on the home page: when there is no LAN on
+                  the books, pong_info.yml carries the name "To Be Announced"
+                  rather than being removed, and a details link to a page that
+                  does not exist yet would be a broken link.
+                {% endcomment %}
+                {%- assign lan = site.data.pong_info.next_lan -%}
+                {%- if lan -%}
+                    <p class="pong_footer_label">Next LAN</p>
+                    <p class="pong_footer_lan">{{ lan.name }}</p>
+                    <p class="pong_footer_dates">
+                        <time>{{ lan.start_date }}</time> &ndash; <time>{{ lan.end_date }}</time>
+                    </p>
+                    {%- if lan.name != "To Be Announced" and lan.details_url -%}
+                        <p><a class="pong_footer_details" href="{{ lan.details_url | relative_url }}">Details &gt;</a></p>
+                    {%- endif -%}
+                {%- endif -%}
+
+                <p class="pong_footer_label">Find us</p>
+                {%- if email_url -%}
+                    <p><a class="pong_footer_contact" href="mailto:{{ email_url }}">{{ email_url }}</a></p>
+                {%- endif -%}
+                <p class="pong_footer_place">
+                    Memorial Student Center<br>UW-Stout, Menomonie WI
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    {% comment %}
+      The net, turned on its side to do the job a <hr> would otherwise do.
+    {% endcomment %}
+    <div class="pong_footer_net" aria-hidden="true"></div>
+
+    <div class="pong_footer_score">
+        <ul class="pong_footer_socials">
+            {%- for social in site.data.pong_info.socials -%}
+                {%- comment -%}
+                  "link" is the club's own url. It is in the data because the
+                  person cards on /about use it, but an icon here that points
+                  at the page you are already on is just a dead end.
+                {%- endcomment -%}
+                {%- if social.type == "link" -%}{%- continue -%}{%- endif -%}
+
+                {%- assign brand = site.data.socials[social.type] -%}
+                {%- if social.type == "email" -%}
+                    {%- assign href = social.url | prepend: "mailto:" -%}
+                {%- else -%}
+                    {%- assign href = social.url -%}
+                {%- endif -%}
+
+                <li>
+                    <a class="pong_footer_social"
+                       href="{{ href }}"
+                       style="--brand-color: {{ brand.color }};"
+                       {% unless social.type == "email" %}target="_blank" rel="noopener"{% endunless %}
+                       aria-label="PONG on {{ social.type | capitalize }}">
+                        <i class="{{ brand.icon }}" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {%- endfor -%}
+        </ul>
+
+        <p class="pong_footer_copy">
+            &copy; <span class="number">{{ 'now' | date: "%Y" }}</span> PONG &middot; UW-Stout
+        </p>
+    </div>
+</footer>

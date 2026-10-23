@@ -1,0 +1,402 @@
+// ===========================================================================
+//  Footer: a Pong court on its side.
+//
+//  Shares its vocabulary with pong/four-oh-four: paddles at the edges, a
+//  dashed net, a ball in play. Markup is _includes/footer.html.
+//
+//  Like .dark_bg on the nav, this band stays dark in BOTH themes, so there is
+//  no [data-theme] work here at all. That is the point of the band: it is the
+//  frame around the page, not part of it.
+// ===========================================================================
+
+@use "variables" as *;
+
+// ---------------------------------------------------------------------------
+//  Court geometry
+//
+//  The rally keyframes have to land the ball ON the paddle face, so every
+//  number the two share is defined once here and the contact points are
+//  computed from it rather than written out again by eye.
+//
+//  Horizontal: the left paddle occupies $paddle-inset to
+//  $paddle-inset + $paddle-width. The ball is centred on its own `left`, so
+//  its edge meets that face when its centre sits half a ball further in.
+//
+//  Vertical: the paddle's centre rests at 50% and rises by $paddle-travel to
+//  meet the ball, so contact happens at 50% - $paddle-travel on both sides.
+// ---------------------------------------------------------------------------
+
+$paddle-inset: 1.25rem;
+$paddle-width: 6px;
+$paddle-height: 68px;
+$paddle-travel: 22px;
+$ball-size: 10px;
+
+// Ball-centre positions at the moment of contact.
+$contact-left: calc(#{$paddle-inset} + #{$paddle-width} + #{$ball-size * 0.5});
+$contact-right: calc(100% - #{$paddle-inset} - #{$paddle-width} - #{$ball-size * 0.5});
+$contact-top: calc(50% - #{$paddle-travel});
+
+// The ball's low point on the return, mirrored so the rally stays symmetric.
+$return-bottom: calc(50% + #{$paddle-travel});
+
+.pong_footer {
+    margin-top: 4rem;
+    padding: 0;
+
+    // The nav is full-bleed and so is this, but #content carries its own 15px
+    // margin, so without this the footer would sit inset from the nav above
+    // it and the misalignment is visible on every page.
+    width: 100%;
+
+    // body is a column flex container (see pong/base) to pin this to the
+    // bottom of short pages. Without this the footer is a shrinkable flex
+    // item and gets squashed when the content is tall.
+    flex-shrink: 0;
+}
+
+// ---------------------------------------------------------------------------
+//  The court
+// ---------------------------------------------------------------------------
+
+.pong_footer_court {
+    position: relative;
+
+    // There is no global border-box on this site, so without this the 3.5rem
+    // of horizontal padding below is added OUTSIDE the 1100px, making the
+    // court 1212px wide. The net and the score row are both plain 1100px
+    // blocks, so the court would be 56px wider on each side than they are and
+    // the paddles would hang outside the net line they are meant to sit on.
+    box-sizing: border-box;
+
+    max-width: 1100px;
+    margin: 0 auto;
+
+    // Vertical room for the ball to travel without colliding with the text,
+    // horizontal room for the paddles to sit outside the columns.
+    padding: 2.75rem 3.5rem 2rem;
+    overflow: hidden;
+}
+
+.pong_footer_paddle {
+    position: absolute;
+    top: 50%;
+    width: $paddle-width;
+    height: $paddle-height;
+    margin-top: -$paddle-height * 0.5;
+    border-radius: 2px;
+    background-color: $light;
+
+    // Quiet enough to read as court furniture rather than as a UI control
+    // somebody might try to click.
+    opacity: 0.5;
+}
+
+.pong_footer_paddle--left {
+    left: $paddle-inset;
+    animation: pong-footer-left 9s ease-in-out infinite;
+}
+
+.pong_footer_paddle--right {
+    right: $paddle-inset;
+    animation: pong-footer-right 9s ease-in-out infinite;
+}
+
+.pong_footer_ball {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: $ball-size;
+    height: $ball-size;
+    margin: (-$ball-size * 0.5) 0 0 (-$ball-size * 0.5);
+    border-radius: 50%;
+    background-color: $exec-color;
+    opacity: 0.75;
+    animation: pong-footer-ball 9s linear infinite;
+}
+
+// ---------------------------------------------------------------------------
+//  The two sides
+// ---------------------------------------------------------------------------
+
+.pong_footer_sides {
+    position: relative; // above the ball, so the rally passes behind the text
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.pong_footer_side {
+    flex: 1 1 260px;
+    min-width: 0;
+}
+
+.pong_footer_side--right {
+    text-align: right;
+}
+
+.pong_footer_wordmark {
+    font-family: "pong_cocogoose";
+    font-size: 1.75rem;
+    letter-spacing: 0.22em;
+    margin: 0 0 0.5rem;
+}
+
+.pong_footer_expand {
+    margin: 0 0 1.25rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    opacity: 0.75;
+}
+
+.pong_footer_links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+
+    a {
+        color: $light;
+        text-decoration: none;
+        font-size: 0.9rem;
+        padding-bottom: 2px;
+
+        // Underline grown from nothing on hover rather than text-decoration,
+        // so the link does not shift the row's line box when it animates.
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.15s ease, color 0.15s ease;
+
+        &:hover,
+        &:focus-visible {
+            border-bottom-color: $exec-color;
+        }
+    }
+}
+
+.pong_footer_label {
+    margin: 0 0 0.35rem;
+    font-family: "pong_cocogoose";
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+.pong_footer_lan {
+    margin: 0;
+    font-family: "pong_cocogoose";
+    font-size: 1.15rem;
+}
+
+.pong_footer_dates {
+    margin: 0.15rem 0 0.5rem;
+    font-size: 0.85rem;
+    opacity: 0.75;
+
+    // No font-family here on purpose. base.scss puts <time> into
+    // "pong_cocogoose", and that is load-bearing rather than decorative: the
+    // body face is CocogooseProTrial-Light, a trial cut whose digits are
+    // placeholder marks. Anything with a number in it has to use the display
+    // face, via a heading, a <time>, or the .number class.
+}
+
+.pong_footer_side--right p {
+    margin-top: 0;
+}
+
+.pong_footer_side--right .pong_footer_label:not(:first-child) {
+    margin-top: 1.25rem;
+}
+
+.pong_footer_details,
+.pong_footer_contact {
+    color: $exec-color;
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    &:hover,
+    &:focus-visible {
+        text-decoration: underline;
+    }
+}
+
+.pong_footer_place {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.75;
+}
+
+// ---------------------------------------------------------------------------
+//  The net, and the score row under it
+// ---------------------------------------------------------------------------
+
+.pong_footer_net {
+    max-width: 1100px;
+    height: 3px;
+    margin: 0 auto;
+
+    // Same construction as .pong404_net, rotated: a repeating hard-stop
+    // gradient rather than a dashed border, so the dash length is ours to set.
+    background-image: linear-gradient(to right, $light 0 50%, transparent 50% 100%);
+    background-size: 18px 100%;
+    opacity: 0.35;
+}
+
+.pong_footer_score {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.25rem 3.5rem 1.75rem;
+}
+
+.pong_footer_socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// Brand colour arrives as --brand-color on each link, set by the include from
+// _data/socials.yml, exactly as the share row does it. No brand hex is written
+// in this file, so adding a platform never means editing CSS.
+.pong_footer_social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: $light;
+    font-size: 1rem;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.08);
+    transition: background-color 0.15s ease, transform 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+        background-color: var(--brand-color, #{$exec-color});
+        transform: translateY(-2px);
+    }
+}
+
+.pong_footer_copy {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.6;
+
+    // The year is wrapped in .number in the markup for the trial-font reason
+    // above. Pull it back to this size so it does not sit larger than the
+    // words either side of it.
+    .number {
+        font-size: inherit;
+    }
+}
+
+// ---------------------------------------------------------------------------
+//  The rally
+//
+//  One 9s loop shared by the ball and both paddles: the ball crosses, the
+//  paddle on that side rises to meet it, it goes back. Slower and quieter than
+//  the 404's rally, because that one is the whole point of its page and this
+//  one sits under every page on the site and must not pull the eye.
+//
+//  Percentages are the ball's position within .pong_footer_court.
+// ---------------------------------------------------------------------------
+
+@keyframes pong-footer-ball {
+    0%   { left: 50%;             top: 50%; }
+
+    // Contact, left paddle. Both values are the paddle's own position, so
+    // this meets the face however the geometry above is retuned.
+    25%  { left: $contact-left;   top: $contact-top; }
+
+    50%  { left: 50%;             top: $return-bottom; }
+
+    // Contact, right paddle.
+    75%  { left: $contact-right;  top: $contact-top; }
+
+    100% { left: 50%;             top: 50%; }
+}
+
+// Each paddle rises to meet the ball at its own contact keyframe and is back
+// at rest by the time the ball reaches the other end.
+@keyframes pong-footer-left {
+    0%        { transform: translateY(0); }
+    25%       { transform: translateY(-$paddle-travel); }
+    50%, 100% { transform: translateY(0); }
+}
+
+@keyframes pong-footer-right {
+    0%, 50%   { transform: translateY(0); }
+    75%       { transform: translateY(-$paddle-travel); }
+    100%      { transform: translateY(0); }
+}
+
+// ---------------------------------------------------------------------------
+//  Narrow screens
+// ---------------------------------------------------------------------------
+
+@media (max-width: $breakpoint-tablet) {
+
+    // The paddles live in the horizontal padding, and there is not enough of
+    // it left at this width to keep them clear of the text.
+    .pong_footer_paddle,
+    .pong_footer_ball {
+        display: none;
+    }
+
+    .pong_footer_court {
+        padding: 2rem 1.5rem 1.5rem;
+    }
+
+    .pong_footer_sides {
+        gap: 2rem;
+    }
+
+    .pong_footer_side,
+    .pong_footer_side--right {
+        flex-basis: 100%;
+        text-align: left;
+    }
+
+    .pong_footer_score {
+        padding: 1.25rem 1.5rem 1.5rem;
+    }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .pong_footer_score {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+// The 404 does the same: the rally is decoration, and decoration stops when
+// the visitor has asked for less movement.
+@media (prefers-reduced-motion: reduce) {
+
+    .pong_footer_ball,
+    .pong_footer_paddle {
+        animation: none !important;
+    }
+
+    // Hold the still frame at a contact: ball on the left paddle's face, that
+    // paddle risen to meet it. Same computed positions as the keyframes, so
+    // this cannot drift out of line with them.
+    .pong_footer_ball {
+        left: $contact-left;
+        top: $contact-top;
+    }
+
+    .pong_footer_paddle--left {
+        transform: translateY(-$paddle-travel);
+    }
+}
