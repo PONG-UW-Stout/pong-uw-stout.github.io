@@ -34,8 +34,14 @@ const PRIDE_THEMES = [
     }
 ];
 
+// window.PONG_ASSET_V is the build stamp set in _includes/head.html. These
+// stylesheets are injected after load, so they miss the versioning the <link>
+// and <script> tags get in the markup and would otherwise be served from a
+// four hour old cache after a deploy. Falls back to an unversioned url if the
+// global is missing, which only happens if head.html stops setting it.
 function themeUrl(path) {
-    return `${THEME_DIR}/${path}.css`;
+    const v = window.PONG_ASSET_V;
+    return `${THEME_DIR}/${path}.css${v ? `?v=${v}` : ""}`;
 }
 
 function addTheme(cssPath, id) {
