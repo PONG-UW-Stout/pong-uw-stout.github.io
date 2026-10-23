@@ -58,6 +58,31 @@ sponsors:
             url: https://x.com/culvers
           - type: instagram
             url: https://www.instagram.com/culvers
+      - name: AVerMedia
+        logo: /assets/images/sponsor_logos/avermedia.png
+        socials:
+          - type: link
+            url: https://www.avermedia.com/ 
+          - type: facebook
+            url: https://www.facebook.com/AVerMedia/
+          - type: instagram
+            url: https://www.instagram.com/avermedia/
+          - type: twitter
+            url: https://x.com/AVerMedia
+
+      - name: Gamdias
+        logo: /assets/images/sponsor_logos/gamdias.png
+        socials: 
+          - type: link
+            url: https://www.gamdias.com/
+          - type: facebook
+            url: https://www.facebook.com/GAMDIASGAMING/
+          - type: instagram
+            url: https://www.instagram.com/gamdias/
+          - type: youtube
+            url: https://www.youtube.com/user/GamdiasTechnology
+          - type: discord
+            url: https://discord.com/invite/BaYmmau
     diamond:
       - name: Digital Red
         logo: /assets/images/sponsor_logos/digital_red.png
@@ -76,3 +101,15 @@ sponsors:
             url: https://stoutbread.com/
           - type: instagram
             url: https://www.instagram.com/stout.bread/
+      - name: BrightBard
+        logo: /assets/images/sponsor_logos/brightbard.png
+        socials:
+          - type: link
+            url: https://brightbardgames.com/
+          - type: bluesky
+            url: https://bsky.app/profile/brightbard.bsky.social
+          - type: linktree
+            url: https://linktr.ee/brightbard
+          - type: instagram
+            url: https://www.instagram.com/brightbardgames/
+
