@@ -808,77 +808,98 @@ $session-colors: ("red": $gp-red, "teal": $gp-teal, "gold": $gp-gold, "grey": #6
     gap: 8px;
 }
 
-/* =========================================================== EVENT GRID */
+/* =========================================================== STARTING GRID (event entries) */
 
-.gp-event-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 16px;
+.gp-grid-list {
+    border: 1px solid $gp-border;
+    border-top: 3px solid $gp-red;
 }
 
-.gp-event-card {
+.gp-grid-row {
     display: grid;
-    grid-template-rows: auto auto auto auto;
-    grid-template-columns: 72px 1fr;
-    gap: 4px 16px;
-    align-items: start;
-    padding: 20px;
-    background: $gp-dark-panel;
-    border: 1px solid $gp-border;
-    border-left: 4px solid $gp-red;
+    grid-template-columns: 64px 1fr max-content;
+    grid-template-areas: "plate info signup";
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid $gp-border;
     text-decoration: none !important;
-    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    transition: background 0.15s;
+
+    &:last-child { border-bottom: none; }
 
     &:hover {
-        border-left-color: #f52010;
-        transform: translateX(4px);
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-    }
+        background: rgba(225, 6, 0, 0.06);
 
-    .gp-event-num {
-        grid-row: 1 / 4;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: $gp-display;
-        font-size: 2.2rem;
-        font-weight: 900;
-        color: $gp-red;
-        @include gp-red-glow;
-        padding-top: 4px;
+        .gp-grid-signup {
+            background: #f52010;
+            border-color: #f52010;
+        }
     }
+}
 
-    .gp-event-name {
-        font-family: $gp-display;
-        font-size: 1.2rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        color: $gp-white;
-        letter-spacing: 0.04em;
-    }
+.gp-grid-plate {
+    grid-area: plate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    font-family: $gp-display;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: $gp-white;
+    background: $gp-red;
+    border: 2px solid $gp-white;
+}
 
-    .gp-event-format {
-        font-family: $gp-mono;
-        font-size: 12px;
-        color: $gp-teal;
-        letter-spacing: 0.06em;
-    }
+.gp-grid-info {
+    grid-area: info;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
 
-    .gp-event-org {
-        font-size: 14px;
-        color: var(--gp-text-soft);
-        font-style: italic;
-    }
+.gp-grid-game {
+    font-family: $gp-display;
+    font-size: 1.15rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: $gp-white;
+}
 
-    .gp-event-cta {
-        grid-column: 1 / -1;
-        margin-top: 12px;
-        font-family: $gp-display;
-        font-size: 14px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: $gp-red;
-    }
+.gp-grid-meta {
+    font-family: $gp-mono;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gp-text-soft);
+}
+
+.gp-grid-desc {
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--gp-text-soft);
+    margin-top: 2px;
+}
+
+.gp-grid-signup {
+    grid-area: signup;
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-family: $gp-display;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #fff;
+    background: $gp-red;
+    border: 2px solid $gp-red;
+    transition: background 0.15s, border-color 0.15s;
 }
 
 /* ========================================================= PADDOCK NOTES */
@@ -922,6 +943,11 @@ $session-colors: ("red": $gp-red, "teal": $gp-teal, "gold": $gp-gold, "grey": #6
 }
 
 .gp-note p:last-child { margin-bottom: 0; }
+
+.gp-code {
+    font-family: $gp-mono;
+    color: $gp-teal;
+}
 
 /* ============================================================== KIT LIST */
 
@@ -1416,7 +1442,15 @@ $session-colors: ("red": $gp-red, "teal": $gp-teal, "gold": $gp-gold, "grey": #6
 
     .gp-section-title { font-size: 1.8rem; }
 
-    .gp-event-grid { grid-template-columns: 1fr; }
+    .gp-grid-row {
+        grid-template-columns: 48px 1fr;
+        grid-template-areas:
+            "plate  info"
+            "signup signup";
+        row-gap: 10px;
+    }
+
+    .gp-grid-signup { justify-content: center; }
 
     .gp-kit-list { grid-template-columns: 1fr; }
 
