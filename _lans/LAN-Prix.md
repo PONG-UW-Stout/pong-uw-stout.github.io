@@ -33,18 +33,113 @@ facts:
     label: Network
     value: "Provided"
 
-registration_url: 
+registration_url: https://www.lanreg.org/pong/lanprix2026
 
-schedule_image: /assets/images/lan_schedules/lan-prix_schedule.png
+schedule_image: /assets/images/lan_schedules/lan-prix_schedule.webp
 schedule_alt: >-
   The LAN-Prix weekend race programme: a grid of events colour-coded by session,
   flagged as free-to-play and/or competitive. The full running order follows below.
 
-sessions: []
+sessions:
+  - name: Friday, November 20
+    color: red
+    events:
+      - { time: "5:00 PM", name: "SGX F26 Preview", free: true }
+      - { time: "7:00 PM", name: "Retrocycles", free: true }
+      - { time: "8:30 PM", name: "Nocturne Crypts", note: "Survival Games", free: true }
+      - { time: "10:00 PM", name: "Trackmania", free: true }
+      - { time: "11:30 PM", name: "Jackbox Games", free: true }
+  - name: Saturday, November 21
+    color: teal
+    events:
+      - { time: "1:00 AM", name: "SCP: Secret Laboratory", free: true }
+      - { time: "12:00 PM", name: "Make Way", free: true }
+      - { time: "12:30 PM", name: "Super Smash Bros. Ultimate", note: "Hosted by Blue Devil Smash", free: true, contest: true }
+      - { time: "3:00 PM", name: "Pokémon TCG Tournament", free: true, contest: true }
+      - { time: "3:30 PM", name: "Deadlock", free: true, contest: true }
+      - { time: "3:30 PM", name: "Rivals of Aether II", note: "Hosted by Blue Devil Smash", free: true, contest: true }
+      - { time: "7:00 PM", name: "Mario Kart 8 Deluxe", free: true, contest: true }
+      - { time: "9:30 PM", name: "Group Photo", free: true }
+      - { time: "10:00 PM", name: "Cars", note: "With bingo", free: true }
+  - name: Sunday, November 22
+    color: gold
+    events:
+      - { time: "12:00 AM", name: "Peak", contest: true }
+      - { time: "1:00 AM", name: "Garry's Mod" }
+      - { time: "12:00 PM", name: "Party Games", free: true }
+      - { time: "12:00 PM", name: "Ultimate Chicken Horse", free: true }
+      - { time: "2:30 PM", name: "Prize Drawing", free: true }
+  - name: All LAN
+    color: grey
+    events:
+      - { time: "Anytime", name: "Minecraft Bingo", note: "See #lan-resources on Discord" }
+      - { time: "Anytime", name: "Dimension Dash", note: "See #lan-resources on Discord" }
+      - { time: "Anytime", name: "Vs. The Board", note: "See #lan-resources on Discord" }
 
-events: []
+notes:
+  - event: Minecraft Bingo
+    body: "One ticket for a Bingo, two tickets for a blackout! Card is provided in-game thanks to @Quillmark! Game Server: bingo.ponglan.net"
+    link: http://bingo.ponglan.net:8100/
+    link_text: BlueMap
+  - event: Dimension Dash
+    body: "Race to be the fastest in multiple unique parkour courses! Game Server: dimdash.ponglan.net"
+  - event: Vs. The Board
+    body: "Challenge the members of the PONG Board to see who's best! We provide a book of games you can challenge us to, with a list of general challenges and each board member's top picks. You can challenge up to three board members a day, winning one ticket each! You can continue to challenge us afterwards if we have time, but you won't get tickets."
+  - event: Retrocycles
+    body: "Play TRON against your fellow LAN attendees! Get the game here:"
+    link: https://store.steampowered.com/app/1306180/Retrocycles/
+    link_text: Retrocycles on Steam
+  - event: Trackmania
+    body: "No active subscription necessary, as we'll be playing locally over our LAN! Get the game here:"
+    link: https://store.steampowered.com/app/2225070/Trackmania/
+    link_text: Trackmania on Steam
+  - event: Jackbox
+    body: "Hosted in the Terrace! We'll be using moderation, so keep that in mind."
+  - event: "[CGC] Makeway"
+    body: "Collaborative event with the Casual Games Club! Hosted on a few stations in the Ballrooms, no controllers or consoles necessary. Reach out to @Casual Gaming Club Officers with questions."
+  - event: "[BDP] Cars"
+    body: "Come see the Cars movie with Bingo in the Terrace, courtesy of Blue Devil Productions!"
+  - event: SCP Secret Lab
+    body: "Direct connect with this IP: <span class=\"gp-code\">192.69.209.170:7777</span>"
+  - event: Garry's Mod
+    body: "Start the night with the chaos of Trouble in Terrorist Town, before rounding off the night with Prop Hunt! When we're live, you can join with this command: connect <span class=\"gp-code\">192.69.209.170</span>"
 
-notes: []
+events:
+  - game: MarioKart 8 Deluxe Tournament
+    org: PONG
+    url: https://forms.cloud.microsoft/r/CPHWgj9Kzv
+    number: "01"
+    format: Tournament
+    description: Our mega MarioKart tournament! Information on the bracket format will be released ahead of the event as we draw closer to the event. You do not need to bring a Switch. Controllers are provided so please don't bring your own unless you needed it for accessibility purposes. 
+
+  - game: PEAK Speedruns
+    org: PONG
+    url: https://forms.cloud.microsoft/r/Jtu91s6zNH
+    number: "02"
+    format: Tournament
+    description: A race to the PEAK! Whoever is the fastest to the top with the Golden Bing Bong statue is the victor. Make sure you don't actually complete the game until we can verify you have the statue :) (Please note that only the team leader has to fill out this form!) 
+
+  - game: "Blue Devil Smash (Super Smash Bros. Ultimate & Rivals of Aether 2)"
+    org: Blue Devil Smash
+    url: https://www.start.gg/tournament/blue-devil-smash-lan-prix/details
+    number: "03"
+    format: Bracket (start.gg)
+    description: "BDS has their own bracket signups hosted on Start.gg! Questions about the events should be directed to @BDS Officers."
+
+  - game: Deadlock
+    org: PONG
+    url: https://challonge.com/71e1i3o9
+    number: "04"
+    format: Tournament
+    description: "NOTE: This event is subject to change based on playercount! The plan is to run a Street Brawl tournament, trimming down the lobbies until we can play a normal 6v6 match."
+
+  - game: Pokemon TCG Tournament
+    org: Professor Zach
+    url: https://forms.gle/HxMUjAbee4XQwiMT6
+    number: "05"
+    format: Tournament
+    description: "This is an official Pokemon TCG event, hosted by Professor Zach (@Zachariah21), so it has booster packs as prizes for winners, alongside our standard ticket distributions! Signups will be hosted the day of the tournament. If there are further questions about the event, please reach out to them."
+
 
 kit:
   - Your PC or console, with all its peripherals and every cable they need
@@ -65,7 +160,7 @@ faq:
   - q: Do I need to register?
     a: Grab a seat reservation through the link so we know how much table space to set out. Most tournaments also accept entries at check-in.
   - q: How do raffle tickets work?
-    a: Competitive events pay out raffle tickets. Three to first, two to second, and one to every other finisher. Help with setup Saturday and earn a bonus ticket. Drawings on Monday; you must be in the hall to claim.
+    a: Competitive events pay out raffle tickets. Three to first, two to second, and one to every other finisher. Help with setup Saturday and earn a bonus ticket. The prize drawing is Sunday at 2:30 PM; you must be in the hall to claim.
   - q: Does it cost anything to enter a tournament?
     a: Nothing. All PONG events are free to enter. The "free to play" badge means the game itself is free, so you do not need to own anything to compete.
   - q: Can I bring a console instead of a PC?
@@ -453,14 +548,16 @@ faq:
     </div>
 
     {% if page.events.size > 0 %}
-    <div class="gp-event-grid">
+    <div class="gp-grid-list">
       {% for ev in page.events %}
-      <a class="gp-event-card" href="{{ ev.url }}" target="_blank" rel="noopener">
-        <span class="gp-event-num">{{ ev.number }}</span>
-        <span class="gp-event-name">{{ ev.game }}</span>
-        <span class="gp-event-format">{{ ev.format }}</span>
-        <span class="gp-event-org">{{ ev.org }}</span>
-        <span class="gp-event-cta">Enter &rarr;</span>
+      <a class="gp-grid-row" href="{{ ev.url }}" target="_blank" rel="noopener">
+        <span class="gp-grid-plate">{{ ev.number }}</span>
+        <span class="gp-grid-info">
+          <span class="gp-grid-game">{{ ev.game }}</span>
+          <span class="gp-grid-meta">{{ ev.format }} &middot; Hosted by {{ ev.org }}</span>
+          {% if ev.description %}<span class="gp-grid-desc">{{ ev.description }}</span>{% endif %}
+        </span>
+        <span class="gp-grid-signup">Sign Up</span>
       </a>
       {% endfor %}
     </div>
