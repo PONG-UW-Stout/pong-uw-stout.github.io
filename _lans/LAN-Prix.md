@@ -206,7 +206,8 @@ faq:
 }
 </style>
 
-<link rel="stylesheet" href="{{ '/assets/css/lan-prix.css' | relative_url }}">
+{%- assign asset_v = site.time | date: "%s" -%}
+<link rel="stylesheet" href="{{ '/assets/css/lan-prix.css' | relative_url }}?v={{ asset_v }}">
 
 <style>
 .gp-finish-sub--small {
@@ -233,7 +234,7 @@ faq:
 {% assign schedule_exists = false %}
 {% for f in site.static_files %}{% if f.path == page.schedule_image %}{% assign schedule_exists = true %}{% endif %}{% endfor %}
 
-<script src="{{ '/assets/js/lans/lan-prix.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/lans/lan-prix.js' | relative_url }}?v={{ asset_v }}" defer></script>
 
 <div class="gp-lights-sequence" aria-label="Race start lights sequence" aria-hidden="true">
   <div class="gp-lights-row">
