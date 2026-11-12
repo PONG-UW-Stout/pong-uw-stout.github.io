@@ -23,13 +23,18 @@ task :build do
   sh "bundle exec jekyll build"
 end
 
-# --ignore-urls skips the "Share by email" button built in
-# _includes/social-share.html, which is a recipient-less "mailto:?subject=..."
-# so the visitor picks who to send it to. That is correct for a share link, but
-# html-proofer reads every mailto: as needing an address and fails it.
+# --ignore-urls skips two kinds of link html-proofer can't judge correctly:
+#
+#   * the "Share by email" button built in _includes/social-share.html, which
+#     is a recipient-less "mailto:?subject=..." so the visitor picks who to
+#     send it to. That is correct for a share link, but html-proofer reads
+#     every mailto: as needing an address and fails it.
+#   * self-hosted LAN game/map servers (e.g. the BlueMap link on LAN-Prix),
+#     which run on ports like :8100 with no TLS in front of them, so they are
+#     genuinely http-only rather than a link someone forgot to upgrade.
 task :htmlproofer => :build do
   sh "htmlproofer ./_site --disable-external --checks 'Links,Images,Scripts' " \
-     "--ignore-urls '/^mailto:/'"
+     "--ignore-urls '/^mailto:/,/^http:\\/\\/[a-z0-9.-]+\\.ponglan\\.net/'"
 end
 
 # ---------------------------------------------------------------------------
