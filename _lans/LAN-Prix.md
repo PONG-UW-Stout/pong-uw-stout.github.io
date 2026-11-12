@@ -144,7 +144,6 @@ kit:
   - Your PC or console, with all its peripherals and every cable they need
   - A monitor, plus the power brick that everyone forgets
   - Headphones, because the hall gets loud
-  - A racing costume, if you mean to enter Sunday night's contest
   - Food and water for the stretches between runs
   - A pillow and something to sleep in, because 48 hours catches up with you
   - Deodorant puh-lease. It is a long race.
