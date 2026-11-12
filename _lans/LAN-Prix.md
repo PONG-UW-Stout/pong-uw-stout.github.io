@@ -3,8 +3,7 @@ title: LAN-Prix
 start_date: 2026-11-20
 end_date: 2026-11-22
 description: >-
-  PONG's racing-themed 48-hour LAN party, with tournaments, open lobbies, prize
-  raffles, and a costume contest in the Great Hall of the Memorial Student Center.
+  PONG's racing-themed 48-hour LAN party, with tournaments, open lobbies, and prize raffles in the Great Hall of the Memorial Student Center.
 
 ticker: "LAN-PRIX · NOV 20–22 2026 · THE GREAT HALL · 48 HOURS · RACING & MOTORSPORT · FREE ENTRY · REGISTER AT LANREG.ORG · LAN-PRIX · NOV 20–22 2026 · THE GREAT HALL · 48 HOURS"
 
@@ -145,7 +144,6 @@ kit:
   - Your PC or console, with all its peripherals and every cable they need
   - A monitor, plus the power brick that everyone forgets
   - Headphones, because the hall gets loud
-  - A racing costume, if you mean to enter Sunday night's contest
   - Food and water for the stretches between runs
   - A pillow and something to sleep in, because 48 hours catches up with you
   - Deodorant puh-lease. It is a long race.
