@@ -25,10 +25,11 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          # Read from .ruby-version, so the version this is checked on and
-          # the version it deploys on cannot drift apart. They were 3.4 and
-          # 3.3 respectively before this.
-          ruby-version: .ruby-version
+          # "3.4" rather than .ruby-version: ubuntu-26.04 runners only ship the
+          # latest patch of each series, so a pinned 3.4.x 404s once it is
+          # superseded. Keep this identical in build.yml and
+          # build-and-deploy.yml so the checked and deployed versions match.
+          ruby-version: '3.4'
           bundler-cache: true
 
       # JEKYLL_ENV=production is what switches jekyll-minifier on; without it

@@ -1,0 +1,424 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$ww-display: Rockwell, "Rockwell Extra Bold", Clarendon, "Bookman Old Style", "Roboto Slab", "Zilla Slab", "Bitter", "DejaVu Serif", Georgia, serif;
+$ww-ui:      "Bookman Old Style", "Roboto Slab", "DejaVu Serif", Georgia, "Times New Roman", serif;
+$ww-body:    Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$ww-ink:      #241a0f;
+$ww-ink-soft: #5c4428;
+$ww-wood-lt:  #c9a271;
+$ww-wood:     #b08753;
+$ww-wood-md:  #a87f4e;
+$ww-wood-dk:  #85603a;
+$ww-seam:     #4a3620;
+$ww-paper:    #f6ecd6;
+$ww-paper-dk: #e5d2a9;
+$ww-rust:     #a8431f;
+$ww-rust-dk:  #7d2f14;
+$ww-gold:     #d9952c;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$ww-ink};
+    --lan-ink-soft: #{$ww-ink-soft};
+    --lan-panel: #{$ww-paper};
+    --lan-panel-edge: #{$ww-ink};
+    --lan-accent: #{$ww-rust-dk};
+    --lan-accent-2: #{$ww-rust};
+    --lan-on-accent: #{$ww-paper};
+    --lan-on-day: #{$ww-paper};
+    --lan-slot: #{$ww-paper-dk};
+    --lan-slot-ink: #{$ww-ink};
+    --lan-slot-dim: #{$ww-ink-soft};
+    --lan-sunk: rgba(36, 26, 15, 0.07);
+    --lan-sunk-open: rgba(36, 26, 15, 0.13);
+    --lan-day-1: #4a52a8;
+    --lan-day-2: #7a5aa8;
+    --lan-day-3: #1f9d6a;
+    --lan-day-all: #{$ww-rust};
+    --lan-legend: #{$ww-ink};
+    --lan-legend-ink: #{$ww-paper};
+    --lan-footer: #{$ww-ink};
+    --lan-footer-card: rgba(246, 236, 214, 0.1);
+    --lan-footer-ink: #{$ww-paper};
+    --lan-radius: 0;
+    --lan-edge-w: 2px;
+    --lan-title-track: 0.06em;
+    --lan-scrim: rgba(28, 19, 10, 0.95);
+    --lan-font: #{$ww-body};
+    --lan-font-ui: #{$ww-ui};
+    --lan-font-display: #{$ww-display};
+
+    --dc-ground: #{$ww-wood-md};
+    --dc-ink: #{$ww-paper};
+    --dc-rubric: #{$ww-gold};
+    --dc-link: #{$ww-rust-dk};
+    --ww-ground: #{$ww-wood-md};
+}
+
+html[data-theme="light"] { --ww-ground: #{$ww-wood}; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--ww-ground); }
+
+/* ====================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $ww-body;
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: $ww-ink;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $ww-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $ww-rust-dk;
+    text-decoration: underline;
+
+    &:hover { color: $ww-ink; }
+}
+
+#content ::selection { background: $ww-gold; color: $ww-ink; }
+#content :focus-visible { outline: 3px solid $ww-rust-dk; outline-offset: 2px; }
+
+* { scrollbar-color: #{$ww-seam} #{$ww-wood-dk}; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $ww-wood-dk; }
+::-webkit-scrollbar-thumb {
+    background: $ww-seam;
+
+    &:hover { background: $ww-rust-dk; }
+}
+
+/* =============================================================== THE WALL */
+
+.west-wall {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: var(--ww-ground);
+    background-image:
+        linear-gradient(118deg, rgba(255, 228, 170, 0.3) 0%, rgba(255, 228, 170, 0) 46%),
+        repeating-linear-gradient(90deg,
+            #{$ww-seam} 0 3px,
+            #{$ww-wood-lt} 3px 6px,
+            #{$ww-wood} 6px 68px,
+            #{$ww-wood-dk} 68px 74px);
+}
+
+.west-wall::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        repeating-linear-gradient(0.6deg,
+            rgba(74, 54, 32, 0.1) 0 1px,
+            transparent 1px 5px,
+            rgba(255, 236, 196, 0.1) 5px 6px,
+            transparent 6px 17px),
+        repeating-linear-gradient(-0.4deg,
+            rgba(74, 54, 32, 0.07) 0 1px,
+            transparent 1px 9px),
+        radial-gradient(ellipse 80% 70% at 50% 40%, rgba(0, 0, 0, 0) 40%, rgba(36, 26, 15, 0.42) 100%);
+}
+
+/* ============================================================== THE TICKER */
+
+.west-marquee {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    padding: 9px 0;
+    border-bottom: 3px solid $ww-seam;
+    background: $ww-ink;
+    font-family: $ww-display;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $ww-gold;
+
+    span {
+        display: inline-block;
+        padding-right: 2.2em;
+        animation: west-marquee 47s linear infinite;
+    }
+}
+
+@keyframes west-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================ THE HERO */
+
+.west-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 34px 16px 30px;
+}
+
+.west-sheet {
+    position: relative;
+    padding: 30px 34px 34px;
+    background: $ww-paper;
+    box-shadow:
+        0 0 0 3px $ww-ink,
+        0 0 0 7px $ww-paper,
+        0 0 0 9px $ww-ink,
+        10px 12px 0 rgba(36, 26, 15, 0.38);
+    text-align: center;
+}
+
+.west-nail {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 32%, #8c7558, #3a2a16 70%);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.west-nail--tl { top: 12px;    left: 12px; }
+.west-nail--tr { top: 12px;    right: 12px; }
+.west-nail--bl { bottom: 12px; left: 12px; }
+.west-nail--br { bottom: 12px; right: 12px; }
+
+.west-presents {
+    margin: 0 0 10px;
+    font-family: $ww-display;
+    font-size: clamp(0.78rem, 2.2vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;
+    text-transform: uppercase;
+    color: $ww-rust-dk;
+}
+
+.west-rules {
+    display: block;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+
+    &--top    { margin-bottom: 12px; }
+    &--bottom { margin-top: 12px; }
+}
+
+.west-title {
+    margin: 0;
+    font-family: $ww-display;
+    font-size: clamp(1.9rem, 8.2vw, 4.7rem);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: $ww-ink;
+    text-shadow: 2px 2px 0 rgba(168, 67, 31, 0.28);
+}
+
+/* ============================================================== THE SCENE */
+
+.west-scene {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 22px auto 24px;
+    box-shadow: 0 0 0 3px $ww-ink;
+}
+
+/* ============================================================== THE NOTICE */
+
+.west-notice-head {
+    margin: 0 0 2px;
+    font-family: $ww-display;
+    font-size: clamp(1.25rem, 4.2vw, 1.9rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+    text-transform: uppercase;
+    color: $ww-rust-dk;
+}
+
+.west-notice-line {
+    max-width: 640px;
+    margin: 12px auto 0;
+    font-size: 17px;
+    line-height: 1.7;
+    color: $ww-ink;
+}
+
+.west-star {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 420px;
+    margin: 26px auto 22px;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1 1 auto;
+        height: 2px;
+        background: $ww-ink;
+    }
+
+    svg {
+        flex: none;
+        width: 22px;
+        height: 22px;
+        fill: $ww-rust-dk;
+    }
+}
+
+/* ======================================================= THE DATE STAMPS */
+
+.west-when {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 6px 20px;
+}
+
+.west-when-stamp {
+    font-family: $ww-display;
+    font-size: clamp(1.3rem, 4.6vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1.12;
+    text-transform: uppercase;
+    color: $ww-ink;
+
+    sup {
+        font-size: 0.5em;
+        text-transform: uppercase;
+        vertical-align: 0.66em;
+    }
+}
+
+.west-when-to {
+    font-family: $ww-display;
+    font-size: clamp(0.72rem, 2.2vw, 0.95rem);
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    text-transform: uppercase;
+    color: $ww-rust-dk;
+}
+
+.west-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.west-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 2px solid $ww-ink;
+    background: transparent;
+    box-shadow: 4px 4px 0 rgba(36, 26, 15, 0.3);
+    font-family: $ww-display;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.17em;
+    text-indent: 0.17em;
+    text-transform: uppercase;
+    color: $ww-ink !important;
+    text-decoration: none !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+    &:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 rgba(36, 26, 15, 0.3);
+        color: $ww-ink !important;
+    }
+
+    &--primary {
+        background: $ww-rust-dk;
+        border-color: $ww-rust-dk;
+        color: $ww-paper !important;
+
+        &:hover { color: $ww-paper !important; }
+    }
+}
+
+/* =============================================== PANEL AND BOARD OVERRIDES */
+
+@include lan.lan-structure("west");
+
+.west-panel {
+    box-shadow: 0 0 0 3px $ww-ink, 8px 9px 0 rgba(36, 26, 15, 0.3);
+}
+
+.west-panel-title {
+    padding-bottom: 8px;
+    border-bottom: 3px solid $ww-ink;
+}
+
+.west-day-name {
+    text-shadow: 1px 1px 0 rgba(36, 26, 15, 0.45);
+}
+
+.west-slot {
+    box-shadow: inset 3px 0 0 var(--d);
+}
+
+.west-tag--mark {
+    background: transparent;
+    border: 1px solid #{$ww-ink-soft};
+    color: $ww-ink-soft;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.west-kit-check {
+    border-radius: 0;
+
+    &::before { border-color: $ww-paper; }
+}
+
+.west-countdown-unit,
+.west-facts,
+.west-countdown-wrap { border-radius: 0; }
+
+/* ============================================================= RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    .west-hero  { padding: 22px 8px 24px; }
+    .west-sheet { padding: 20px 16px 24px; box-shadow: 0 0 0 3px $ww-ink, 0 0 0 6px $ww-paper, 0 0 0 8px $ww-ink; }
+    .west-panel { box-shadow: 0 0 0 3px $ww-ink; }
+
+    .west-when { flex-direction: column; gap: 4px; }
+
+    .west-nail { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .west-marquee span { padding-left: 14px; animation: none; }
+    .west-marquee span + span { display: none; }
+    .west-btn { transition: none; }
+}

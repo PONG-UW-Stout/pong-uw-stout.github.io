@@ -1,0 +1,1085 @@
+@use "pong/variables" as *;
+
+/* ============================================================ TYPE STACKS */
+
+$cozy-display: Consolas, "Lucida Console", "DejaVu Sans Mono", "Courier New", monospace;
+$cozy-ui:      Consolas, "Lucida Console", "DejaVu Sans Mono", "Courier New", monospace;
+$cozy-body:    "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$cozy-night:     #2b2b38;
+$cozy-night-deep:#1f1f29;
+$cozy-wall:      #4a5c67;
+$cozy-wall-dark: #3f4f59;
+$cozy-skirt:     #5a3f26;
+$cozy-floor:     #7d5636;
+$cozy-floor-line:#684526;
+$cozy-wood:      #6e4426;
+$cozy-door:      #a4653a;
+$cozy-door-dark: #8a5230;
+$cozy-leaf:      #4f8a4a;
+$cozy-blanket:   #6e7f3e;
+$cozy-pillow:    #e0e4cc;
+$cozy-bulb:      #f2e24a;
+$cozy-glass:     #8ad0e8;
+$cozy-sky:       #141430;
+$cozy-moon:      #ecdf63;
+$cozy-cream:     #f2f0e4;
+$cozy-cream-dim: #c2c0b4;
+
+$cozy-yellow:    #f0e83a;
+$cozy-green:     #7ac943;
+$cozy-olive:     #8a9a4a;
+$cozy-free:      #3cb54a;
+$cozy-free-dark: #2d8f39;
+$cozy-contest:   #e8343c;
+$cozy-contest-dk:#bb242b;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --dc-ground:      #{$cozy-night};
+    --dc-ground-deep: #{$cozy-night-deep};
+    --dc-vellum:      #{$cozy-wall};
+    --dc-vellum-lit:  #566a76;
+    --dc-vellum-deep: #{$cozy-wall-dark};
+    --dc-ink:         #{$cozy-cream};
+    --dc-ink-soft:    #{$cozy-cream-dim};
+    --dc-rubric:      #{$cozy-yellow};
+    --dc-gold:        #{$cozy-bulb};
+    --dc-gold-edge:   #fff6a8;
+    --dc-link:        #{$cozy-yellow};
+    --dc-link-hover:  #{$cozy-green};
+    --dc-lift:        0 4px 0 rgba(0, 0, 0, 0.5);
+    --dc-candle:      rgba(0, 0, 0, 0);
+
+    --cozy-night: #{$cozy-night};
+    --cozy-bulb:  #{$cozy-bulb};
+}
+
+html[data-theme="light"] {
+    --cozy-night: #3d3d4e;
+    --dc-ground:  #3d3d4e;
+}
+
+// Covers the white band between the nav's bottom margin and the content. All
+// three selectors because the theme variants outrank a bare `html`.
+html,
+html[data-theme="light"],
+html[data-theme="dark"] {
+    background-color: var(--cozy-night);
+}
+
+/* ================================================================ MIXINS */
+
+@mixin cozy-edge($colour, $w: 3px) {
+    box-shadow:
+        #{$w} 0 0 $colour,
+        -#{$w} 0 0 $colour,
+        0 #{$w} 0 $colour,
+        0 -#{$w} 0 $colour;
+}
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header {
+    display: none;
+}
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $cozy-body;
+    font-size: 16px;
+    line-height: 1.65;
+    color: $cozy-cream;
+    background-color: var(--cozy-night);
+}
+
+#post-container article {
+    display: block;
+}
+
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content time {
+    font-family: $cozy-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $cozy-yellow;
+    text-decoration: underline;
+
+    &:hover { color: $cozy-green; }
+}
+
+#content ::selection {
+    background: $cozy-yellow;
+    color: $cozy-night;
+}
+
+#content :focus-visible {
+    outline: 3px solid $cozy-yellow;
+    outline-offset: 2px;
+}
+
+/* ============================================================ SCROLLBARS */
+
+* {
+    scrollbar-color: $cozy-olive $cozy-night-deep;
+}
+
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $cozy-night-deep; }
+
+::-webkit-scrollbar-thumb {
+    background: $cozy-olive;
+    border: 3px solid $cozy-night-deep;
+
+    &:hover { background: $cozy-green; }
+}
+
+/* ============================================================ SVG SPRITE */
+
+.cozy-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.cozy-icon {
+    display: inline-block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    shape-rendering: crispEdges;
+    overflow: visible;
+    vertical-align: middle;
+}
+
+/* ======================================================== STRING LIGHTS */
+
+// The string lights are a Liquid capture in the markup, used twice.
+.cozy-lights {
+    display: block;
+    width: 100%;
+    height: 34px;
+    shape-rendering: crispEdges;
+}
+
+.cozy-wire {
+    fill: none;
+    stroke: #1b1b24;
+    stroke-width: 2;
+}
+
+.cozy-bulb {
+    fill: $cozy-bulb;
+    animation: cozy-glow 3.2s steps(1) infinite;
+
+    &.b1 { animation-delay: 0s; }
+    &.b2 { animation-delay: -0.8s; }
+    &.b3 { animation-delay: -1.6s; }
+    &.b4 { animation-delay: -2.4s; }
+}
+
+@keyframes cozy-glow {
+    0%, 74%  { fill: #{$cozy-bulb}; }
+    75%, 100% { fill: #8a7f24; }
+}
+
+/* ================================================================ TICKER */
+
+.cozy-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 8px 0;
+    background: $cozy-olive;
+    border-top: 3px solid $cozy-night-deep;
+    border-bottom: 3px solid $cozy-night-deep;
+    font-family: $cozy-display;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: $cozy-night-deep;
+    white-space: nowrap;
+
+    span {
+        display: inline-block;
+        padding-right: 1.6em;
+        animation: cozy-marquee 27s linear infinite;
+    }
+}
+
+@keyframes cozy-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================== HERO */
+
+.cozy-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px 48px;
+    text-align: center;
+}
+
+.cozy-hero-head {
+    margin-bottom: 26px;
+}
+
+.cozy-title {
+    margin: 0 0 6px;
+    font-family: $cozy-display;
+    font-size: clamp(2.2rem, 9vw, 5.4rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $cozy-cream;
+    text-shadow: 4px 4px 0 $cozy-night-deep;
+}
+
+.cozy-tagline {
+    margin: 8px 0 0;
+    font-family: $cozy-display;
+    font-size: clamp(0.85rem, 2.6vw, 1.25rem);
+    letter-spacing: 0.06em;
+    color: $cozy-cream-dim;
+}
+
+/* ================================================================= ROOM */
+
+.cozy-room {
+    padding: 6px;
+    background: $cozy-night-deep;
+    @include cozy-edge($cozy-olive, 3px);
+}
+
+.cozy-room-art {
+    display: block;
+    width: 100%;
+    height: auto;
+    shape-rendering: crispEdges;
+    image-rendering: pixelated;
+}
+
+.px-wall-f     { fill: #{$cozy-wall}; }
+.px-wall-d     { fill: #{$cozy-wall-dark}; }
+.px-skirt      { fill: #{$cozy-skirt}; }
+.px-floor-f    { fill: #{$cozy-floor}; }
+.px-floor-l    { fill: #{$cozy-floor-line}; }
+.px-wire       { fill: none; stroke: #1b1b24; stroke-width: 1.2; }
+.px-bulb       { fill: #{$cozy-bulb}; }
+.px-frame      { fill: #3a2a1c; }
+.px-sky        { fill: #{$cozy-sky}; }
+.px-sill       { fill: #{$cozy-skirt}; }
+.px-moon       { fill: #{$cozy-moon}; }
+.px-star       { fill: #fff; }
+.px-pot        { fill: #{$cozy-floor}; }
+.px-leaf       { fill: #{$cozy-leaf}; }
+.px-wood       { fill: #{$cozy-wood}; }
+.px-pumpkin    { fill: #d2772a; }
+.px-book1      { fill: #a83a3a; }
+.px-book2      { fill: #3a5aa8; }
+.px-book3      { fill: #7aa83a; }
+.px-doorframe  { fill: #{$cozy-wood}; }
+.px-doorface   { fill: #{$cozy-door}; }
+.px-doorpanel  { fill: #{$cozy-door-dark}; }
+.px-handle     { fill: #e0b84a; }
+.px-poster1    { fill: #cfc9e0; }
+.px-poster1in  { fill: #7a4a9a; }
+.px-poster2    { fill: #cfc9e0; }
+.px-poster2in  { fill: #4a8ac8; }
+.px-glass      { fill: #{$cozy-glass}; }
+.px-blanket    { fill: #{$cozy-blanket}; }
+.px-pillow     { fill: #{$cozy-pillow}; }
+.px-monitor    { fill: #3a3a44; }
+.px-screen     { fill: #8fd8c4; }
+.px-screenink  { fill: #2a4a40; }
+.px-tower      { fill: #4a4a55; }
+.px-chair      { fill: #3a4652; }
+.px-person     { fill: #5a7a96; }
+.px-hair       { fill: #c8763a; }
+.px-phones     { fill: #22222b; }
+
+/* ============================================================== HERO COPY */
+
+.cozy-hero-copy {
+    margin-top: 28px;
+}
+
+.cozy-details {
+    margin: 0 0 24px;
+    font-family: $cozy-ui;
+    font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+    line-height: 1.5;
+
+    dt {
+        display: inline;
+        color: $cozy-yellow;
+
+        &::after { content: " "; }
+    }
+
+    dd {
+        display: inline;
+        margin: 0;
+        color: $cozy-cream;
+    }
+
+    dd::after {
+        content: "";
+        display: block;
+        height: 8px;
+    }
+}
+
+.cozy-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+/* ============================================================== BUTTONS */
+
+.cozy-btn {
+    display: inline-block;
+    padding: 13px 26px;
+    border: 3px solid $cozy-cream;
+    background: transparent;
+    font-family: $cozy-display;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: $cozy-cream !important;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 $cozy-night-deep;
+    transition: none;
+
+    &:hover { background: rgba(242, 240, 228, 0.14); }
+
+    &:active {
+        transform: translate(4px, 4px);
+        box-shadow: 0 0 0 $cozy-night-deep;
+    }
+
+    &--primary {
+        border-color: $cozy-yellow;
+        background: $cozy-yellow;
+        color: $cozy-night-deep !important;
+
+        &:hover { background: #fff07a; }
+    }
+}
+
+/* ============================================================= COUNTDOWN */
+
+.cozy-countdown-wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto 36px;
+    padding: 18px 18px 20px;
+    text-align: center;
+    background: $cozy-wall-dark;
+    @include cozy-edge($cozy-olive, 3px);
+}
+
+.cozy-countdown-head {
+    margin: 0 0 14px;
+    font-family: $cozy-display;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $cozy-yellow;
+}
+
+.cozy-countdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cozy-countdown-unit {
+    min-width: 86px;
+    padding: 11px 8px 9px;
+    background: $cozy-night-deep;
+}
+
+.cozy-countdown-num {
+    display: block;
+    font-family: $cozy-display;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    color: $cozy-bulb;
+    font-variant-numeric: tabular-nums;
+}
+
+.cozy-countdown-label {
+    display: block;
+    margin-top: 5px;
+    font-family: $cozy-ui;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $cozy-cream-dim;
+}
+
+.cozy-countdown-wrap.is-past {
+    .cozy-countdown { display: none; }
+
+    .cozy-countdown-head {
+        margin: 0;
+        font-family: $cozy-body;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-transform: none;
+        color: $cozy-cream;
+    }
+}
+
+/* ============================================================ FACT TABLE */
+
+.cozy-facts {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto 44px;
+    background: $cozy-wall;
+    @include cozy-edge($cozy-olive, 3px);
+}
+
+.cozy-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $cozy-ui;
+    font-size: 13.5px;
+
+    caption {
+        padding: 11px 15px;
+        background: $cozy-olive;
+        font-family: $cozy-display;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        text-align: left;
+        color: $cozy-night-deep;
+    }
+
+    th, td {
+        padding: 10px 15px;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.25);
+        text-align: left;
+    }
+
+    th {
+        width: 42%;
+        font-weight: 700;
+        color: #d4e0e6;
+    }
+
+    td { color: $cozy-cream; }
+
+    tr:last-child th,
+    tr:last-child td { border-bottom: none; }
+}
+
+.cozy-th-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cozy-fact-icon {
+    flex: none;
+    width: 19px;
+    height: 19px;
+    color: $cozy-bulb;
+}
+
+/* ================================================================ PANELS */
+
+.cozy-panel {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    margin: 32px auto;
+    background: $cozy-wall-dark;
+    @include cozy-edge($cozy-olive, 3px);
+}
+
+.cozy-panel-body {
+    padding: 28px 30px 32px;
+}
+
+.cozy-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 0 0 8px;
+    font-family: $cozy-display;
+    font-size: clamp(1.3rem, 3.6vw, 1.9rem);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $cozy-cream;
+    text-shadow: 3px 3px 0 $cozy-night-deep;
+
+    .cozy-icon {
+        flex: none;
+        width: 26px;
+        height: 26px;
+        color: $cozy-bulb;
+    }
+}
+
+.cozy-panel-sub {
+    margin: 0 0 24px;
+    font-family: $cozy-ui;
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $cozy-cream-dim;
+}
+
+/* ====================================================== SCHEDULE SCREEN */
+
+.cozy-screen-wrap { margin-top: 4px; }
+
+.cozy-screen {
+    display: block;
+    padding: 6px;
+    background: $cozy-night-deep;
+    text-decoration: none !important;
+
+    &.is-missing .cozy-schedule-img { display: none; }
+    &.is-missing .cozy-noimg { display: flex; }
+}
+
+.cozy-schedule-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+}
+
+.cozy-noimg {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 54px 24px;
+    text-align: center;
+    font-family: $cozy-ui;
+    color: $cozy-cream-dim;
+
+    .cozy-icon { width: 38px; height: 38px; color: $cozy-olive; }
+
+    strong {
+        font-family: $cozy-display;
+        font-size: 16px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: $cozy-cream;
+    }
+
+    code {
+        font-family: $cozy-display;
+        font-size: 12px;
+        padding: 1px 5px;
+        background: rgba(242, 240, 228, 0.12);
+    }
+}
+
+.cozy-screen-meta {
+    margin-top: 10px;
+    font-family: $cozy-ui;
+    font-size: 12px;
+    text-align: right;
+}
+
+.cozy-zoom {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(15, 15, 22, 0.95);
+    transition: opacity 0.2s steps(4);
+
+    &:target {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+.cozy-zoom-bg { position: absolute; inset: 0; }
+
+.cozy-zoom-frame {
+    position: relative;
+    max-width: 1400px;
+    max-height: 92vh;
+    overflow: auto;
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+        image-rendering: pixelated;
+    }
+}
+
+.cozy-zoom-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 3px solid $cozy-night-deep;
+    background: $cozy-yellow;
+    font-family: $cozy-display;
+    font-size: 15px;
+    color: $cozy-night-deep !important;
+    text-decoration: none !important;
+}
+
+/* ========================================================= RUNNING ORDER */
+
+.cozy-days {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+    align-items: start;
+    gap: 18px;
+}
+
+.cozy-day {
+    --cozy-day-edge: #{$cozy-yellow};
+    padding: 5px;
+    background: $cozy-night-deep;
+    box-shadow:
+        3px 0 0 var(--cozy-day-edge),
+        -3px 0 0 var(--cozy-day-edge),
+        0 3px 0 var(--cozy-day-edge),
+        0 -3px 0 var(--cozy-day-edge);
+
+    &:nth-child(2) { --cozy-day-edge: #{$cozy-green}; }
+    &--all         { --cozy-day-edge: #{$cozy-olive}; grid-column: 1 / -1; }
+}
+
+.cozy-day-name {
+    margin: 0;
+    padding: 9px 12px 11px;
+    font-family: $cozy-display;
+    font-size: 15px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $cozy-cream;
+}
+
+.cozy-slots {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cozy-slot {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 5px 10px;
+    margin: 0 0 5px;
+    padding: 10px 12px;
+    background: $cozy-wall;
+    list-style: none;
+
+    &:last-child { margin-bottom: 0; }
+}
+
+.cozy-slot-time {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    padding: 2px 8px;
+    background: $cozy-green;
+    font-family: $cozy-display;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $cozy-night-deep;
+    font-variant-numeric: tabular-nums;
+}
+
+.cozy-slot-name {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-family: $cozy-body;
+    font-size: 15px;
+    font-weight: 700;
+    color: $cozy-cream;
+}
+
+.cozy-slot-note {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #cfdae0;
+}
+
+.cozy-slot-tags {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.cozy-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    padding: 2px 7px;
+    font-family: $cozy-ui;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+
+    &--free    { background: $cozy-free;    border: 2px solid $cozy-free-dark; }
+    &--contest { background: $cozy-contest; border: 2px solid $cozy-contest-dk; }
+}
+
+.cozy-legend {
+    margin-top: 22px;
+    padding: 16px 18px;
+    background: $cozy-olive;
+    font-family: $cozy-body;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: $cozy-night-deep;
+}
+
+.cozy-legend-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 11px;
+    font-weight: 600;
+
+    .cozy-tag { flex: none; margin-top: 1px; }
+}
+
+.cozy-legend-note {
+    margin: 0;
+    padding-top: 8px;
+    border-top: 2px solid rgba(31, 31, 41, 0.3);
+    font-size: 11.5px;
+    font-style: italic;
+    color: #3f4a1e;
+}
+
+/* ============================================================ KIT LIST */
+
+.cozy-kit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cozy-kit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0;
+    padding: 11px 13px;
+    background: $cozy-wall;
+    list-style: none;
+    font-size: 15px;
+}
+
+.cozy-kit-check {
+    position: relative;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-top: 4px;
+    background: $cozy-green;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        background: $cozy-night-deep;
+    }
+
+    &::before { left: 3px; top: 8px;  width: 3px; height: 3px; }
+    &::after  { left: 6px; top: 5px;  width: 3px; height: 6px; }
+}
+
+/* ================================================================== FAQ */
+
+.cozy-faq {
+    display: grid;
+    gap: 7px;
+}
+
+.cozy-faq-item {
+    background: $cozy-wall;
+
+    &[open] { background: #566a76; }
+}
+
+.cozy-faq-q {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 15px;
+    font-family: $cozy-body;
+    font-size: 15px;
+    font-weight: 700;
+    color: $cozy-cream;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+
+    &::before {
+        content: "";
+        flex: none;
+        width: 10px;
+        height: 10px;
+        margin-top: 6px;
+        background: $cozy-bulb;
+    }
+}
+
+.cozy-faq-item[open] .cozy-faq-q::before {
+    background: $cozy-green;
+}
+
+.cozy-faq-a {
+    margin: 0;
+    padding: 0 16px 14px 37px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: #dde6ea;
+}
+
+/* ============================================================ SPONSORS */
+
+.cozy-sponsors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+}
+
+.cozy-sponsor {
+    padding: 14px;
+    background: $cozy-cream;
+    text-align: center;
+}
+
+.cozy-sponsor-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 72px;
+    margin-bottom: 10px;
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+}
+
+.cozy-sponsor-name {
+    font-family: $cozy-body;
+    font-size: 14px;
+    font-weight: 700;
+    color: $cozy-night-deep;
+}
+
+.cozy-sponsor-tier {
+    margin-top: 2px;
+    font-family: $cozy-ui;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6a6a58;
+}
+
+.cozy-sponsor-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+
+    a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        color: #fff !important;
+        font-size: 13px;
+        text-decoration: none !important;
+    }
+}
+
+/* =============================================================== FOOTER */
+
+.cozy-footer {
+    position: relative;
+    z-index: 2;
+    margin-top: 44px;
+    padding: 0 0 40px;
+    text-align: center;
+    background: $cozy-night-deep;
+
+    .cozy-lights { margin-bottom: 22px; }
+}
+
+.cozy-footer-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 18px;
+}
+
+.cozy-footer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 18px;
+    background: $cozy-wall-dark;
+    font-family: $cozy-body;
+    font-size: 12.5px;
+    text-align: left;
+
+    a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: $cozy-cream !important;
+        text-decoration: none !important;
+
+        &:hover { color: $cozy-bulb !important; text-decoration: underline !important; }
+    }
+
+    i { flex: none; width: 16px; text-align: center; color: $cozy-bulb; }
+}
+
+.cozy-footer-sig {
+    margin: 24px 18px 0;
+    font-family: $cozy-ui;
+    font-size: 11.5px;
+    color: $cozy-cream-dim;
+}
+
+/* ========================================================= SCROLL REVEAL */
+
+.cozy-reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.3s steps(4), transform 0.3s steps(4);
+
+    &.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@for $i from 1 through 8 {
+    .cozy-reveal:nth-child(#{$i}) {
+        transition-delay: #{($i - 1) * 0.05}s;
+    }
+}
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    #content { font-size: 15px; }
+
+    .cozy-hero { padding: 26px 12px 36px; }
+
+    .cozy-panel { margin: 22px 10px; }
+
+    .cozy-panel-body { padding: 20px 15px 26px; }
+
+    .cozy-countdown-wrap,
+    .cozy-facts { margin-left: 10px; margin-right: 10px; }
+
+    .cozy-countdown-unit { min-width: 70px; }
+
+    .cozy-table {
+        font-size: 13px;
+
+        th, td { display: block; width: auto; }
+
+        th { border-bottom: none; }
+    }
+
+    .cozy-kit,
+    .cozy-days { grid-template-columns: 1fr; }
+
+    .cozy-lights { height: 18px; }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .cozy-title { font-size: clamp(1.8rem, 11vw, 2.6rem); }
+
+    .cozy-btn { padding: 12px 18px; font-size: 13px; }
+}
+
+/* ================================================== REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .cozy-marquee span { padding-left: 14px; animation: none; }
+    .cozy-marquee span + span { display: none; }
+    .cozy-bulb         { animation: none; }
+    .cozy-zoom         { transition: none; }
+
+    .cozy-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

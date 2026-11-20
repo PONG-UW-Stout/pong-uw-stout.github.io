@@ -271,10 +271,26 @@ const DAY_THEMES = [
         on: (m, d) => m === 11 && d === 31,
         banner: "Happy New Year's Eve from PONG",
         decor: 56
+    },
+    // LAN-iversary: twenty-five years of PONG LANs, February 19-21 2027.
+    //
+    // The only entry here pinned to a single year, because it is an
+    // anniversary rather than a date that comes round. The whole site goes
+    // Windows 95 for the weekend, matching the event page at
+    // /lans/LAN-iversary/, so somebody who turns up to check a schedule gets
+    // the surprise without having to know where to look for it.
+    //
+    // Month is zero-based, so 1 is February.
+    {
+        css: "seasonal-themes/lan-iversary",
+        on: (m, d, w, y) => y === 2027 && m === 1 && d >= 19 && d <= 21,
+        banner: "PONGNET has been online for <span class='number'>25</span> years. " +
+            "<a href='/lans/LAN-iversary/'>LAN-iversary</a> is happening right now in the Great Hall.",
+        decor: 48
     }
 ];
 
-// Some scenes need real elements rather than a painted layer: an SVG used as a
+// Some scenes need real elements, not a painted layer: an SVG used as a
 // background-image renders in secure static mode, so animation inside it never
 // runs, and a background layer can only be transformed as one sheet. A theme
 // that asks for `decor` gets this many throwaway sprites, each carrying three

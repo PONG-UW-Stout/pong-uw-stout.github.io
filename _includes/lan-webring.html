@@ -1,0 +1,66 @@
+{%- comment -%} Prev/next links through every LAN by start_date, wrapping at both ends. Use {% include lan-webring.html %}, or pass variant="y2k" for the LAN-iversary badge. {%- endcomment -%}
+
+{%- assign ring = site.lans | sort: "start_date" -%}
+{%- assign ring_size = ring | size -%}
+
+{%- if ring_size > 1 -%}
+
+  {%- assign here = -1 -%}
+  {%- for lan in ring -%}
+    {%- if lan.url == page.url -%}{%- assign here = forloop.index0 -%}{%- endif -%}
+  {%- endfor -%}
+
+  {%- if here >= 0 -%}
+    {%- assign last_index = ring_size | minus: 1 -%}
+
+    {%- if here == 0 -%}
+      {%- assign prev = ring[last_index] -%}
+    {%- else -%}
+      {%- assign prev_index = here | minus: 1 -%}
+      {%- assign prev = ring[prev_index] -%}
+    {%- endif -%}
+
+    {%- if here == last_index -%}
+      {%- assign next = ring[0] -%}
+    {%- else -%}
+      {%- assign next_index = here | plus: 1 -%}
+      {%- assign next = ring[next_index] -%}
+    {%- endif -%}
+
+    {%- assign position = here | plus: 1 -%}
+
+    {%- if include.variant == "y2k" -%}
+      <nav class="y2k-webring" aria-label="PONG LAN webring">
+        <p class="y2k-webring-title">&laquo; The PONG LAN WebRing &raquo;</p>
+        <p class="y2k-webring-sub">
+          This site is a proud member. Site <span class="number">{{ position }}</span>
+          of <span class="number">{{ ring_size }}</span> on the ring.
+        </p>
+        <div class="y2k-webring-nav">
+          <a class="y2k-webring-link" href="{{ prev.url | relative_url }}">&laquo; Prev: {{ prev.title }}</a>
+          <a class="y2k-webring-link" href="{{ '/lans/' | relative_url }}">Ring Index</a>
+          <span class="y2k-webring-here">You Are Here</span>
+          <a class="y2k-webring-link" href="{{ next.url | relative_url }}">Next: {{ next.title }} &raquo;</a>
+        </div>
+      </nav>
+    {%- else -%}
+      <nav class="lan-ring" aria-label="LAN webring">
+        <p class="lan-ring_title">
+          The PONG LAN WebRing &middot;
+          site <span class="number">{{ position }}</span> of <span class="number">{{ ring_size }}</span>
+        </p>
+        <div class="lan-ring_nav">
+          <a class="lan-ring_link lan-ring_link--prev" href="{{ prev.url | relative_url }}">
+            <span class="lan-ring_dir">&laquo; Previous</span>
+            <span class="lan-ring_name">{{ prev.title }}</span>
+          </a>
+          <a class="lan-ring_link lan-ring_link--index" href="{{ '/lans/' | relative_url }}">Ring Index</a>
+          <a class="lan-ring_link lan-ring_link--next" href="{{ next.url | relative_url }}">
+            <span class="lan-ring_dir">Next &raquo;</span>
+            <span class="lan-ring_name">{{ next.title }}</span>
+          </a>
+        </div>
+      </nav>
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}

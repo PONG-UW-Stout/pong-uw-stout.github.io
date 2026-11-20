@@ -164,7 +164,7 @@ faq:
   - q: May I bring a console instead of a PC?
     a: Yes. Bring it, bring a monitor or TV for it, and bring the cables. Ask in the Discord if you're unsure about space for a larger setup.
   - q: Where does one sleep?
-    a: Wherever you end up. Most people bring a pillow and a blanket and claim a patch of floor when they finally give in. Keep the walkways clear when you do, because the hall has to stay passable. That one is fire safety, not house style.
+    a: Wherever you end up. Most people bring a pillow and a blanket and claim a patch of floor when they finally give in. Keep the walkways clear when you do, because the hall has to stay passable.
   - q: I have never been to a LAN before. Is that fine?
     a: Completely. Turn up, find a table, say hi. That's the entire onboarding process. Ask in the Discord beforehand if you want a hand planning what to bring.
 ---

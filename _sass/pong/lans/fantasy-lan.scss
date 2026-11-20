@@ -1,0 +1,424 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$fy-black: "Old English Text MT", "Blackadder ITC", "Lucida Blackletter", "UnifrakturMaguntia", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+
+$fy-display: Didot, "Bodoni MT", "Hoefler Text", "Playfair Display", "Times New Roman", Georgia, serif;
+$fy-ui:      "Trebuchet MS", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$fy-body:    "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$fy-night:     #202636;
+$fy-night-dk:  #141926;
+$fy-night-dp:  #0c101a;
+$fy-fog:       #5d6773;
+$fy-fog-lt:    #8e9aa6;
+$fy-ink:       #f1f5f8;
+$fy-dim:       #b6c2cd;
+$fy-gold:      #f9ae40;
+$fy-gold-dk:   #c8821f;
+$fy-ice:       #cbf3ff;
+$fy-ice-mid:   #9fd8ee;
+$fy-ice-dk:    #4f9ec4;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$fy-ink};
+    --lan-ink-soft: #{$fy-dim};
+    --lan-panel: rgba(20, 25, 38, 0.82);
+    --lan-panel-edge: rgba(249, 174, 64, 0.45);
+    --lan-accent: #{$fy-gold};
+    --lan-accent-2: #{$fy-ice-mid};
+    --lan-on-accent: #{$fy-night-dp};
+    --lan-on-day: #{$fy-night-dp};
+    --lan-slot: rgba(45, 54, 72, 0.9);
+    --lan-slot-ink: #{$fy-ink};
+    --lan-slot-dim: #{$fy-dim};
+    --lan-sunk: rgba(45, 54, 72, 0.62);
+    --lan-sunk-open: rgba(45, 54, 72, 0.9);
+    --lan-day-1: #b9c2cc;
+    --lan-day-2: #{$fy-gold};
+    --lan-day-3: #{$fy-ice-mid};
+    --lan-day-all: #{$fy-fog};
+    --lan-legend: rgba(12, 16, 26, 0.8);
+    --lan-legend-ink: #{$fy-ink};
+    --lan-footer: #{$fy-night-dp};
+    --lan-footer-card: rgba(249, 174, 64, 0.1);
+    --lan-footer-ink: #{$fy-ink};
+    --lan-radius: 3px;
+    --lan-edge-w: 1px;
+    --lan-title-track: 0.03em;
+    --lan-scrim: rgba(8, 11, 18, 0.95);
+    --lan-font: #{$fy-body};
+    --lan-font-ui: #{$fy-ui};
+    --lan-font-display: #{$fy-display};
+    --lan-lift: 0 18px 44px rgba(8, 11, 18, 0.5);
+
+    --dc-ground: #{$fy-night};
+    --dc-ink: #{$fy-ink};
+    --dc-rubric: #{$fy-gold};
+    --dc-link: #{$fy-gold};
+    --fy-ground: #{$fy-night};
+}
+
+html[data-theme="light"] { --fy-ground: #{$fy-fog}; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--fy-ground); }
+
+/* ====================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $fy-body;
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: $fy-ink;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $fy-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $fy-gold;
+    text-decoration: underline;
+
+    &:hover { color: $fy-ice; }
+}
+
+#content ::selection { background: $fy-gold; color: $fy-night-dp; }
+#content :focus-visible { outline: 2px solid $fy-gold; outline-offset: 3px; }
+
+* { scrollbar-color: #{$fy-fog} #{$fy-night-dp}; }
+::-webkit-scrollbar { width: 13px; height: 13px; }
+::-webkit-scrollbar-track { background: $fy-night-dp; }
+::-webkit-scrollbar-thumb {
+    background: $fy-fog;
+
+    &:hover { background: $fy-gold; }
+}
+
+/* =============================================================== THE WOOD */
+
+.fantasy-wood {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg,
+            #{$fy-night-dp} 0%,
+            #{$fy-night-dk} 26%,
+            #{$fy-night} 54%,
+            #4a5567 84%,
+            #5f6b7b 100%);
+}
+
+.fantasy-trees {
+    position: absolute;
+    left: -2%;
+    width: 104%;
+    display: block;
+}
+
+.fantasy-trees--far  { bottom: 22%; height: 14vh; fill: #4b5566; opacity: 0.5; }
+.fantasy-trees--mid  { bottom: 10%; height: 19vh; fill: #333d4e; opacity: 0.72; }
+.fantasy-trees--near { bottom: 0;   height: 26vh; fill: #171c28; opacity: 0.92; }
+
+/* ================================================================ THE FOG */
+
+.fantasy-fog {
+    position: absolute;
+    left: -40%;
+    width: 180%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(222, 232, 240, 0.4) 0%, rgba(222, 232, 240, 0) 68%);
+    filter: blur(26px);
+    will-change: transform;
+}
+
+.fantasy-fog--1 { bottom: 20%; height: 26vh; opacity: 0.66; animation: fantasy-drift-a 71s ease-in-out infinite alternate; }
+.fantasy-fog--2 { bottom: 4%;  height: 34vh; opacity: 0.8;  animation: fantasy-drift-b 94s ease-in-out infinite alternate; }
+.fantasy-fog--3 { bottom: 34%; height: 18vh; opacity: 0.42; animation: fantasy-drift-a 113s ease-in-out infinite alternate reverse; }
+
+@keyframes fantasy-drift-a {
+    from { transform: translateX(-4%)  scaleY(1); }
+    to   { transform: translateX(5%)   scaleY(1.14); }
+}
+
+@keyframes fantasy-drift-b {
+    from { transform: translateX(6%)   scaleY(1.1); }
+    to   { transform: translateX(-5%)  scaleY(0.92); }
+}
+
+/* ============================================================== THE TICKER */
+
+.fantasy-marquee {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(249, 174, 64, 0.4);
+    background: rgba(12, 16, 26, 0.86);
+    font-family: $fy-ui;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $fy-gold;
+
+    span {
+        display: inline-block;
+        padding-right: 2.2em;
+        animation: fantasy-marquee 48s linear infinite;
+    }
+}
+
+@keyframes fantasy-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================ THE HERO */
+
+.fantasy-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 22px 34px;
+    text-align: center;
+}
+
+.fantasy-sword {
+    display: block;
+    width: min(520px, 94%);
+    height: auto;
+    margin: 0 auto 6px;
+    filter: drop-shadow(0 0 16px rgba(159, 216, 238, 0.4));
+}
+
+.fantasy-presents {
+    margin: 0 0 2px;
+    font-family: $fy-ui;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: $fy-dim;
+}
+
+.fantasy-pong {
+    margin: 0;
+    font-family: $fy-black;
+    font-size: clamp(3rem, 11vw, 6.5rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: $fy-gold;
+    text-shadow: 0 6px 26px rgba(8, 11, 18, 0.7);
+}
+
+.fantasy-title {
+    margin: 2px 0 10px;
+    font-family: $fy-display;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 8vw, 4.3rem);
+    line-height: 1.04;
+    color: $fy-ink;
+    text-shadow: 0 4px 22px rgba(8, 11, 18, 0.75);
+}
+
+.fantasy-tagline {
+    margin: 0 0 26px;
+    font-family: $fy-ui;
+    font-size: clamp(0.85rem, 2.6vw, 1.22rem);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $fy-ice-mid;
+}
+
+/* ====================================================== BEGINS / CONCLUDES */
+
+.fantasy-when {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0;
+    margin: 0 auto 28px;
+}
+
+.fantasy-when-block {
+    flex: 1 1 240px;
+    max-width: 360px;
+    padding: 4px 26px 6px;
+    text-align: left;
+}
+
+.fantasy-when-block + .fantasy-when-block {
+    border-left: 1px solid rgba(241, 245, 248, 0.32);
+}
+
+.fantasy-when-key {
+    display: block;
+    font-family: $fy-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $fy-gold;
+}
+
+.fantasy-when-val {
+    display: block;
+    margin-top: 2px;
+    font-family: $fy-display;
+    font-size: clamp(1.35rem, 4.2vw, 2.1rem);
+    line-height: 1.14;
+    color: $fy-ink;
+}
+
+/* ============================================================= THE CREDIT */
+
+.fantasy-credit {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 auto 26px;
+    padding: 9px 18px 9px 13px;
+    border: 1px solid rgba(159, 216, 238, 0.35);
+    border-radius: 2px;
+    background: rgba(12, 16, 26, 0.55);
+    font-family: $fy-ui;
+    font-size: 12.5px;
+    line-height: 1.4;
+    text-align: left;
+    color: $fy-dim;
+
+    b {
+        display: block;
+        font-weight: 700;
+        color: $fy-ink;
+    }
+}
+
+.fantasy-credit-mark {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    color: $fy-ice-mid;
+}
+
+.fantasy-blurb {
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 17px;
+    line-height: 1.75;
+    color: $fy-ink;
+}
+
+.fantasy-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.fantasy-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 1px solid $fy-gold;
+    border-radius: 2px;
+    background: transparent;
+    font-family: $fy-ui;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: $fy-gold !important;
+    text-decoration: none !important;
+    transition: background-color 0.18s ease, color 0.18s ease;
+
+    &:hover { background: $fy-gold; color: $fy-night-dp !important; }
+
+    &--primary {
+        background: $fy-gold;
+        color: $fy-night-dp !important;
+
+        &:hover { background: $fy-ice; border-color: $fy-ice; color: $fy-night-dp !important; }
+    }
+}
+
+/* =============================================== PANEL AND BOARD OVERRIDES */
+
+@include lan.lan-structure("fantasy");
+
+.fantasy-panel-title {
+    font-style: italic;
+    font-weight: 400;
+}
+
+.fantasy-day-name {
+    font-family: $fy-ui;
+    font-weight: 700;
+}
+
+.fantasy-slot {
+    border-left: 3px solid var(--d);
+}
+
+.fantasy-tag--mark {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px #{$fy-dim};
+    color: $fy-dim;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.fantasy-kit-check::before { border-color: $fy-night-dp; }
+
+.fantasy-countdown-num {
+    text-shadow: 0 0 18px rgba(159, 216, 238, 0.45);
+}
+
+/* ============================================================= RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    .fantasy-hero { padding: 26px 14px 26px; }
+
+    .fantasy-when-block { max-width: none; padding: 10px 0; }
+
+    .fantasy-when-block + .fantasy-when-block {
+        border-left: 0;
+        border-top: 1px solid rgba(241, 245, 248, 0.32);
+    }
+
+    .fantasy-trees--far  { height: 10vh; }
+    .fantasy-trees--mid  { height: 14vh; }
+    .fantasy-trees--near { height: 19vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fantasy-marquee span { padding-left: 14px; animation: none; }
+    .fantasy-marquee span + span { display: none; }
+    .fantasy-fog { animation: none; }
+    .fantasy-btn { transition: none; }
+}

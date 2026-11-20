@@ -1,0 +1,54 @@
+// ===========================================================================
+// Windows 95 tokens shared by the LAN-iversary page and the anniversary theme.
+// Variables only, so it emits no CSS.
+// ===========================================================================
+
+/* ============================================================ TYPE STACKS */
+
+$y2k-ui:      "MS Sans Serif", Tahoma, Verdana, Geneva, sans-serif;
+$y2k-body:    "Times New Roman", Times, Georgia, serif;
+$y2k-display: "Impact", "Haettenschweiler", "Arial Black", "Arial Bold", sans-serif;
+$y2k-fun:     "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive, sans-serif;
+$y2k-mono:    "Courier New", Courier, monospace;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+// Real Windows 95 system colours. Keep them exact.
+$y2k-chrome:        #c0c0c0;
+$y2k-chrome-lit:    #ffffff;
+$y2k-chrome-face:   #dfdfdf;
+$y2k-chrome-shadow: #808080;
+$y2k-chrome-dark:   #404040;
+$y2k-titlebar:      #000080;
+$y2k-titlebar-lit:  #1084d0;
+$y2k-titlebar-off:  #7b7b7b;
+$y2k-desktop:       #008080; // the default Win95 teal desktop
+
+$y2k-void:        #0b0320;
+$y2k-void-deep:   #05010c;
+$y2k-panel:       #150a30;
+$y2k-panel-lit:   #1e1040;
+
+$y2k-gold:        #ffd700;
+$y2k-gold-deep:   #b8860b;
+$y2k-gold-pale:   #fff3b0;
+$y2k-magenta:     #ff2fb9;
+$y2k-cyan:        #00e5ff;
+$y2k-lime:        #39ff14;
+
+$y2k-text:        #f2eede;
+$y2k-text-soft:   #c9c2b4;
+$y2k-border:      rgba(255, 215, 0, 0.22);
+
+$y2k-party-red:   #ff4136;
+$y2k-party-blue:  #4a9dff;
+$y2k-party-plum:  #a349ff;
+$y2k-tip-paper:   #ffffe1; // the actual Windows tooltip yellow
+
+/* ============================================================= SVG TILES */
+
+$y2k-starfield: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Ccircle cx='12' cy='18' r='1' fill='%23ffffff' opacity='.75'/%3E%3Ccircle cx='47' cy='9' r='.7' fill='%23ffffff' opacity='.5'/%3E%3Ccircle cx='88' cy='27' r='1.2' fill='%23ffffff' opacity='.85'/%3E%3Ccircle cx='131' cy='14' r='.8' fill='%23ffd700' opacity='.7'/%3E%3Ccircle cx='24' cy='57' r='.8' fill='%23ffffff' opacity='.6'/%3E%3Ccircle cx='69' cy='63' r='1' fill='%23ffffff' opacity='.45'/%3E%3Ccircle cx='109' cy='52' r='.7' fill='%23ffffff' opacity='.7'/%3E%3Ccircle cx='148' cy='71' r='1.1' fill='%23ffffff' opacity='.6'/%3E%3Ccircle cx='7' cy='96' r='1' fill='%23ff2fb9' opacity='.55'/%3E%3Ccircle cx='55' cy='104' r='.8' fill='%23ffffff' opacity='.8'/%3E%3Ccircle cx='96' cy='91' r='.7' fill='%23ffffff' opacity='.4'/%3E%3Ccircle cx='137' cy='108' r='.9' fill='%23ffffff' opacity='.65'/%3E%3Ccircle cx='31' cy='137' r='1.1' fill='%23ffffff' opacity='.55'/%3E%3Ccircle cx='76' cy='148' r='.7' fill='%2300e5ff' opacity='.7'/%3E%3Ccircle cx='117' cy='133' r='.8' fill='%23ffffff' opacity='.5'/%3E%3Ccircle cx='155' cy='151' r='1' fill='%23ffffff' opacity='.7'/%3E%3C/svg%3E");
+
+$y2k-glitter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cpath d='M20 4 L21.4 18.6 L36 20 L21.4 21.4 L20 36 L18.6 21.4 L4 20 L18.6 18.6 Z' fill='%23ffd700' opacity='.5'/%3E%3Cpath d='M66 50 L67 60 L77 61 L67 62 L66 72 L65 62 L55 61 L65 60 Z' fill='%23fff3b0' opacity='.4'/%3E%3C/svg%3E");
+
+$y2k-dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2'%3E%3Crect width='2' height='2' fill='%23c0c0c0'/%3E%3Crect width='1' height='1' fill='%23ffffff'/%3E%3Crect x='1' y='1' width='1' height='1' fill='%23ffffff'/%3E%3C/svg%3E");

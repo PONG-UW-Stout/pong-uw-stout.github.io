@@ -1,0 +1,496 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$rr-display: "Arial Black", "Arial Bold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$rr-ui:      "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+$rr-body:    "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$rr-orange:      #dd5835;
+$rr-orange-lt:   #f47832;
+$rr-orange-dk:   #b8431f;
+$rr-orange-deep: #93341a;
+$rr-teal:        #00a985;
+$rr-teal-dk:     #00866a;
+$rr-purple:      #383391;
+$rr-purple-lt:   #4a44ad;
+$rr-cream:       #fff4ec;
+$rr-cream-dim:   #ffd9c6;
+$rr-navy:        #1e2345;
+$rr-gold:        #f2b61e;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$rr-cream};
+    --lan-ink-soft: #{$rr-cream-dim};
+    --lan-panel: rgba(147, 52, 26, 0.5);
+    --lan-panel-edge: #{$rr-cream};
+    --lan-accent: #{$rr-cream};
+    --lan-accent-2: #{$rr-gold};
+    --lan-on-accent: #{$rr-orange-deep};
+    --lan-on-day: #{$rr-cream};
+    --lan-slot: #{$rr-navy};
+    --lan-slot-ink: #{$rr-cream};
+    --lan-slot-dim: #ffc9ae;
+    --lan-sunk: rgba(30, 35, 69, 0.55);
+    --lan-sunk-open: rgba(30, 35, 69, 0.82);
+    --lan-day-1: #{$rr-gold};
+    --lan-day-2: #{$rr-purple};
+    --lan-day-3: #{$rr-teal};
+    --lan-day-all: #{$rr-orange-deep};
+    --lan-legend: rgba(30, 35, 69, 0.78);
+    --lan-legend-ink: #{$rr-cream};
+    --lan-footer: #{$rr-orange-deep};
+    --lan-footer-card: rgba(30, 35, 69, 0.6);
+    --lan-footer-ink: #{$rr-cream};
+    --lan-radius: 3px;
+    --lan-edge-w: 3px;
+    --lan-title-track: 0.04em;
+    --lan-scrim: rgba(45, 16, 8, 0.95);
+    --lan-font: #{$rr-body};
+    --lan-font-ui: #{$rr-ui};
+    --lan-font-display: #{$rr-display};
+
+    --dc-ground: #{$rr-orange};
+    --dc-ink: #{$rr-cream};
+    --dc-rubric: #{$rr-gold};
+    --dc-link: #{$rr-gold};
+    --rr-ground: #{$rr-orange};
+}
+
+html[data-theme="light"] { --rr-ground: #{$rr-orange-lt}; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--rr-ground); }
+
+/* ====================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $rr-body;
+    font-size: 16px;
+    line-height: 1.65;
+    color: $rr-cream;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $rr-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $rr-gold;
+    text-decoration: underline;
+
+    &:hover { color: $rr-cream; }
+}
+
+#content ::selection { background: $rr-teal; color: $rr-cream; }
+#content :focus-visible { outline: 3px solid $rr-gold; outline-offset: 2px; }
+
+* { scrollbar-color: #{$rr-cream} #{$rr-orange-deep}; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $rr-orange-deep; }
+::-webkit-scrollbar-thumb {
+    background: $rr-cream;
+    border: 3px solid $rr-orange-deep;
+
+    &:hover { background: $rr-gold; }
+}
+
+/* ================================================================ THE BARS */
+
+@mixin bar-column($w: 13px, $gap: 24px) {
+    background-image:
+        repeating-linear-gradient(90deg,
+            #{$rr-teal}   0,            #{$rr-teal}   $w * 0.34,
+            #{$rr-purple} $w * 0.34,    #{$rr-purple} $w * 0.68,
+            #{$rr-orange-lt} $w * 0.68, #{$rr-orange-lt} $w,
+            transparent   $w,           transparent   $w + $gap);
+}
+
+/* =============================================================== THE PAPER */
+
+.reunion-paper {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: var(--rr-ground);
+}
+
+.reunion-paper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    background-image:
+        repeating-linear-gradient(0deg,   rgba(0, 0, 0, 0.055) 0 8px, transparent 8px 16px),
+        repeating-linear-gradient(90deg,  rgba(255, 255, 255, 0.045) 0 8px, transparent 8px 16px);
+}
+
+.reunion-paper::after {
+    content: "";
+    position: absolute;
+    top: -40px;
+    bottom: -40px;
+    left: 0;
+    right: 0;
+    opacity: 0.85;
+    @include bar-column(13px, 25px);
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 110px, transparent 110px, transparent calc(100% - 110px), #000 calc(100% - 110px), #000 100%);
+    mask-image: linear-gradient(90deg, #000 0, #000 110px, transparent 110px, transparent calc(100% - 110px), #000 calc(100% - 110px), #000 100%);
+    animation: reunion-bars-drift 24s linear infinite;
+}
+
+@keyframes reunion-bars-drift {
+    from { background-position: 0 0; }
+    to   { background-position: 0 80px; }
+}
+
+@media (max-width: $breakpoint-tablet) {
+    .reunion-paper::after { display: none; }
+}
+
+/* ============================================================== THE TICKER */
+
+.reunion-marquee {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    padding: 9px 0;
+    border-bottom: 3px solid $rr-cream;
+    background: $rr-navy;
+    font-family: $rr-display;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $rr-cream;
+
+    span {
+        display: inline-block;
+        padding-right: 2.2em;
+        animation: reunion-marquee 44s linear infinite;
+    }
+}
+
+@keyframes reunion-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================ THE HERO */
+
+.reunion-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 46px 24px 34px;
+    text-align: center;
+}
+
+.reunion-presents {
+    position: relative;
+    display: inline-block;
+    margin: 0 0 22px;
+    padding: 10px 30px 8px;
+    font-family: $rr-display;
+    font-size: clamp(0.95rem, 2.4vw, 1.3rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: $rr-cream;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 14px;
+        border-top: 3px solid $rr-cream;
+        border-bottom: 3px solid $rr-cream;
+    }
+
+    &::before { left: 0;  border-left: 3px solid $rr-cream; }
+    &::after  { right: 0; border-right: 3px solid $rr-cream; }
+}
+
+.reunion-rule {
+    height: 3px;
+    max-width: 720px;
+    margin: 0 auto;
+    background: $rr-cream;
+}
+
+.reunion-title {
+    margin: 16px auto 10px;
+    font-family: $rr-display;
+    font-size: clamp(2.5rem, 10vw, 6.4rem);
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: $rr-cream;
+    text-shadow: 5px 5px 0 rgba(30, 35, 69, 0.45);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .reunion-title {
+        background-image: repeating-linear-gradient(
+            180deg,
+            #{$rr-cream} 0, #{$rr-cream} 4px,
+            rgba(255, 244, 236, 0.1) 4px, rgba(255, 244, 236, 0.1) 7px);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        text-shadow: none;
+    }
+}
+
+.reunion-subtitle {
+    margin: 0 0 18px;
+    font-family: $rr-display;
+    font-size: clamp(1.1rem, 4vw, 2.1rem);
+    letter-spacing: 0.02em;
+    color: $rr-cream;
+
+    b {
+        font-weight: inherit;
+        color: $rr-gold;
+    }
+}
+
+/* ============================================================== THE TALLY */
+
+.reunion-years {
+    max-width: 760px;
+    margin: 26px auto 8px;
+    padding: 20px 22px 18px;
+    border: 3px solid $rr-cream;
+    background: rgba(30, 35, 69, 0.42);
+}
+
+.reunion-years-count {
+    margin: 0;
+    font-family: $rr-display;
+    font-size: clamp(1.6rem, 6vw, 3.1rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: $rr-cream;
+}
+
+.reunion-years-sub {
+    margin: 6px 0 16px;
+    font-family: $rr-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: $rr-cream-dim;
+}
+
+.reunion-tally {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 6px;
+    margin: 0;
+    padding: 22px 0 0;
+    list-style: none;
+}
+
+.reunion-tally-year {
+    position: relative;
+    width: 13px;
+    height: 46px;
+    list-style: none;
+    background-image: linear-gradient(
+        180deg,
+        #{$rr-teal} 0 34%,
+        #{$rr-purple} 34% 68%,
+        #{$rr-orange-lt} 68% 100%);
+    opacity: 0.82;
+}
+
+.reunion-tally-year--now {
+    height: 64px;
+    background-image: none;
+    background-color: $rr-gold;
+    opacity: 1;
+
+    &::after {
+        content: "20";
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 6px);
+        transform: translateX(-50%);
+        font-family: $rr-display;
+        font-size: 13px;
+        color: $rr-gold;
+    }
+}
+
+/* ======================================================= FROM / TO BLOCKS */
+
+.reunion-when {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    margin: 30px 0 4px;
+}
+
+.reunion-when-block {
+    flex: 1 1 260px;
+    max-width: 340px;
+    padding: 16px 20px 18px;
+    border: 3px solid $rr-cream;
+    background: rgba(30, 35, 69, 0.42);
+    text-align: left;
+}
+
+.reunion-when-key {
+    display: block;
+    font-family: $rr-display;
+    font-size: 15px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $rr-gold;
+}
+
+.reunion-when-val {
+    display: block;
+    margin-top: 4px;
+    font-family: $rr-display;
+    font-size: clamp(1.25rem, 3.6vw, 1.95rem);
+    line-height: 1.12;
+    text-transform: uppercase;
+    color: $rr-cream;
+}
+
+.reunion-blurb {
+    max-width: 640px;
+    margin: 26px auto 0;
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: $rr-cream;
+}
+
+.reunion-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.reunion-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: 3px solid $rr-cream;
+    background: transparent;
+    box-shadow: 5px 5px 0 rgba(30, 35, 69, 0.5);
+    font-family: $rr-display;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $rr-cream !important;
+    text-decoration: none !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+    &:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 3px 3px 0 rgba(30, 35, 69, 0.5);
+        color: $rr-cream !important;
+    }
+
+    &--primary {
+        background: $rr-navy;
+        color: $rr-cream !important;
+    }
+}
+
+/* =============================================== PANEL AND BOARD OVERRIDES */
+
+@include lan.lan-structure("reunion");
+
+.reunion-panel {
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        display: block;
+        height: 10px;
+        @include bar-column(11px, 9px);
+        background-color: $rr-navy;
+    }
+}
+
+.reunion-day:nth-child(1) .reunion-day-name { color: $rr-navy; }
+
+.reunion-day-name {
+    text-shadow: 2px 2px 0 rgba(30, 35, 69, 0.35);
+}
+
+.reunion-day:nth-child(1) .reunion-day-name { text-shadow: none; }
+
+.reunion-slot {
+    border: 2px solid var(--d);
+}
+
+.reunion-tag {
+    border-radius: 2px;
+}
+
+.reunion-tag--mark {
+    background: transparent;
+    border: 1px solid $rr-cream-dim;
+    color: $rr-cream-dim;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.reunion-kit-check {
+    border-radius: 0;
+
+    &::before { border-color: $rr-navy; }
+}
+
+.reunion-countdown-unit {
+    border: 2px solid rgba(255, 244, 236, 0.35);
+}
+
+/* ============================================================= RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    .reunion-hero { padding: 30px 16px 26px; }
+
+    .reunion-years { margin-left: 4px; margin-right: 4px; padding: 16px 12px 14px; }
+
+    .reunion-tally { flex-wrap: wrap; gap: 4px; }
+    .reunion-tally-year { width: 9px; height: 34px; }
+    .reunion-tally-year--now { height: 48px; }
+
+    .reunion-when-block { max-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reunion-paper::after { animation: none; }
+    .reunion-marquee span { padding-left: 14px; animation: none; }
+    .reunion-marquee span + span { display: none; }
+    .reunion-btn { transition: none; }
+}

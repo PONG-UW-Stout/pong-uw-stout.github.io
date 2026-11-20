@@ -1,0 +1,516 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$bl-display: "Bahnschrift", "DIN Alternate", "DIN Condensed", "Arial Narrow", "Roboto Condensed", "Oswald", sans-serif;
+$bl-ui:      "Bahnschrift", "DIN Alternate", "Arial Narrow", "Roboto Condensed", sans-serif;
+$bl-note:    Consolas, "Roboto Mono", "DejaVu Sans Mono", "Courier New", monospace;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$bl-blue:     #1e63a8;
+$bl-blue-dk:  #16497e;
+$bl-ink:      #f2f6fb;
+$bl-dim:      #b9d2e8;
+$bl-tape:     #f2b418;
+$bl-tape-dk:  #1d1d1d;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$bl-ink};
+    --lan-ink-soft: #{$bl-dim};
+    --lan-panel: rgba(22, 73, 126, 0.62);
+    --lan-panel-edge: rgba(242, 246, 251, 0.6);
+    --lan-accent: #ffffff;
+    --lan-accent-2: #{$bl-tape};
+    --lan-on-accent: #{$bl-blue-dk};
+    --lan-on-day: #{$bl-ink};
+    --lan-slot: transparent;
+    --lan-slot-ink: #{$bl-ink};
+    --lan-slot-dim: #{$bl-dim};
+    --lan-sunk: transparent;
+    --lan-sunk-open: rgba(255, 255, 255, 0.09);
+    --lan-day-1: transparent;
+    --lan-day-2: transparent;
+    --lan-day-3: transparent;
+    --lan-day-all: transparent;
+    --lan-legend: transparent;
+    --lan-legend-ink: #{$bl-ink};
+    --lan-footer: #{$bl-blue-dk};
+    --lan-footer-card: rgba(255, 255, 255, 0.1);
+    --lan-footer-ink: #{$bl-ink};
+    --lan-radius: 4px;
+    --lan-edge-w: 2px;
+    --lan-scrim: rgba(12, 38, 66, 0.95);
+    --lan-font: #{$bl-note};
+    --lan-font-ui: #{$bl-note};
+    --lan-font-display: #{$bl-display};
+
+    --dc-ground: #{$bl-blue};
+    --dc-ink: #{$bl-ink};
+    --dc-rubric: #{$bl-tape};
+    --dc-link: #{$bl-tape};
+    --bl-blue: #{$bl-blue};
+}
+
+html[data-theme="light"] { --bl-blue: #2b7ac4; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--bl-blue); }
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $bl-ui;
+    font-size: 16px;
+    line-height: 1.65;
+    color: $bl-ink;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $bl-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $bl-tape;
+    text-decoration: underline;
+
+    &:hover { color: #fff; }
+}
+
+#content ::selection { background: $bl-tape; color: $bl-blue-dk; }
+#content :focus-visible { outline: 3px solid $bl-tape; outline-offset: 2px; }
+
+* { scrollbar-color: #{$bl-ink} #{$bl-blue-dk}; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $bl-blue-dk; }
+::-webkit-scrollbar-thumb {
+    background: $bl-ink;
+    border: 3px solid $bl-blue-dk;
+    border-radius: 4px;
+
+    &:hover { background: $bl-tape; }
+}
+
+/* ================================================================= PAPER */
+
+.build-paper {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: var(--bl-blue);
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.11) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.11) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+}
+
+/* ================================================================ TICKER */
+
+.build-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 9px 0;
+    background: $bl-blue-dk;
+    border-top: 2px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    font-family: $bl-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: $bl-ink;
+    white-space: nowrap;
+
+    span { display: inline-block; padding-left: 100%; animation: build-marquee 42s linear infinite; }
+}
+
+@keyframes build-marquee { to { transform: translateX(-100%); } }
+
+/* ================================================================== HERO */
+
+.build-hero {
+    position: relative;
+    z-index: 2;
+    padding: 36px 20px 48px;
+}
+
+.build-sheet {
+    position: relative;
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 34px 34px 38px;
+    border: 2px solid rgba(242, 246, 251, 0.6);
+    box-shadow: inset 0 0 0 7px transparent, inset 0 0 0 8px rgba(242, 246, 251, 0.28);
+}
+
+.build-reg {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 0 solid rgba(242, 246, 251, 0.75);
+
+    &--tl { top: 9px;    left: 9px;    border-top-width: 2px; border-left-width: 2px; }
+    &--tr { top: 9px;    right: 9px;   border-top-width: 2px; border-right-width: 2px; }
+    &--bl { bottom: 9px; left: 9px;    border-bottom-width: 2px; border-left-width: 2px; }
+    &--br { bottom: 9px; right: 9px;   border-bottom-width: 2px; border-right-width: 2px; }
+}
+
+.build-presents {
+    margin: 0 0 4px;
+    font-family: $bl-note;
+    font-size: clamp(0.72rem, 1.8vw, 0.86rem);
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    text-align: center;
+    color: $bl-dim;
+}
+
+.build-title {
+    margin: 0;
+    font-family: $bl-display;
+    font-size: clamp(2.6rem, 10vw, 6.4rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 2.5px #{$bl-ink};
+    paint-order: stroke fill;
+}
+
+/* ======================================================== DIMENSION LINE */
+
+.build-dim {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: min(620px, 86%);
+    margin: 14px auto 0;
+    color: $bl-tape;
+}
+
+.build-dim-ext {
+    flex: none;
+    width: 2px;
+    height: 26px;
+    background: currentColor;
+}
+
+.build-dim-line {
+    position: relative;
+    flex: 1;
+    height: 2px;
+    background: currentColor;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        translate: 0 -50%;
+    }
+
+    &::before { left: 0;  border-right: 11px solid currentColor; }
+    &::after  { right: 0; border-left: 11px solid currentColor; }
+}
+
+.build-dim-text {
+    flex: none;
+    font-family: $bl-note;
+    font-size: clamp(0.72rem, 1.9vw, 0.92rem);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    white-space: nowrap;
+}
+
+.build-tagline {
+    margin: 18px 0 30px;
+    font-family: $bl-note;
+    font-size: clamp(0.76rem, 2vw, 0.95rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-align: center;
+    color: $bl-ink;
+}
+
+.build-hero-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    align-items: center;
+    gap: 36px;
+    text-align: left;
+}
+
+/* ================================================================ PLATE */
+
+.build-plate {
+    position: relative;
+    padding: 4px 10px;
+}
+
+.build-mark { display: block; width: 100%; height: auto; }
+
+.bl-arc,
+.bl-box,
+.bl-rule {
+    fill: none;
+    stroke: #{$bl-ink};
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.bl-rule { stroke-width: 1.4; opacity: 0.65; }
+
+.bl-cline {
+    fill: none;
+    stroke: #{$bl-tape};
+    stroke-width: 1.2;
+    stroke-dasharray: 10 4 2 4;
+    opacity: 0.85;
+}
+
+.bl-node { fill: #{$bl-tape}; }
+
+.bl-note {
+    fill: #{$bl-tape};
+    font-family: $bl-note;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+}
+
+.build-tape {
+    position: absolute;
+    top: 14%;
+    left: -4%;
+    width: 78%;
+    padding: 7px 0;
+    background: repeating-linear-gradient(
+        56deg,
+        #{$bl-tape} 0 14px,
+        #{$bl-tape-dk} 14px 28px
+    );
+    font-family: $bl-note;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    rotate: -24deg;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================================== TITLE BLOCK */
+
+.build-titleblock {
+    margin-bottom: 24px;
+    border: 2px solid rgba(242, 246, 251, 0.75);
+}
+
+.build-tb-row {
+    display: grid;
+    grid-template-columns: 1fr 112px;
+
+    & + & { border-top: 1px solid rgba(242, 246, 251, 0.4); }
+}
+
+.build-tb-cell {
+    padding: 7px 11px 8px;
+
+    & + & { border-left: 1px solid rgba(242, 246, 251, 0.4); }
+}
+
+.build-tb-key {
+    display: block;
+    font-family: $bl-note;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $bl-dim;
+}
+
+.build-tb-val {
+    display: block;
+    margin-top: 2px;
+    font-family: $bl-display;
+    font-size: clamp(0.88rem, 1.9vw, 1.05rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: $bl-ink;
+}
+
+.build-blurb {
+    margin: 0 0 12px;
+    font-family: $bl-note;
+    font-size: 12.5px;
+    line-height: 1.75;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $bl-dim;
+}
+
+.build-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 22px;
+}
+
+/* ============================================================== BUTTONS */
+
+.build-btn {
+    display: inline-block;
+    padding: 13px 28px;
+    border: 2px solid $bl-ink;
+    border-radius: 4px;
+    background: transparent;
+    font-family: $bl-ui;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: $bl-ink !important;
+    cursor: pointer;
+    transition: background-color 0.12s ease, transform 0.12s ease;
+
+    &:hover { background: rgba(255, 255, 255, 0.14); transform: translateY(-2px); }
+    &:active { transform: translateY(0); }
+
+    &--primary {
+        border-color: $bl-tape;
+        background: $bl-tape;
+        color: $bl-blue-dk !important;
+
+        &:hover { background: #ffc93c; border-color: #ffc93c; color: $bl-blue-dk !important; }
+    }
+}
+
+@include lan.lan-structure("build");
+
+/* ================================================== THE SHEET, CARRIED DOWN */
+
+.build-day {
+    padding: 0 0 6px;
+    box-shadow: inset 0 0 0 2px rgba(242, 246, 251, 0.5);
+}
+
+.build-day-name {
+    margin: 0 0 6px;
+    padding: 9px 13px 8px;
+    border-bottom: 2px solid rgba(242, 246, 251, 0.5);
+    letter-spacing: 0.2em;
+}
+
+.build-slot {
+    margin: 0 6px 5px;
+    border: 1.4px solid rgba(242, 246, 251, 0.32);
+}
+
+.build-day--all {
+    box-shadow: inset 0 0 0 2px #{$bl-tape};
+
+    .build-day-name { border-bottom-color: #{$bl-tape}; color: #{$bl-tape}; }
+    .build-slot     { border-color: rgba(242, 180, 24, 0.55); }
+}
+
+.build-legend { border: 2px solid rgba(242, 246, 251, 0.5); }
+
+.build-kit-item,
+.build-faq-item { border: 1.4px solid rgba(242, 246, 251, 0.32); }
+
+.build-table caption {
+    background: transparent;
+    border-bottom: 2px solid rgba(242, 246, 251, 0.5);
+    color: #{$bl-ink};
+}
+
+.build-panel-title {
+    padding-bottom: 10px;
+    border-bottom: 1.6px solid rgba(242, 246, 251, 0.4);
+    color: transparent;
+    -webkit-text-stroke: 1.5px #{$bl-ink};
+    paint-order: stroke fill;
+}
+
+.build-panel-sub { margin-top: 10px; }
+
+.build-kit-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: inset 0 0 0 1.6px rgba(242, 246, 251, 0.75);
+
+    &::before {
+        top: 1px;
+        left: 5.5px;
+        border-right-color: #{$bl-tape};
+        border-bottom-color: #{$bl-tape};
+    }
+}
+
+.build-faq-q::before {
+    width: 11px;
+    height: 11px;
+    margin-top: 6px;
+    border: none;
+    background:
+        linear-gradient(#{$bl-tape}, #{$bl-tape}) center / 100% 2px no-repeat,
+        linear-gradient(#{$bl-tape}, #{$bl-tape}) center / 2px 100% no-repeat;
+}
+
+.build-faq-item[open] .build-faq-q::before {
+    background: linear-gradient(#{$bl-tape}, #{$bl-tape}) center / 100% 2px no-repeat;
+    transform: none;
+}
+
+.build-tag { border-radius: 0; }
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    #content { font-size: 15px; }
+
+    .build-hero { padding: 24px 10px 34px; }
+    .build-sheet { padding: 24px 16px 26px; }
+    .build-hero-grid { grid-template-columns: 1fr; gap: 24px; }
+    .build-title { -webkit-text-stroke-width: 1.8px; }
+
+    .build-tb-row { grid-template-columns: 1fr; }
+    .build-tb-cell + .build-tb-cell { border-left: none; border-top: 1px solid rgba(242, 246, 251, 0.4); }
+
+    .build-dim { width: 100%; }
+    .build-plate { max-width: 300px; margin: 0 auto; }
+}
+
+/* ================================================== REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .build-marquee span { padding-left: 14px; animation: none; }
+    .build-btn          { transition: none; }
+}

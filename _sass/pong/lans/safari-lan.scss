@@ -1,0 +1,1089 @@
+// ===========================================================================
+// Safari-LAN event stylesheet.
+// ===========================================================================
+
+@use "pong/variables" as *;
+
+/* ============================================================ TYPE STACKS */
+
+$jungle-display: "Avenir Next", "Futura", "Century Gothic", "Trebuchet MS", "Segoe UI", sans-serif;
+$jungle-ui:      "Avenir Next", "Futura", "Century Gothic", "Trebuchet MS", "Segoe UI", sans-serif;
+$jungle-body:    "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$jungle-cream:     #f8ead8;
+$jungle-cream-dk:  #efdcc2;
+$jungle-sand:      #e8dcc4;
+$jungle-orange:    #e8893a;
+$jungle-orange-dk: #c86f26;
+$jungle-blue:      #1f6cb0;
+$jungle-blue-dk:   #16527f;
+$jungle-blue-lt:   #2a7ec4;
+$jungle-leaf:      #7f9a4a;
+$jungle-leaf-dk:   #5f7633;
+$jungle-leaf-bk:   #a8bd82;   // the foliage behind everything, held back
+$jungle-leaf-deep: #4a5e28;   // the frog, and the veins on the near leaves
+$jungle-branch:    #5a3a20;
+$jungle-branch-dk: #42291485;
+$jungle-snake:     #6f9e4e;
+$jungle-sun:       #f2b45e;
+$jungle-ink:       #2b2318;
+$jungle-ink-soft:  #6e6052;
+
+$jungle-free:      #3cb54a;
+$jungle-free-dark: #2d8f39;
+$jungle-contest:   #e8343c;
+$jungle-contest-dk:#bb242b;
+$jungle-olive:     #8a9a4a;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --dc-ground:      #{$jungle-cream};
+    --dc-ground-deep: #{$jungle-cream-dk};
+    --dc-vellum:      #ffffff;
+    --dc-vellum-lit:  #ffffff;
+    --dc-vellum-deep: #{$jungle-sand};
+    --dc-ink:         #{$jungle-ink};
+    --dc-ink-soft:    #{$jungle-ink-soft};
+    --dc-rubric:      #{$jungle-orange};
+    --dc-gold:        #{$jungle-orange};
+    --dc-gold-edge:   #f7b27a;
+    --dc-link:        #{$jungle-blue};
+    --dc-link-hover:  #{$jungle-orange-dk};
+    --dc-lift:        0 8px 22px rgba(43, 35, 24, 0.14);
+    --dc-candle:      rgba(0, 0, 0, 0);
+
+    --jungle-cream: #{$jungle-cream};
+}
+
+html[data-theme="dark"] {
+    --jungle-cream: #e3d2b6;
+    --dc-ground:    #e3d2b6;
+}
+
+// Covers the white band between the nav's bottom margin and the content. All
+// three selectors because the theme variants outrank a bare `html`.
+html,
+html[data-theme="light"],
+html[data-theme="dark"] {
+    background-color: var(--jungle-cream);
+}
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header {
+    display: none;
+}
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $jungle-body;
+    font-size: 16px;
+    line-height: 1.65;
+    color: $jungle-ink;
+    background-color: var(--jungle-cream);
+    background-image:
+        radial-gradient(ellipse 60% 34% at 62% 2%, $jungle-sand, transparent 72%);
+}
+
+#post-container article {
+    display: block;
+}
+
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content time {
+    font-family: $jungle-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $jungle-blue;
+    text-decoration: underline;
+
+    &:hover { color: $jungle-orange-dk; }
+}
+
+#content ::selection {
+    background: $jungle-orange;
+    color: #fff;
+}
+
+#content :focus-visible {
+    outline: 3px solid $jungle-blue;
+    outline-offset: 2px;
+}
+
+/* ============================================================ SCROLLBARS */
+
+* {
+    scrollbar-color: $jungle-orange $jungle-sand;
+}
+
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $jungle-sand; }
+
+::-webkit-scrollbar-thumb {
+    background: $jungle-orange;
+    border: 3px solid $jungle-sand;
+    border-radius: 8px;
+
+    &:hover { background: $jungle-orange-dk; }
+}
+
+/* ============================================================ SVG SPRITE */
+
+.jungle-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.jungle-icon {
+    display: inline-block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+    vertical-align: middle;
+}
+
+/* ================================================================ TICKER */
+
+.jungle-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 9px 0;
+    background: $jungle-blue;
+    font-family: $jungle-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: $jungle-cream;
+    white-space: nowrap;
+
+    span {
+        display: inline-block;
+        padding-right: 1.6em;
+        animation: jungle-marquee 23s linear infinite;
+    }
+}
+
+@keyframes jungle-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================== HERO */
+
+.jungle-hero {
+    position: relative;
+    z-index: 2;
+    padding: 44px 20px 52px;
+}
+
+.jungle-hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 40px;
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.jungle-title {
+    margin: 0 0 6px;
+    font-family: $jungle-display;
+    font-size: clamp(2.6rem, 8.5vw, 5.4rem);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    color: $jungle-orange;
+}
+
+.jungle-tagline {
+    margin: 0 0 26px;
+    font-family: $jungle-ui;
+    font-size: clamp(1rem, 2.6vw, 1.4rem);
+    font-weight: 700;
+    color: $jungle-blue;
+}
+
+.jungle-details {
+    margin: 0 0 22px;
+    font-family: $jungle-ui;
+    font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+    line-height: 1.45;
+
+    dt {
+        font-weight: 700;
+        color: $jungle-orange;
+    }
+
+    dd {
+        margin: 1px 0 14px;
+        font-weight: 700;
+        color: $jungle-blue;
+    }
+}
+
+.jungle-blurb {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 16px;
+    line-height: 1.6;
+    color: $jungle-blue;
+}
+
+.jungle-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+/* =============================================================== CANOPY */
+
+.jungle-hero-art {
+    display: flex;
+    justify-content: center;
+}
+
+.jungle-canopy {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+}
+
+.jg-leaf          { fill: #{$jungle-leaf}; }
+.jg-leaf-d        { fill: #{$jungle-leaf-deep}; }
+.jg-leaf-sm       { fill: #{$jungle-leaf-dk}; }
+.jg-leaf-vein     { fill: none; stroke: #{$jungle-leaf-deep}; stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
+.jg-leaf-bk       { fill: #{$jungle-leaf-bk}; }
+.jg-leaf-bk-vein  { fill: none; stroke: #{$jungle-leaf}; stroke-width: 1.4; stroke-linecap: round; opacity: 0.5; }
+
+.jg-vine          { fill: none; stroke: #{$jungle-leaf-dk}; stroke-width: 3; stroke-linecap: round; }
+.jg-branch        { fill: #{$jungle-branch}; }
+.jg-snake         { fill: none; stroke: #{$jungle-snake}; stroke-width: 13; stroke-linecap: round; }
+.jg-snake-h       { fill: #{$jungle-snake}; }
+
+.jg-blue          { fill: #{$jungle-blue}; }
+.jg-blue-d        { fill: #{$jungle-blue-dk}; }
+.jg-blue-stroke   { fill: none; stroke: #{$jungle-blue}; stroke-width: 13; stroke-linecap: round; }
+.jg-orange        { fill: #{$jungle-orange}; }
+.jg-orange-d      { fill: #{$jungle-orange-dk}; }
+.jg-orange-stroke { fill: none; stroke: #{$jungle-orange}; stroke-width: 3; stroke-linecap: round; }
+.jg-white         { fill: #ffffff; }
+.jg-ink           { fill: #{$jungle-ink}; }
+.jg-ink-stroke    { fill: none; stroke: #{$jungle-ink}; stroke-width: 3; stroke-linecap: round; }
+.jg-cable         { fill: none; stroke: #4a4a4a; stroke-width: 3.4; stroke-linecap: round; }
+.jg-pad           { fill: #4a4a4a; }
+
+.jg-flutter {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: jungle-flutter 7s ease-in-out infinite alternate;
+}
+
+@keyframes jungle-flutter {
+    from { translate: 0 0;      rotate: -6deg; }
+    to   { translate: -14px 22px; rotate: 8deg; }
+}
+
+/* ============================================================== BUTTONS */
+
+.jungle-btn {
+    display: inline-block;
+    padding: 13px 28px;
+    border: 3px solid $jungle-blue;
+    border-radius: 999px;
+    background: transparent;
+    font-family: $jungle-ui;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: $jungle-blue !important;
+    cursor: pointer;
+    transition: transform 0.12s ease, background-color 0.12s ease;
+
+    &:hover {
+        background: rgba(31, 108, 176, 0.1);
+        transform: translateY(-2px);
+    }
+
+    &:active { transform: translateY(0); }
+
+    &--primary {
+        border-color: $jungle-orange;
+        background: $jungle-orange;
+        color: #fff !important;
+
+        &:hover { background: $jungle-orange-dk; border-color: $jungle-orange-dk; }
+    }
+}
+
+/* ============================================================= COUNTDOWN */
+
+.jungle-countdown-wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto 36px;
+    padding: 18px 18px 20px;
+    text-align: center;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(43, 35, 24, 0.12);
+}
+
+.jungle-countdown-head {
+    margin: 0 0 14px;
+    font-family: $jungle-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: $jungle-orange;
+}
+
+.jungle-countdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.jungle-countdown-unit {
+    min-width: 86px;
+    padding: 11px 8px 9px;
+    border-radius: 14px;
+    background: $jungle-sand;
+}
+
+.jungle-countdown-num {
+    display: block;
+    font-family: $jungle-display;
+    font-size: 29px;
+    font-weight: 700;
+    line-height: 1;
+    color: $jungle-blue;
+    font-variant-numeric: tabular-nums;
+}
+
+.jungle-countdown-label {
+    display: block;
+    margin-top: 5px;
+    font-family: $jungle-ui;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $jungle-ink-soft;
+}
+
+.jungle-countdown-wrap.is-past {
+    .jungle-countdown { display: none; }
+
+    .jungle-countdown-head {
+        margin: 0;
+        font-family: $jungle-body;
+        font-size: 16px;
+        letter-spacing: 0.01em;
+        text-transform: none;
+        color: $jungle-ink;
+    }
+}
+
+/* ============================================================ FACT TABLE */
+
+.jungle-facts {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto 44px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(43, 35, 24, 0.12);
+}
+
+.jungle-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $jungle-ui;
+    font-size: 14px;
+
+    caption {
+        padding: 12px 16px;
+        background: $jungle-blue;
+        font-family: $jungle-display;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        text-align: left;
+        color: $jungle-cream;
+    }
+
+    th, td {
+        padding: 10px 16px;
+        border-bottom: 1px solid $jungle-cream-dk;
+        text-align: left;
+    }
+
+    th {
+        width: 42%;
+        font-weight: 700;
+        color: $jungle-ink-soft;
+    }
+
+    td { color: $jungle-ink; }
+
+    tr:last-child th,
+    tr:last-child td { border-bottom: none; }
+}
+
+.jungle-th-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.jungle-fact-icon {
+    flex: none;
+    width: 19px;
+    height: 19px;
+    color: $jungle-leaf-dk;
+}
+
+/* ================================================================ PANELS */
+
+.jungle-panel {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    margin: 30px auto;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 10px 26px rgba(43, 35, 24, 0.12);
+    overflow: hidden;
+}
+
+.jungle-panel-body {
+    padding: 28px 32px 34px;
+}
+
+.jungle-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 0 0 6px;
+    font-family: $jungle-display;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: $jungle-orange;
+
+    .jungle-icon {
+        flex: none;
+        width: 28px;
+        height: 28px;
+        color: $jungle-leaf;
+    }
+}
+
+.jungle-panel::before {
+    content: "";
+    display: block;
+    height: 20px;
+    background-color: #{$jungle-sand};
+    background-image:
+        radial-gradient(ellipse 7px 5.5px at 9px 11px,  #{$jungle-branch} 98%, transparent 100%),
+        radial-gradient(ellipse 5px 4px   at 13px 6px,  #{$jungle-orange-dk} 98%, transparent 100%),
+        radial-gradient(ellipse 6px 4.5px at 22px 15px, #{$jungle-branch} 98%, transparent 100%);
+    background-size: 38px 20px, 29px 20px, 47px 20px;
+    background-repeat: repeat-x;
+}
+
+.jungle-panel-sub {
+    margin: 0 0 24px;
+    font-family: $jungle-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $jungle-ink-soft;
+}
+
+/* ====================================================== SCHEDULE SCREEN */
+
+.jungle-screen-wrap { margin-top: 4px; }
+
+.jungle-screen {
+    display: block;
+    padding: 8px;
+    border-radius: 14px;
+    background: $jungle-sand;
+    text-decoration: none !important;
+
+    &.is-missing .jungle-schedule-img { display: none; }
+    &.is-missing .jungle-noimg { display: flex; }
+}
+
+.jungle-schedule-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.jungle-noimg {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 54px 24px;
+    text-align: center;
+    font-family: $jungle-ui;
+    color: $jungle-ink-soft;
+
+    .jungle-icon { width: 40px; height: 40px; color: $jungle-leaf; }
+
+    strong {
+        font-family: $jungle-display;
+        font-size: 17px;
+        text-transform: uppercase;
+        color: $jungle-orange;
+    }
+
+    code {
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 12px;
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: $jungle-cream-dk;
+    }
+}
+
+.jungle-screen-meta {
+    margin-top: 10px;
+    font-family: $jungle-ui;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.jungle-zoom {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(43, 35, 24, 0.9);
+    transition: opacity 0.22s ease;
+
+    &:target {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+.jungle-zoom-bg { position: absolute; inset: 0; }
+
+.jungle-zoom-frame {
+    position: relative;
+    max-width: 1300px;
+    max-height: 92vh;
+    overflow: auto;
+    border-radius: 12px;
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+}
+
+.jungle-zoom-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: $jungle-orange;
+    font-size: 15px;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+/* ========================================================= RUNNING ORDER */
+
+.jungle-days {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+    align-items: start;
+    gap: 18px;
+}
+
+.jungle-day {
+    --jungle-day-bg: #{$jungle-blue};
+    padding: 6px;
+    border-radius: 16px;
+    background: var(--jungle-day-bg);
+
+    &:nth-child(2) { --jungle-day-bg: #{$jungle-olive}; }
+}
+
+.jungle-day-name {
+    margin: 0;
+    padding: 9px 13px 11px;
+    font-family: $jungle-display;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $jungle-cream;
+}
+
+.jungle-slots {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.jungle-slot {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 4px 10px;
+    margin: 0 0 5px;
+    padding: 10px 13px;
+    border-radius: 11px;
+    background: #fff;
+    list-style: none;
+
+    &:last-child { margin-bottom: 0; }
+}
+
+.jungle-slot-time {
+    grid-column: 1;
+    grid-row: 1;
+    font-family: $jungle-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: $jungle-ink-soft;
+    font-variant-numeric: tabular-nums;
+}
+
+.jungle-slot-name {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-family: $jungle-ui;
+    font-size: 15px;
+    font-weight: 700;
+    color: $jungle-ink;
+}
+
+.jungle-slot-note {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: $jungle-ink-soft;
+}
+
+.jungle-slot-tags {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.jungle-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-family: $jungle-ui;
+    font-size: 11px;
+    font-weight: 800;
+    color: #fff;
+
+    &--free    { background: $jungle-free;    border: 1px solid $jungle-free-dark; }
+    &--contest { background: $jungle-contest; border: 1px solid $jungle-contest-dk; }
+}
+
+.jungle-legend {
+    margin-top: 22px;
+    padding: 18px 20px;
+    border-radius: 16px;
+    background: $jungle-blue;
+    font-family: $jungle-body;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: $jungle-cream;
+}
+
+.jungle-legend-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 11px;
+
+    .jungle-tag { flex: none; margin-top: 1px; }
+}
+
+.jungle-legend-note {
+    margin: 0;
+    padding-top: 8px;
+    border-top: 1px solid rgba(248, 234, 216, 0.3);
+    font-size: 11.5px;
+    font-style: italic;
+    color: rgba(248, 234, 216, 0.8);
+}
+
+/* ============================================================ KIT LIST */
+
+.jungle-kit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.jungle-kit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0;
+    padding: 11px 14px;
+    border-radius: 12px;
+    background: $jungle-cream;
+    list-style: none;
+    font-size: 15px;
+}
+
+.jungle-kit-check {
+    flex: none;
+    width: 17px;
+    height: 17px;
+    margin-top: 4px;
+    background: $jungle-leaf;
+    border-radius: 100% 0 100% 0;
+}
+
+/* ================================================================== FAQ */
+
+.jungle-faq {
+    display: grid;
+    gap: 8px;
+}
+
+.jungle-faq-item {
+    border-radius: 14px;
+    background: $jungle-cream;
+    overflow: hidden;
+
+    &[open] { background: $jungle-sand; }
+}
+
+.jungle-faq-q {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    font-family: $jungle-ui;
+    font-size: 15px;
+    font-weight: 700;
+    color: $jungle-blue;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+
+    &::before {
+        content: "";
+        flex: none;
+        width: 13px;
+        height: 13px;
+        margin-top: 5px;
+        background: $jungle-orange;
+        border-radius: 100% 0 100% 0;
+        transition: transform 0.16s ease;
+    }
+}
+
+.jungle-faq-item[open] .jungle-faq-q::before {
+    transform: rotate(90deg);
+}
+
+.jungle-faq-a {
+    margin: 0;
+    padding: 0 18px 15px 41px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: $jungle-ink;
+}
+
+/* ============================================================ SPONSORS */
+
+.jungle-sponsors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+}
+
+.jungle-sponsor {
+    padding: 15px;
+    border-radius: 14px;
+    background: $jungle-cream;
+    text-align: center;
+}
+
+.jungle-sponsor-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 72px;
+    margin-bottom: 10px;
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+}
+
+.jungle-sponsor-name {
+    font-family: $jungle-ui;
+    font-size: 14px;
+    font-weight: 700;
+    color: $jungle-ink;
+}
+
+.jungle-sponsor-tier {
+    margin-top: 2px;
+    font-family: $jungle-ui;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $jungle-ink-soft;
+}
+
+.jungle-sponsor-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 11px;
+
+    a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 27px;
+        height: 27px;
+        border-radius: 8px;
+        color: #fff !important;
+        font-size: 13px;
+        text-decoration: none !important;
+    }
+}
+
+/* =============================================================== SAVANNA */
+
+.jungle-savanna {
+    position: relative;
+    z-index: 2;
+    margin-top: 46px;
+    line-height: 0;
+
+    svg {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+}
+
+.sv-sky    { fill: #{$jungle-sand}; }
+.sv-sun    { fill: #{$jungle-sun}; }
+.sv-ground { fill: #{$jungle-blue}; }
+
+.sv-ink,
+.sv-ink path,
+.sv-ink rect,
+.sv-ink ellipse,
+.sv-ink circle { fill: #{$jungle-blue}; }
+
+.sv-line,
+.sv-ink .sv-line {
+    fill: none;
+    stroke: #{$jungle-blue};
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+/* =============================================================== FOOTER */
+
+.jungle-footer {
+    position: relative;
+    z-index: 2;
+    margin-top: 0;
+    padding: 32px 18px 40px;
+    text-align: center;
+    background: $jungle-blue;
+}
+
+.jungle-footer-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.jungle-footer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.12);
+    font-family: $jungle-body;
+    font-size: 12.5px;
+    text-align: left;
+
+    a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: $jungle-cream !important;
+        text-decoration: none !important;
+
+        &:hover { color: #fff !important; text-decoration: underline !important; }
+    }
+
+    i { flex: none; width: 16px; text-align: center; color: $jungle-orange; }
+}
+
+.jungle-footer-sig {
+    margin: 24px 0 0;
+    font-family: $jungle-ui;
+    font-size: 12px;
+    color: rgba(248, 234, 216, 0.75);
+}
+
+/* ========================================================= SCROLL REVEAL */
+
+.jungle-reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.42s ease, transform 0.42s ease;
+
+    &.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@for $i from 1 through 8 {
+    .jungle-reveal:nth-child(#{$i}) {
+        transition-delay: #{($i - 1) * 0.06}s;
+    }
+}
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: 900px) {
+    .jungle-hero-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .jungle-canopy { max-width: 300px; }
+}
+
+@media (max-width: $breakpoint-tablet) {
+    #content { font-size: 15px; }
+
+    .jungle-hero { padding: 28px 14px 36px; }
+
+    .jungle-panel { margin: 22px 10px; border-radius: 18px; }
+
+    .jungle-panel-body { padding: 20px 16px 26px; }
+
+    .jungle-countdown-wrap,
+    .jungle-facts { margin-left: 10px; margin-right: 10px; }
+
+    .jungle-countdown-unit { min-width: 70px; }
+
+    .jungle-table {
+        font-size: 13px;
+
+        th, td { display: block; width: auto; }
+
+        th { border-bottom: none; }
+    }
+
+    .jungle-kit,
+    .jungle-days { grid-template-columns: 1fr; }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .jungle-title { font-size: clamp(2.1rem, 12vw, 3rem); }
+
+    .jungle-savanna svg { height: 110px; }
+
+    .jungle-btn { padding: 12px 20px; font-size: 13px; }
+}
+
+/* ================================================== REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .jungle-marquee span        { padding-left: 14px; animation: none; }
+    .jungle-marquee span + span { display: none; }
+    .jungle-btn                 { transition: none; }
+    .jg-flutter                 { animation: none; }
+    .jungle-faq-q::before       { transition: none; }
+    .jungle-zoom                { transition: none; }
+
+    .jungle-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

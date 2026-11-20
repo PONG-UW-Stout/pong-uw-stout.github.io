@@ -1,0 +1,415 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$ap-display: "Arial Black", "Arial Bold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$ap-ui:      "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+$ap-body:    "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$ap-yellow:    #fed732;
+$ap-yellow-dk: #f6c520;
+$ap-amber:     #f0a018;
+$ap-ink:       #2b2620;
+$ap-ink-dp:    #19150f;
+$ap-green:     #4dbd94;
+$ap-green-dk:  #2f8f6c;
+$ap-grey:      #d3d3d3;
+$ap-red:       #e23b2a;
+$ap-paper:     #fff8e2;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$ap-ink};
+    --lan-ink-soft: #5d5443;
+    --lan-panel: rgba(255, 248, 226, 0.94);
+    --lan-panel-edge: #{$ap-ink};
+    --lan-accent: #{$ap-ink};
+    --lan-accent-2: #{$ap-green-dk};
+    --lan-on-accent: #{$ap-yellow};
+    --lan-on-day: #{$ap-paper};
+    --lan-slot: rgba(43, 38, 32, 0.9);
+    --lan-slot-ink: #{$ap-paper};
+    --lan-slot-dim: #cfc5ad;
+    --lan-sunk: rgba(43, 38, 32, 0.08);
+    --lan-sunk-open: rgba(43, 38, 32, 0.14);
+    --lan-day-1: #4a52a8;
+    --lan-day-2: #7a5aa8;
+    --lan-day-3: #1f9d6a;
+    --lan-day-all: #{$ap-green-dk};
+    --lan-legend: rgba(43, 38, 32, 0.92);
+    --lan-legend-ink: #{$ap-paper};
+    --lan-footer: #{$ap-ink-dp};
+    --lan-footer-card: rgba(254, 215, 50, 0.14);
+    --lan-footer-ink: #{$ap-paper};
+    --lan-radius: 0;
+    --lan-edge-w: 3px;
+    --lan-title-track: 0.08em;
+    --lan-scrim: rgba(25, 21, 15, 0.95);
+    --lan-font: #{$ap-body};
+    --lan-font-ui: #{$ap-ui};
+    --lan-font-display: #{$ap-display};
+
+    --dc-ground: #{$ap-yellow};
+    --dc-ink: #{$ap-ink};
+    --dc-rubric: #{$ap-green-dk};
+    --dc-link: #{$ap-green-dk};
+    --ap-ground: #{$ap-yellow};
+}
+
+html[data-theme="light"] { --ap-ground: #{$ap-yellow}; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--ap-ground); }
+
+/* ====================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $ap-body;
+    font-size: 16.5px;
+    line-height: 1.68;
+    color: $ap-ink;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $ap-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $ap-green-dk;
+    text-decoration: underline;
+
+    &:hover { color: $ap-ink; }
+}
+
+#content ::selection { background: $ap-green; color: $ap-ink; }
+#content :focus-visible { outline: 3px solid $ap-ink; outline-offset: 2px; }
+
+* { scrollbar-color: #{$ap-ink} #{$ap-yellow-dk}; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $ap-yellow-dk; }
+::-webkit-scrollbar-thumb {
+    background: $ap-ink;
+
+    &:hover { background: $ap-green-dk; }
+}
+
+/* ============================================================== THE FIELD */
+
+.apoca-field {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: var(--ap-ground);
+    background-image:
+        repeating-radial-gradient(ellipse 58% 42% at 16% 26%,
+            rgba(240, 160, 24, 0.26) 0 46px,
+            rgba(240, 160, 24, 0) 46px 104px),
+        repeating-radial-gradient(ellipse 70% 52% at 88% 68%,
+            rgba(240, 160, 24, 0.2) 0 58px,
+            rgba(240, 160, 24, 0) 58px 128px),
+        repeating-radial-gradient(ellipse 46% 60% at 46% 108%,
+            rgba(230, 142, 18, 0.18) 0 40px,
+            rgba(230, 142, 18, 0) 40px 92px);
+}
+
+/* ============================================================== THE TICKER */
+
+.apoca-marquee {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    padding: 9px 0;
+    border-bottom: 3px solid $ap-ink;
+    background: $ap-ink;
+    font-family: $ap-display;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $ap-yellow;
+
+    span {
+        display: inline-block;
+        padding-right: 2.2em;
+        animation: apoca-marquee 46s linear infinite;
+    }
+}
+
+@keyframes apoca-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================ THE HERO */
+
+.apoca-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px 30px;
+}
+
+.apoca-ground {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: -1;
+    width: 100vw;
+    height: clamp(120px, 20vw, 190px);
+    transform: translateX(-50%);
+    fill: $ap-ink;
+    pointer-events: none;
+}
+
+.apoca-tear {
+    display: block;
+    width: 100%;
+    height: clamp(13px, 2.4vw, 22px);
+    fill: $ap-ink;
+}
+
+.apoca-title {
+    margin: 10px 0;
+    font-family: $ap-display;
+    font-size: clamp(1.9rem, 8.6vw, 5.4rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-transform: uppercase;
+    color: $ap-ink;
+
+    i {
+        font-style: normal;
+        font-size: 0.42em;
+        vertical-align: 0.28em;
+        padding: 0 0.06em;
+        color: $ap-ink;
+    }
+}
+
+.apoca-hosted {
+    margin: 14px 0 0;
+    font-family: $ap-display;
+    font-size: clamp(0.9rem, 3.2vw, 1.6rem);
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+    color: $ap-ink;
+
+    b {
+        font-weight: inherit;
+        color: $ap-red;
+    }
+}
+
+/* ================================================================ THE DECK */
+
+.apoca-deck {
+    display: grid;
+    grid-template-columns: 1fr 0.62fr;
+    align-items: stretch;
+    gap: 30px;
+    margin-top: 18px;
+    position: relative;
+    z-index: 1;
+}
+
+.apoca-deck-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.apoca-blurb {
+    margin: 0;
+    padding: 18px 0;
+    border-top: 2px solid $ap-ink;
+    border-bottom: 2px solid $ap-ink;
+    font-family: $ap-ui;
+    font-size: clamp(1.05rem, 3.2vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.45;
+    color: $ap-ink;
+}
+
+.apoca-when {
+    margin-top: 20px;
+    padding: 16px 20px 18px;
+    background: $ap-ink;
+}
+
+.apoca-when-key {
+    display: block;
+    font-family: $ap-display;
+    font-size: clamp(0.72rem, 2.2vw, 0.92rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: $ap-green;
+}
+
+.apoca-when-val {
+    display: block;
+    margin: 2px 0 12px;
+    font-family: $ap-display;
+    font-size: clamp(1.25rem, 4.4vw, 2.1rem);
+    line-height: 1.12;
+    text-transform: uppercase;
+    color: $ap-yellow;
+
+    &:last-child { margin-bottom: 0; }
+}
+
+.apoca-blast {
+    display: block;
+    width: 100%;
+    max-width: 330px;
+    height: auto;
+    justify-self: center;
+    align-self: end;
+    margin-bottom: -34px;
+}
+
+/* ============================================================= THE FOOTER */
+
+.apoca-foot {
+    position: relative;
+    margin-top: 20px;
+    padding: 4px 20px 22px;
+    background: $ap-ink;
+}
+
+.apoca-strip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin: 0 0 4px;
+    padding-top: 22px;
+    font-family: $ap-display;
+    font-size: clamp(1rem, 4vw, 2rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $ap-yellow;
+
+    i {
+        font-style: normal;
+        font-size: 0.6em;
+        color: $ap-red;
+    }
+}
+
+.apoca-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.apoca-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 3px solid $ap-yellow;
+    background: transparent;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+    font-family: $ap-display;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $ap-yellow !important;
+    text-decoration: none !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+    &:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+        color: $ap-yellow !important;
+    }
+
+    &--primary {
+        background: $ap-yellow;
+        border-color: $ap-yellow;
+        color: $ap-ink !important;
+
+        &:hover { color: $ap-ink !important; }
+    }
+}
+
+/* =============================================== PANEL AND BOARD OVERRIDES */
+
+@include lan.lan-structure("apoca");
+
+.apoca-panel {
+    box-shadow: 0 0 0 3px $ap-ink, 7px 8px 0 rgba(43, 38, 32, 0.24);
+}
+
+.apoca-panel-title {
+    padding-bottom: 8px;
+    border-bottom: 3px solid $ap-ink;
+}
+
+.apoca-day-name {
+    text-shadow: 2px 2px 0 rgba(25, 21, 15, 0.4);
+}
+
+.apoca-tag--mark {
+    background: transparent;
+    border: 1px solid #cfc5ad;
+    color: #cfc5ad;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+// The Among Us badge is a phrase, so let it size to its text.
+.apoca-tag--long {
+    background: linear-gradient(180deg, #5ccd69, #3cb54a 55%, #2d8f39);
+    border: 1px solid #2d8f39;
+    white-space: nowrap;
+}
+
+.apoca-kit-check {
+    border-radius: 0;
+
+    &::before { border-color: $ap-paper; }
+}
+
+.apoca-countdown-wrap,
+.apoca-facts,
+.apoca-countdown-unit { border-radius: 0; }
+
+/* ============================================================= RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    .apoca-hero { padding: 24px 12px 26px; }
+
+    .apoca-deck { grid-template-columns: 1fr; gap: 16px; align-items: stretch; }
+    .apoca-blast { max-width: 250px; margin-left: auto; margin-right: auto; margin-bottom: -26px; }
+    .apoca-ground { height: clamp(96px, 26vw, 150px); }
+
+    .apoca-panel { box-shadow: 0 0 0 3px $ap-ink; }
+
+    .apoca-title i { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .apoca-marquee span { padding-left: 14px; animation: none; }
+    .apoca-marquee span + span { display: none; }
+    .apoca-btn { transition: none; }
+}

@@ -1,0 +1,6 @@
+---
+---
+
+// Page-only entry point. The partial redefines :root variables, so it stays
+// out of pong.css.
+@use "pong/lans/candy-lan";

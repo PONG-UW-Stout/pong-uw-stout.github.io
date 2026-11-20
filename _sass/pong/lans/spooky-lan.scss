@@ -1,0 +1,1423 @@
+@use "pong/variables" as *;
+
+/* ============================================================ TYPE STACKS */
+
+$vhs-display: "Impact", "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+$vhs-ui:      "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+$vhs-body:    "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+$vhs-hand:    "Bradley Hand", "Segoe Print", "Comic Sans MS", "Chalkboard SE", cursive;
+$vhs-osd:     "Courier New", Courier, monospace;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$vhs-dark:       #0b0705;
+$vhs-wood:       #2b1a10;
+$vhs-wood-lit:   #43291a;
+$vhs-wood-seam:  #150c07;
+$vhs-lamp:       #d79a4a;
+
+$vhs-blood:      #c01521;
+$vhs-blood-lit:  #e8313a;
+$vhs-blood-dark: #7a0a12;
+
+$vhs-phosphor:   #cfe8f5;
+$vhs-screen:     #0a1418;
+$vhs-osd-blue:   #4fc3ff;
+$vhs-slime:      #6fdc6f;
+
+$vhs-ink:        #efe6dc;
+$vhs-ink-soft:   #a99c90;
+$vhs-paper:      #f3ecdd; // the tape label
+
+$vhs-free:       #3cb54a;
+$vhs-free-dark:  #2d8f39;
+$vhs-contest:    #e8343c;
+$vhs-contest-dk: #bb242b;
+
+$vhs-day-fri:    #f6c9d4;
+$vhs-day-sat:    #b8e6b8;
+$vhs-day-sun:    #b4ddf2;
+$vhs-day-all:    #eeb8ee;
+
+/* ============================================================= SVG TILES */
+
+$vhs-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --dc-ground:      #{$vhs-dark};
+    --dc-ground-deep: #050302;
+    --dc-vellum:      #{$vhs-wood};
+    --dc-vellum-lit:  #{$vhs-wood-lit};
+    --dc-vellum-deep: #{$vhs-wood-seam};
+    --dc-ink:         #{$vhs-ink};
+    --dc-ink-soft:    #{$vhs-ink-soft};
+    --dc-rubric:      #{$vhs-blood};
+    --dc-gold:        #{$vhs-lamp};
+    --dc-gold-edge:   #f0c98a;
+    --dc-link:        #{$vhs-blood-lit};
+    --dc-link-hover:  #{$vhs-lamp};
+    --dc-lift:        0 10px 34px rgba(0, 0, 0, 0.75);
+    --dc-candle:      rgba(0, 0, 0, 0);
+
+    --vhs-dark:    #{$vhs-dark};
+    --vhs-wood:    #{$vhs-wood};
+    --vhs-blood:   #{$vhs-blood};
+    --vhs-ink:     #{$vhs-ink};
+    --vhs-lamp:    #{$vhs-lamp};
+}
+
+html[data-theme="light"] {
+    --vhs-wood: #4a2d1c;
+    --dc-vellum: #4a2d1c;
+}
+
+/* ================================================================ MIXINS */
+
+@mixin vhs-drips($colour: $vhs-blood, $height: 38px) {
+    height: $height;
+    background-image:
+        radial-gradient(ellipse 8px 17px at 50% 0, $colour 99%, transparent 100%),
+        radial-gradient(ellipse 6px 9px  at 50% 0, $colour 99%, transparent 100%),
+        radial-gradient(ellipse 9px 29px at 50% 0, $colour 99%, transparent 100%),
+        radial-gradient(ellipse 7px 13px at 50% 0, $colour 99%, transparent 100%),
+        linear-gradient($colour, $colour);
+    background-size: 37px $height, 23px $height, 59px $height, 83px $height, 100% 9px;
+    background-position: 3px 0, 11px 0, 25px 0, 48px 0, 0 0;
+    background-repeat: repeat-x;
+}
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header {
+    display: none;
+}
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $vhs-body;
+    font-size: 16px;
+    line-height: 1.65;
+    color: $vhs-ink;
+    background-color: $vhs-dark;
+}
+
+#post-container article {
+    display: block;
+}
+
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content time {
+    font-family: $vhs-display;
+    font-weight: 400;
+}
+
+#content a {
+    color: $vhs-blood-lit;
+    text-decoration: underline;
+
+    &:hover { color: $vhs-lamp; }
+}
+
+#content ::selection {
+    background: $vhs-blood;
+    color: #fff;
+}
+
+#content :focus-visible {
+    outline: 2px solid $vhs-lamp;
+    outline-offset: 2px;
+}
+
+/* ============================================================ SCROLLBARS */
+
+// Only this page loads this stylesheet, so the scrollbar styling does not
+// leak.
+* {
+    scrollbar-color: $vhs-blood-dark #140d08;
+}
+
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: #140d08; }
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, $vhs-blood-dark, $vhs-blood);
+    border: 2px solid #140d08;
+    border-radius: 7px;
+
+    &:hover { background: linear-gradient(90deg, $vhs-blood, $vhs-blood-lit); }
+}
+
+/* ============================================================ SVG SPRITE */
+
+.vhs-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.vhs-icon {
+    display: inline-block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+    vertical-align: middle;
+}
+
+/* ================================================================= ROOM */
+
+.vhs-room {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background: $vhs-dark;
+}
+
+.vhs-panelling {
+    position: absolute;
+    inset: 0;
+    background-image:
+        repeating-linear-gradient(90deg,
+            rgba(0, 0, 0, 0.5) 0 1px,
+            rgba(255, 255, 255, 0.015) 1px 3px,
+            rgba(0, 0, 0, 0) 3px 7px),
+        repeating-linear-gradient(90deg,
+            $vhs-wood-seam 0 3px,
+            $vhs-wood 3px 104px,
+            $vhs-wood-lit 104px 108px,
+            $vhs-wood 108px 112px),
+        linear-gradient(180deg, #1c110a, $vhs-dark);
+    opacity: 0.92;
+}
+
+.vhs-lamp {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 50% 40% at 88% 4%, rgba(215, 154, 74, 0.32), transparent 62%),
+        radial-gradient(ellipse 70% 50% at 12% 10%, rgba(120, 180, 210, 0.1), transparent 66%),
+        radial-gradient(ellipse 120% 80% at 50% 120%, rgba(0, 0, 0, 0.75), transparent 70%);
+}
+
+/* ======================================================== TAPE ARTEFACTS */
+
+.vhs-grain {
+    position: fixed;
+    inset: -60px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: $vhs-noise;
+    animation: vhs-grain-jump 0.5s steps(4) infinite;
+}
+
+@keyframes vhs-grain-jump {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-22px, 14px); }
+    50%  { transform: translate(16px, -18px); }
+    75%  { transform: translate(-12px, -8px); }
+    100% { transform: translate(0, 0); }
+}
+
+.vhs-scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.26) 0 1px,
+        rgba(0, 0, 0, 0) 1px 3px
+    );
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 22vh;
+        background: linear-gradient(180deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.035) 50%,
+            rgba(255, 255, 255, 0) 100%);
+        animation: vhs-tracking 7s linear infinite;
+    }
+}
+
+@keyframes vhs-tracking {
+    from { top: -24vh; }
+    to   { top: 102vh; }
+}
+
+/* ============================================================ VCR OVERLAY */
+
+.vhs-osd {
+    position: absolute;
+    top: 15px;
+    left: 24px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    pointer-events: none;
+    font-family: $vhs-osd;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: $vhs-osd-blue;
+    text-shadow: 0 0 9px rgba(79, 195, 255, 0.8), 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.vhs-osd-mode {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.vhs-osd-play {
+    width: 0;
+    height: 0;
+    border-left: 11px solid currentColor;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    animation: vhs-blink 2.4s steps(1) infinite;
+}
+
+@keyframes vhs-blink {
+    0%, 70% { opacity: 1; }
+    71%, 100% { opacity: 0.25; }
+}
+
+.vhs-osd-sp,
+.vhs-osd-counter {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* ================================================================ TICKER */
+
+.vhs-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 7px 0;
+    background: linear-gradient(180deg, $vhs-blood-dark, #4d060c);
+    border-top: 2px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.6);
+    font-family: $vhs-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #ffd9d9;
+    white-space: nowrap;
+
+    span {
+        display: inline-block;
+        padding-right: 1.6em;
+        animation: vhs-marquee 29s linear infinite;
+    }
+}
+
+@keyframes vhs-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================== HERO */
+
+.vhs-hero {
+    position: relative;
+    z-index: 2;
+    padding: 48px 20px 56px;
+    text-align: center;
+}
+
+.vhs-presents {
+    margin: 0 0 6px;
+    font-family: $vhs-ui;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: $vhs-ink-soft;
+}
+
+.vhs-title {
+    margin: 0;
+    font-family: $vhs-display;
+    font-size: clamp(2.6rem, 11vw, 8rem);
+    letter-spacing: 0.01em;
+    line-height: 0.92;
+    text-transform: uppercase;
+    color: $vhs-blood;
+    text-shadow:
+        2px 2px 0 $vhs-blood-dark,
+        -1px -1px 0 #4a0309,
+        0 0 26px rgba(192, 21, 33, 0.55),
+        0 6px 18px rgba(0, 0, 0, 0.8);
+}
+
+.vhs-drip {
+    @include vhs-drips($vhs-blood, 40px);
+    width: min(820px, 94%);
+    margin: -6px auto 0;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.65));
+}
+
+.vhs-hero-stage {
+    position: relative;
+    max-width: 760px;
+    margin: 40px auto 0;
+}
+
+/* =============================================================== THE SET */
+
+.vhs-tv {
+    position: relative;
+    padding: 22px 22px 18px;
+    border-radius: 16px 16px 10px 10px;
+    background:
+        linear-gradient(180deg, #4a2e1c 0%, #35200f 40%, #251607 100%);
+    box-shadow:
+        inset 0 2px 0 rgba(255, 210, 150, 0.25),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.7),
+        0 22px 50px rgba(0, 0, 0, 0.75);
+}
+
+.vhs-tv-screen {
+    position: relative;
+    overflow: hidden;
+    padding: 52px 30px 38px;
+    border-radius: 42px / 30px;
+    background: radial-gradient(ellipse at 50% 45%, #16262c 0%, $vhs-screen 70%, #050b0e 100%);
+    box-shadow:
+        inset 0 0 70px rgba(0, 0, 0, 0.95),
+        inset 0 0 0 4px #0a0a0a,
+        0 0 0 5px #1a1008;
+}
+
+.vhs-tv-static {
+    position: absolute;
+    inset: 0;
+    opacity: 0.16;
+    background-image: $vhs-noise;
+    animation: vhs-grain-jump 0.35s steps(4) infinite;
+}
+
+.vhs-tv-glare {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(118deg,
+            rgba(255, 255, 255, 0) 38%,
+            rgba(255, 255, 255, 0.07) 46%,
+            rgba(255, 255, 255, 0) 54%),
+        repeating-linear-gradient(180deg,
+            rgba(0, 0, 0, 0.3) 0 1px,
+            rgba(0, 0, 0, 0) 1px 3px);
+}
+
+.vhs-tv-content {
+    position: relative;
+    z-index: 1;
+    max-width: 440px;
+    margin-left: auto;
+    font-family: $vhs-ui;
+    font-size: clamp(0.95rem, 2.1vw, 1.15rem);
+    font-weight: 700;
+    line-height: 1.5;
+    text-align: left;
+    color: $vhs-phosphor;
+    text-shadow: 0 0 10px rgba(180, 225, 245, 0.65), 0 0 2px rgba(255, 255, 255, 0.6);
+
+    p { margin: 0 0 14px; }
+}
+
+.vhs-tv-tagline {
+    margin: 0 !important;
+    font-size: 1.22em;
+    letter-spacing: 0.01em;
+}
+
+.vhs-tv-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 0 6px;
+}
+
+.vhs-tv-dial {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #6b4a30, #2a1a0d 70%);
+    box-shadow: inset 0 1px 2px rgba(255, 210, 150, 0.35), 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.vhs-tv-vent {
+    flex: 1;
+    height: 20px;
+    border-radius: 3px;
+    background: repeating-linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.55) 0 2px,
+        rgba(255, 210, 150, 0.07) 2px 4px
+    );
+}
+
+.vhs-flash {
+    position: absolute;
+    top: -26px;
+    left: -52px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 92px;
+    height: 92px;
+    clip-path: polygon(
+        50% 0%, 57% 12%, 68% 5%, 70% 18%, 83% 15%, 80% 28%, 93% 30%, 85% 40%,
+        100% 50%, 85% 60%, 93% 70%, 80% 72%, 83% 85%, 70% 82%, 68% 95%, 57% 88%,
+        50% 100%, 43% 88%, 32% 95%, 30% 82%, 17% 85%, 20% 72%, 7% 70%, 15% 60%,
+        0% 50%, 15% 40%, 7% 30%, 20% 28%, 17% 15%, 30% 18%, 32% 5%, 43% 12%
+    );
+    background: radial-gradient(circle at 42% 36%, #f7e67a, #d8c233 70%);
+    font-family: $vhs-display;
+    font-size: 23px;
+    letter-spacing: 0.02em;
+    color: #2b2404;
+    transform: rotate(-14deg);
+}
+
+/* =============================================================== THE TAPE */
+
+.vhs-cassette {
+    position: relative;
+    z-index: 4;
+    width: min(420px, 90%);
+    margin: -56px 0 0 auto;
+    padding: 16px 18px 14px;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #2a2a2c 0%, #141416 60%, #0b0b0c 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 16px 38px rgba(0, 0, 0, 0.8);
+    transform: rotate(-4deg);
+}
+
+.vhs-cassette-label {
+    padding: 13px 15px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, $vhs-paper, #e3d9c4);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.5);
+    font-family: $vhs-hand;
+    font-size: 15px;
+    line-height: 1.45;
+    color: #1d2a44;
+    text-align: left;
+
+    p { margin: 0 0 7px; }
+    p:last-child { margin-bottom: 0; }
+
+    strong { letter-spacing: 0.04em; }
+}
+
+.vhs-cassette-reels {
+    display: flex;
+    justify-content: space-around;
+    gap: 40px;
+    margin-top: 12px;
+    padding: 0 22px;
+}
+
+.vhs-reel {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 50% 50%, #0d0d0e 0 13px, #3a2f28 13px 20px, #15110e 20px);
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12);
+}
+
+.vhs-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 44px;
+}
+
+/* ============================================================== BUTTONS */
+
+.vhs-btn {
+    display: inline-block;
+    padding: 13px 28px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    background: linear-gradient(180deg, #2a1a10, #170d07);
+    font-family: $vhs-display;
+    font-size: 17px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: $vhs-ink !important;
+    cursor: pointer;
+    transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+
+    &:hover {
+        border-color: $vhs-blood;
+        color: #fff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    &:active { transform: translateY(0); }
+
+    &--primary {
+        border-color: $vhs-blood-lit;
+        background: linear-gradient(180deg, $vhs-blood-lit, $vhs-blood 48%, $vhs-blood-dark);
+        color: #fff !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+
+        &:hover {
+            border-color: #ff6b70;
+            box-shadow: 0 8px 24px rgba(192, 21, 33, 0.5);
+        }
+    }
+}
+
+/* ============================================================= COUNTDOWN */
+
+.vhs-countdown-wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto 40px;
+    padding: 18px 18px 20px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    background: rgba(10, 6, 4, 0.72);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.6);
+}
+
+.vhs-countdown-head {
+    margin: 0 0 14px;
+    font-family: $vhs-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $vhs-ink-soft;
+}
+
+.vhs-countdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.vhs-countdown-unit {
+    min-width: 86px;
+    padding: 10px 8px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    background: #0a0f12;
+}
+
+.vhs-countdown-num {
+    display: block;
+    font-family: $vhs-osd;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    color: $vhs-osd-blue;
+    text-shadow: 0 0 10px rgba(79, 195, 255, 0.6);
+    font-variant-numeric: tabular-nums;
+}
+
+.vhs-countdown-label {
+    display: block;
+    margin-top: 5px;
+    font-family: $vhs-ui;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $vhs-ink-soft;
+}
+
+.vhs-countdown-wrap.is-past {
+    .vhs-countdown { display: none; }
+
+    .vhs-countdown-head {
+        margin: 0;
+        font-family: $vhs-body;
+        font-size: 16px;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        color: $vhs-ink;
+    }
+}
+
+/* ============================================================ FACT TABLE */
+
+.vhs-facts {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto 44px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    background: rgba(10, 6, 4, 0.8);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.6);
+}
+
+.vhs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $vhs-ui;
+    font-size: 14px;
+
+    caption {
+        padding: 10px 14px;
+        background: linear-gradient(180deg, $vhs-blood, $vhs-blood-dark);
+        font-family: $vhs-display;
+        font-size: 15px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-align: left;
+        color: #fff;
+    }
+
+    th, td {
+        padding: 10px 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        text-align: left;
+    }
+
+    th {
+        width: 42%;
+        font-weight: 600;
+        color: $vhs-ink-soft;
+    }
+
+    td { color: $vhs-ink; }
+
+    tr:last-child th,
+    tr:last-child td { border-bottom: none; }
+}
+
+.vhs-th-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vhs-fact-icon {
+    flex: none;
+    width: 19px;
+    height: 19px;
+    color: $vhs-blood-lit;
+}
+
+/* ============================================================ TAPE CASES */
+
+.vhs-case {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    max-width: 1000px;
+    margin: 32px auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #171010, #0d0806);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.7);
+}
+
+.vhs-case-spine {
+    position: relative;
+    flex: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 36px;
+    padding-bottom: 16px;
+    background: linear-gradient(90deg, $vhs-blood-dark, #5e070e 60%, #3d040a);
+    border-right: 1px solid rgba(0, 0, 0, 0.7);
+
+    span {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        white-space: nowrap;
+        font-family: $vhs-display;
+        font-size: 15px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #ffd9d9;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+}
+
+.vhs-case-body {
+    flex: 1;
+    min-width: 0;
+    padding: 28px 30px 32px;
+}
+
+.vhs-case-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 0 0 6px;
+    font-size: clamp(1.6rem, 4.2vw, 2.4rem);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: $vhs-blood-lit;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.85), 0 0 20px rgba(192, 21, 33, 0.4);
+
+    .vhs-icon {
+        flex: none;
+        width: 28px;
+        height: 28px;
+        color: $vhs-lamp;
+    }
+}
+
+.vhs-case-sub {
+    margin: 0 0 24px;
+    font-family: $vhs-ui;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $vhs-ink-soft;
+}
+
+/* ====================================================== SCHEDULE SCREEN */
+
+.vhs-screen-wrap { margin-top: 4px; }
+
+.vhs-screen {
+    position: relative;
+    display: block;
+    padding: 8px;
+    border-radius: 5px;
+    background: #000;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    text-decoration: none !important;
+
+    &.is-missing .vhs-schedule-img { display: none; }
+    &.is-missing .vhs-noimg { display: flex; }
+}
+
+.vhs-schedule-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 3px;
+}
+
+.vhs-noimg {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 58px 24px;
+    text-align: center;
+    font-family: $vhs-ui;
+    color: $vhs-ink-soft;
+
+    .vhs-icon { width: 40px; height: 40px; color: $vhs-blood; }
+
+    strong {
+        font-family: $vhs-display;
+        font-size: 19px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: $vhs-phosphor;
+    }
+
+    code {
+        font-family: $vhs-osd;
+        font-size: 12px;
+        padding: 1px 5px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.08);
+    }
+}
+
+.vhs-screen-meta {
+    margin-top: 10px;
+    font-family: $vhs-ui;
+    font-size: 12px;
+    text-align: right;
+}
+
+.vhs-zoom {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.92);
+    transition: opacity 0.22s ease;
+
+    &:target {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+.vhs-zoom-bg { position: absolute; inset: 0; }
+
+.vhs-zoom-frame {
+    position: relative;
+    max-width: 1300px;
+    max-height: 92vh;
+    overflow: auto;
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+}
+
+.vhs-zoom-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: $vhs-blood;
+    font-size: 15px;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+/* ========================================================= RUNNING ORDER */
+
+.vhs-days {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    align-items: start;
+    gap: 16px;
+}
+
+.vhs-day {
+    --vhs-day-bg: #{$vhs-day-sat};
+    padding: 4px;
+    border-radius: 5px;
+    background: var(--vhs-day-bg);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+
+    &:nth-child(1) { --vhs-day-bg: #{$vhs-day-fri}; }
+    &:nth-child(2) { --vhs-day-bg: #{$vhs-day-sat}; }
+    &:nth-child(3) { --vhs-day-bg: #{$vhs-day-sun}; }
+
+    &--all {
+        --vhs-day-bg: #{$vhs-day-all};
+        grid-column: 1 / -1;
+    }
+}
+
+.vhs-day-name {
+    margin: 0;
+    padding: 9px 13px;
+    font-family: $vhs-display;
+    font-size: 17px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #2a1016;
+}
+
+.vhs-slots {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.vhs-slot {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 3px 10px;
+    margin: 0 0 3px;
+    padding: 10px 12px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #1c1215 0%, #120b0d 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    list-style: none;
+
+    &:last-child { margin-bottom: 0; }
+}
+
+.vhs-slot-time {
+    grid-column: 1;
+    grid-row: 1;
+    font-family: $vhs-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #b98a96;
+    font-variant-numeric: tabular-nums;
+}
+
+.vhs-slot-name {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-family: $vhs-ui;
+    font-size: 15px;
+    font-weight: 700;
+    color: #f0e2e5;
+}
+
+.vhs-slot-note {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #a68d94;
+}
+
+.vhs-slot-tags {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.vhs-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: $vhs-ui;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+
+    &--free {
+        border: 1px solid $vhs-free-dark;
+        background: linear-gradient(180deg, #5ccd69, $vhs-free 55%, $vhs-free-dark);
+    }
+
+    &--contest {
+        border: 1px solid $vhs-contest-dk;
+        background: linear-gradient(180deg, #f4616a, $vhs-contest 55%, $vhs-contest-dk);
+    }
+}
+
+.vhs-legend {
+    margin-top: 22px;
+    padding: 16px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    font-family: $vhs-ui;
+    font-size: 13.5px;
+    line-height: 1.55;
+}
+
+.vhs-legend-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 11px;
+
+    .vhs-tag { flex: none; margin-top: 1px; }
+}
+
+.vhs-legend-note {
+    margin: 0;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 11.5px;
+    font-style: italic;
+    color: $vhs-ink-soft;
+}
+
+/* ============================================================ KIT LIST */
+
+.vhs-kit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.vhs-kit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0;
+    padding: 11px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    list-style: none;
+    font-size: 15px;
+}
+
+.vhs-kit-check {
+    position: relative;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-top: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 5px;
+        width: 4px;
+        height: 9px;
+        border-right: 2px solid $vhs-blood-lit;
+        border-bottom: 2px solid $vhs-blood-lit;
+        transform: rotate(42deg);
+    }
+}
+
+/* ================================================================== FAQ */
+
+.vhs-faq {
+    display: grid;
+    gap: 7px;
+}
+
+.vhs-faq-item {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    overflow: hidden;
+
+    &[open] {
+        border-color: rgba(232, 49, 58, 0.4);
+        background: rgba(255, 255, 255, 0.05);
+    }
+}
+
+.vhs-faq-q {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 13px 15px;
+    font-family: $vhs-ui;
+    font-size: 15px;
+    font-weight: 700;
+    color: $vhs-phosphor;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+
+    &::before {
+        content: "";
+        flex: none;
+        width: 0;
+        height: 0;
+        margin-top: 5px;
+        border-left: 8px solid $vhs-blood-lit;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        transition: transform 0.16s ease;
+    }
+}
+
+.vhs-faq-item[open] .vhs-faq-q::before {
+    transform: rotate(90deg);
+}
+
+.vhs-faq-a {
+    margin: 0;
+    padding: 0 17px 15px 34px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: $vhs-ink;
+}
+
+/* ============================================================ SPONSORS */
+
+.vhs-sponsors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+}
+
+.vhs-sponsor {
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    text-align: center;
+}
+
+.vhs-sponsor-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 72px;
+    margin-bottom: 10px;
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+}
+
+.vhs-sponsor-name {
+    font-family: $vhs-ui;
+    font-size: 14px;
+    font-weight: 700;
+    color: $vhs-ink;
+}
+
+.vhs-sponsor-tier {
+    margin-top: 2px;
+    font-family: $vhs-ui;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: $vhs-ink-soft;
+}
+
+.vhs-sponsor-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 11px;
+
+    a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 3px;
+        color: #fff !important;
+        font-size: 13px;
+        text-decoration: none !important;
+    }
+}
+
+/* =============================================================== FOOTER */
+
+.vhs-footer {
+    position: relative;
+    z-index: 2;
+    padding: 36px 18px 44px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(10, 6, 4, 0.6), #050302);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vhs-footer-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.vhs-footer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 13px 17px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    font-family: $vhs-ui;
+    font-size: 12.5px;
+    text-align: left;
+
+    a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: $vhs-ink !important;
+        text-decoration: none !important;
+
+        &:hover { color: $vhs-blood-lit !important; text-decoration: underline !important; }
+    }
+
+    i { flex: none; width: 16px; text-align: center; color: $vhs-blood-lit; }
+}
+
+.vhs-footer-sig {
+    margin: 24px 0 0;
+    font-family: $vhs-ui;
+    font-size: 12px;
+    color: $vhs-ink-soft;
+}
+
+.vhs-footer-rewind {
+    margin: 10px 0 0;
+    font-family: $vhs-display;
+    font-size: 15px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: $vhs-blood;
+}
+
+/* ========================================================= SCROLL REVEAL */
+
+.vhs-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+
+    &.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@for $i from 1 through 8 {
+    .vhs-reveal:nth-child(#{$i}) {
+        transition-delay: #{($i - 1) * 0.06}s;
+    }
+}
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    #content { font-size: 15px; }
+
+    .vhs-hero { padding: 32px 14px 40px; }
+
+    .vhs-hero-stage { margin-top: 28px; }
+
+    .vhs-tv { padding: 14px 14px 12px; }
+
+    .vhs-tv-screen { padding: 46px 18px 26px; border-radius: 26px / 20px; }
+
+    .vhs-osd {
+        top: 13px;
+        left: 16px;
+        gap: 11px;
+        font-size: 13px;
+    }
+
+    .vhs-osd-sp,
+    .vhs-osd-counter { font-size: 11.5px; }
+
+    .vhs-tv-content { max-width: none; }
+
+    .vhs-flash {
+        width: 72px;
+        height: 72px;
+        top: -18px;
+        left: auto;
+        right: 0;
+        font-size: 18px;
+        transform: rotate(12deg);
+    }
+
+    // Width auto: the tape has side padding and the site does not use
+    // border-box.
+    .vhs-cassette {
+        width: auto;
+        margin: 18px 0 0;
+        transform: none;
+    }
+
+    .vhs-case { margin: 22px 10px; flex-direction: column; }
+
+    .vhs-case-spine {
+        width: auto;
+        align-items: center;
+        padding: 7px 14px;
+
+        span {
+            writing-mode: horizontal-tb;
+            transform: none;
+        }
+    }
+
+    .vhs-case-body { padding: 20px 16px 24px; }
+
+    .vhs-countdown-wrap,
+    .vhs-facts { margin-left: 10px; margin-right: 10px; }
+
+    .vhs-countdown-unit { min-width: 70px; }
+
+    .vhs-table {
+        font-size: 13px;
+
+        th, td { display: block; width: auto; }
+
+        th { border-bottom: none; }
+    }
+
+    .vhs-kit,
+    .vhs-days { grid-template-columns: 1fr; }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .vhs-title { font-size: clamp(2.2rem, 13vw, 3.4rem); }
+
+    .vhs-reel { width: 34px; height: 34px; }
+
+    .vhs-cassette-reels { gap: 20px; padding: 0 10px; }
+}
+
+/* ================================================== REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .vhs-marquee span      { padding-left: 14px; animation: none; }
+    .vhs-marquee span + span { display: none; }
+    .vhs-grain             { animation: none; }
+    .vhs-tv-static         { animation: none; }
+    .vhs-scanlines::after  { display: none; }
+    .vhs-osd-play          { animation: none; }
+    .vhs-btn               { transition: none; }
+    .vhs-faq-q::before     { transition: none; }
+    .vhs-zoom              { transition: none; }
+
+    .vhs-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

@@ -231,3 +231,7 @@ collections:
     output: true
   games:
     output: true
+  events:
+    output: true
+  events:
+    output: true
