@@ -1,0 +1,49 @@
+---
+title: Minesweeper
+layout: default
+description: The Windows 95 one. Beginner, Intermediate, Expert, and your best time on each
+---
+
+<link rel="stylesheet" href="{{ '/assets/css/games/minesweeper.css' | relative_url }}">
+
+<div class="ms-frame">
+    <div class="ms-hud">
+        <output class="ms-led" id="ms-mines" aria-label="Mines remaining">010</output>
+        <button type="button" class="ms-face" id="ms-face" data-face="smile" aria-label="Start a new game"></button>
+        <output class="ms-led" id="ms-time" aria-label="Time elapsed">000</output>
+    </div>
+
+    {%- comment -%} role="grid" because the cells are keyboard-driven buttons; a table would need row markup. {%- endcomment -%}
+    <div class="ms-board" id="ms-board" role="grid" aria-label="Minefield"></div>
+</div>
+
+<p class="ms-status" id="ms-status" role="status" aria-live="polite"></p>
+
+<div class="game-controls">
+    <button type="button" class="mode-button" data-ms-level="beginner" aria-pressed="true">Beginner</button>
+    <button type="button" class="mode-button" data-ms-level="intermediate" aria-pressed="false">Intermediate</button>
+    <button type="button" class="mode-button" data-ms-level="expert" aria-pressed="false">Expert</button>
+</div>
+
+{% include leaderboard.html id="minesweeper-scores" %}
+
+<p class="game-note">
+Left click opens a square, right click flags one. On a phone, press and hold to flag.
+Clicking a number that already has the right count of flags around it opens everything
+else touching it, which is how the game is played at any speed.
+</p>
+
+<p class="game-note">
+The first square you open is never a mine, and never a number either: the field is laid
+after that click with its whole neighbourhood kept clear, so every game starts with a
+flood rather than a guess. The counter is mines minus flags, so it goes negative if you
+over-flag. The clock stops at <span class="number">999</span>, same as it always did.
+</p>
+
+<p class="game-note">
+Keyboard: arrow keys move, <kbd>Enter</kbd> or <kbd>Space</kbd> opens,
+<kbd>F</kbd> flags. Boards are kept per difficulty, fastest first.
+</p>
+
+<script src="{{ '/assets/js/games/leaderboard.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/games/minesweeper.js' | relative_url }}"></script>

@@ -1,0 +1,419 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$gl-display: "Arial Black", "Arial Bold", "Helvetica Neue", Gadget, sans-serif;
+$gl-ui:      "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$gl-void:   #0f1f3d;
+$gl-deep:   #081528;
+$gl-panel:  #16294a;
+$gl-sunk:   #1e3862;
+$gl-gold:   #e8a33d;
+$gl-gold-l: #f7c46a;
+$gl-cream:  #f2f6fb;
+$gl-dim:    #9db3cf;
+$gl-teal:   #46798c;
+$gl-rust:   #7a6a3a;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$gl-cream};
+    --lan-ink-soft: #{$gl-dim};
+    --lan-panel: #{$gl-panel};
+    --lan-panel-edge: rgba(232, 163, 61, 0.4);
+    --lan-accent: #{$gl-gold};
+    --lan-accent-2: #7fb4e8;
+    --lan-on-accent: #10213d;
+    --lan-on-day: #{$gl-cream};
+    --lan-slot: rgba(255, 255, 255, 0.94);
+    --lan-slot-ink: #10213d;
+    --lan-slot-dim: #5a6e8c;
+    --lan-sunk: #{$gl-sunk};
+    --lan-sunk-open: #27477a;
+    --lan-day-1: #{$gl-teal};
+    --lan-day-2: #{$gl-rust};
+    --lan-day-3: #2f5a72;
+    --lan-day-all: #4a3f6b;
+    --lan-legend: #{$gl-sunk};
+    --lan-legend-ink: #{$gl-cream};
+    --lan-footer: #{$gl-deep};
+    --lan-footer-card: rgba(255, 255, 255, 0.07);
+    --lan-footer-ink: #{$gl-cream};
+    --lan-radius: 8px;
+    --lan-edge-w: 1px;
+    --lan-lift: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --lan-scrim: rgba(6, 15, 30, 0.95);
+    --lan-font: #{$gl-ui};
+    --lan-font-ui: #{$gl-ui};
+    --lan-font-display: #{$gl-display};
+
+    --dc-ground: #{$gl-void};
+    --dc-ink: #{$gl-cream};
+    --dc-rubric: #{$gl-gold};
+    --dc-link: #7fb4e8;
+    --gl-void: #{$gl-void};
+}
+
+html[data-theme="light"] { --gl-void: #1d3a66; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--gl-void); }
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $gl-ui;
+    font-size: 16px;
+    line-height: 1.65;
+    color: $gl-cream;
+    background-color: var(--gl-void);
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $gl-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: #7fb4e8;
+    text-decoration: underline;
+
+    &:hover { color: $gl-gold; }
+}
+
+#content ::selection { background: $gl-gold; color: #10213d; }
+#content :focus-visible { outline: 3px solid $gl-gold; outline-offset: 2px; }
+
+* { scrollbar-color: $gl-gold $gl-deep; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $gl-deep; }
+::-webkit-scrollbar-thumb {
+    background: $gl-gold;
+    border: 3px solid $gl-deep;
+    border-radius: 8px;
+
+    &:hover { background: #{$gl-gold-l}; }
+}
+
+/* ================================================================= SPACE */
+
+.galacta-space {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 80% 50% at 70% 10%, #1b3a66, transparent 70%),
+        radial-gradient(ellipse 70% 50% at 15% 80%, #16304f, transparent 70%),
+        linear-gradient(180deg, #112546 0%, var(--gl-void) 50%, #0a1830 100%);
+}
+
+.galacta-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1.4px 1.4px at 18% 22%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 62% 12%, #cfe2ff, transparent),
+        radial-gradient(1.6px 1.6px at 84% 48%, #fff, transparent),
+        radial-gradient(1px 1px at 32% 66%, #cfe2ff, transparent),
+        radial-gradient(1.4px 1.4px at 74% 82%, #fff, transparent),
+        radial-gradient(1.1px 1.1px at 8% 54%, #fff, transparent),
+        radial-gradient(1.3px 1.3px at 46% 36%, #bcd6ff, transparent),
+        radial-gradient(1px 1px at 92% 20%, #fff, transparent);
+    background-size: 340px 300px, 220px 240px, 420px 380px, 180px 200px,
+                     300px 320px, 260px 280px, 200px 220px, 380px 340px;
+    opacity: 0.85;
+}
+
+.galacta-planets { position: absolute; inset: 0; }
+
+.galacta-planet {
+    position: absolute;
+    border-radius: 50%;
+    animation: galacta-drift 48s ease-in-out infinite alternate;
+
+    i {
+        position: absolute;
+        top: 50%;
+        left: -34%;
+        width: 168%;
+        height: 34%;
+        margin-top: -17%;
+        border-radius: 50%;
+        border: 7px solid #{$gl-rust};
+        transform: rotate(-18deg);
+    }
+
+    &.p1 { top: 9%;  left: 4%;  width: 108px; height: 108px; background: #{$gl-teal}; animation-delay: -4s; }
+    &.p2 { top: 4%;  right: 7%; width: 86px;  height: 86px;  background: #2f5a72; animation-delay: -18s; }
+    &.p3 { top: 56%; left: 8%;  width: 62px;  height: 62px;  background: #{$gl-rust}; animation-delay: -30s; }
+    &.p4 { top: 72%; right: 6%; width: 124px; height: 124px; background: #244a6b; animation-delay: -11s; }
+}
+
+@keyframes galacta-drift {
+    from { translate: 0 0; }
+    to   { translate: 0 -26px; }
+}
+
+/* ================================================================ TICKER */
+
+.galacta-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 9px 0;
+    background: rgba(232, 163, 61, 0.9);
+    font-family: $gl-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: #10213d;
+    white-space: nowrap;
+
+    span { display: inline-block; padding-left: 100%; animation: galacta-marquee 42s linear infinite; }
+}
+
+@keyframes galacta-marquee { to { transform: translateX(-100%); } }
+
+/* ================================================================== HERO */
+
+.galacta-hero {
+    position: relative;
+    z-index: 2;
+    padding: 40px 20px 56px;
+    text-align: center;
+}
+
+.galacta-presents {
+    margin: 0 0 10px;
+    font-family: $gl-display;
+    font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: $gl-cream;
+}
+
+.galacta-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family: $gl-display;
+    font-size: clamp(2rem, 8.5vw, 5.6rem);
+    line-height: 1;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.galacta-ch {
+    display: inline-block;
+    --t: calc((var(--i) / (var(--n) - 1)) - 0.5);
+    rotate: calc(var(--t) * 26deg);
+    translate: 0 calc(var(--t) * var(--t) * 1.9em - 0.24em);
+    text-shadow: 5px 6px 0 #{$gl-gold};
+}
+
+.galacta-tagline {
+    margin: 22px 0 0;
+    font-family: $gl-display;
+    font-size: clamp(0.95rem, 2.8vw, 1.5rem);
+    letter-spacing: 0.04em;
+    color: #fff;
+}
+
+.galacta-hero-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    max-width: 880px;
+    margin: 30px auto 0;
+}
+
+.galacta-block {
+    flex: 1 1 300px;
+    max-width: 400px;
+    padding: 16px 20px;
+    border: 1px solid rgba(232, 163, 61, 0.45);
+    border-radius: 8px;
+    background: rgba(22, 41, 74, 0.8);
+    text-align: left;
+}
+
+.galacta-block-label {
+    margin: 0 0 4px;
+    font-family: $gl-display;
+    font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.galacta-block-value {
+    margin: 0;
+    font-family: $gl-display;
+    font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+    text-transform: uppercase;
+    color: $gl-cream;
+}
+
+.galacta-flash {
+    margin: 26px 0 0;
+    font-family: $gl-display;
+    font-size: clamp(2rem, 7vw, 4rem);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+/* =============================================================== ROCKET */
+
+.galacta-rocket {
+    position: absolute;
+    left: 2%;
+    bottom: -6%;
+    width: clamp(90px, 13vw, 180px);
+    height: auto;
+    rotate: 18deg;
+    animation: galacta-climb 9s ease-in-out infinite alternate;
+}
+
+@keyframes galacta-climb {
+    from { translate: 0 0; }
+    to   { translate: 10px -24px; }
+}
+
+.gl-body  { fill: #c2d4e2; }
+.gl-nose  { fill: #e8a33d; }
+.gl-fin   { fill: #e8a33d; }
+.gl-band  { fill: #9fb4c6; }
+.gl-port  { fill: #e8a33d; }
+.gl-port-in { fill: #2f5a72; }
+.gl-trail { fill: none; stroke: rgba(255, 255, 255, 0.16); stroke-width: 7; stroke-linecap: round; }
+
+.gl-flame   { animation: galacta-flame 0.26s steps(1) infinite; transform-box: fill-box; transform-origin: top center; }
+.gl-flame-a { fill: #e8622d; }
+.gl-flame-b { fill: #f7c14a; }
+
+@keyframes galacta-flame {
+    0%, 49%   { scale: 1 1; }
+    50%, 100% { scale: 0.88 0.82; }
+}
+
+/* ============================================================== BUTTONS */
+
+.galacta-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.galacta-btn {
+    display: inline-block;
+    padding: 13px 28px;
+    border: 2px solid $gl-gold;
+    border-radius: 999px;
+    background: transparent;
+    font-family: $gl-ui;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: $gl-gold !important;
+    cursor: pointer;
+    transition: transform 0.12s ease, background-color 0.12s ease;
+
+    &:hover { background: rgba(232, 163, 61, 0.16); transform: translateY(-2px); }
+    &:active { transform: translateY(0); }
+
+    &--primary {
+        background: $gl-gold;
+        color: #10213d !important;
+
+        &:hover { background: $gl-gold-l; color: #10213d !important; }
+    }
+}
+
+@include lan.lan-structure("galacta");
+
+/* ===================================================== DEEP SPACE, CARRIED DOWN */
+
+.galacta-panel,
+.galacta-facts,
+.galacta-countdown-wrap {
+    background-image:
+        radial-gradient(1.3px 1.3px at 12% 18%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 78% 9%, rgba(207, 226, 255, 0.45), transparent),
+        radial-gradient(1.2px 1.2px at 42% 72%, rgba(255, 255, 255, 0.35), transparent),
+        radial-gradient(1px 1px at 88% 60%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1.1px 1.1px at 26% 46%, rgba(207, 226, 255, 0.3), transparent);
+    background-size: 260px 220px, 190px 240px, 300px 280px, 170px 200px, 230px 260px;
+}
+
+.galacta-kit-check {
+    width: 16px;
+    height: 16px;
+    margin-top: 3px;
+    border-radius: 0;
+    background: #{$gl-gold};
+    clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%, 40% 40%);
+
+    &::before { content: none; }
+}
+
+.galacta-faq-q::before {
+    width: 12px;
+    height: 12px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: inset 0 0 0 2px #7fb4e8;
+    transition: background-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.galacta-faq-item[open] .galacta-faq-q::before {
+    background: #{$gl-gold};
+    box-shadow: inset 0 0 0 2px #{$gl-gold}, 0 0 9px rgba(232, 163, 61, 0.55);
+    transform: none;
+}
+
+.galacta-tag { box-shadow: 0 0 8px rgba(0, 0, 0, 0.45); }
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    #content { font-size: 15px; }
+
+    .galacta-hero { padding: 28px 14px 42px; }
+    .galacta-block { max-width: none; }
+    .galacta-rocket { display: none; }
+}
+
+/* ================================================== REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .galacta-marquee span { padding-left: 14px; animation: none; }
+    .galacta-planet       { animation: none; }
+    .galacta-rocket       { animation: none; }
+    .gl-flame             { animation: none; }
+    .galacta-btn          { transition: none; }
+    .galacta-faq-q::before { transition: none; }
+}

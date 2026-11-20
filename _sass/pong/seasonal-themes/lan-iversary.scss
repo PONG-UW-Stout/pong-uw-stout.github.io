@@ -1,0 +1,285 @@
+// ===========================================================================
+// Anniversary theme: the whole site in Windows 95 for the LAN-iversary
+// weekend, using the same tokens as the event page.
+// ===========================================================================
+
+@use "../variables" as *;
+@use "../lans/y2k-tokens" as *;
+
+/* ================================================================ DESKTOP */
+
+html {
+    background-color: $y2k-desktop !important;
+    background-image: none !important;
+    color: #000 !important;
+    font-family: $y2k-ui !important;
+}
+
+body {
+    color: #000 !important;
+}
+
+p,
+li,
+dd,
+dt,
+blockquote {
+    font-family: $y2k-body !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: $y2k-ui !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+}
+
+/* ============================================================== THE BEVEL */
+
+@mixin y2k-raised {
+    background: $y2k-chrome !important;
+    border: 2px solid !important;
+    border-color: $y2k-chrome-lit $y2k-chrome-dark $y2k-chrome-dark $y2k-chrome-lit !important;
+    box-shadow:
+        inset 1px 1px 0 $y2k-chrome-face,
+        inset -1px -1px 0 $y2k-chrome-shadow !important;
+    border-radius: 0 !important;
+}
+
+@mixin y2k-sunken {
+    background: $y2k-chrome-lit !important;
+    border: 2px solid !important;
+    border-color: $y2k-chrome-dark $y2k-chrome-lit $y2k-chrome-lit $y2k-chrome-dark !important;
+    border-radius: 0 !important;
+}
+
+/* ================================================================ THE NAV */
+
+// The nav becomes the window title bar.
+nav {
+    background: linear-gradient(90deg, $y2k-titlebar 0%, $y2k-titlebar-lit 100%) !important;
+    border: 2px solid !important;
+    border-color: $y2k-chrome-lit $y2k-chrome-dark $y2k-chrome-dark $y2k-chrome-lit !important;
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+nav a,
+nav .header_button a {
+    color: #fff !important;
+    font-family: $y2k-ui !important;
+    text-decoration: none !important;
+}
+
+nav .header_button a.active {
+    background-image: $y2k-dither !important;
+    color: #000 !important;
+    box-shadow:
+        inset 1px 1px 0 $y2k-chrome-shadow,
+        inset -1px -1px 0 $y2k-chrome-lit !important;
+}
+
+/* ============================================================== THE PAGE */
+
+// #content becomes the window body.
+#content {
+    @include y2k-raised;
+    margin: 12px !important;
+    padding: 16px !important;
+}
+
+/* ============================================================== SURFACES */
+
+// Cards are raised panels. Reset their text to black, since pong/base and
+// pong/posts assume the normal palette.
+.post_card,
+.post-item,
+.lan_card,
+.capsule,
+.leaderboard,
+.lan-ring {
+    @include y2k-raised;
+    color: #000 !important;
+}
+
+.post_card *,
+.post-item *,
+.capsule *,
+.lan-ring * {
+    color: #000 !important;
+}
+
+/* ========================================================= BRAND BUTTONS */
+
+// Restore the /about social buttons, which the link-colour and .capsule_link
+// rules above would otherwise break.
+.capsule_link,
+.capsule_link * {
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+.capsule_link {
+    // Bevel only. The y2k-raised mixin sets an !important background that
+    // would beat the inline brand colour.
+    border: 2px solid !important;
+    border-color: $y2k-chrome-lit $y2k-chrome-dark $y2k-chrome-dark $y2k-chrome-lit !important;
+    border-radius: 0 !important;
+}
+
+.lan_details_link {
+    color: #fff !important;
+}
+
+.dark_bg {
+    background-color: $y2k-titlebar !important;
+    color: #fff !important;
+}
+
+/* ================================================================= LINKS */
+
+#content a:not(.y2k-btn):not([class*="button"]):not(.capsule_link):not(.lan_details_link) {
+    color: #0000ee !important;
+    text-decoration: underline !important;
+}
+
+#content a:visited:not(.y2k-btn):not([class*="button"]):not(.capsule_link):not(.lan_details_link) {
+    color: #551a8b !important;
+}
+
+/* =============================================================== CONTROLS */
+
+button,
+.mode-button,
+.leaderboard_clear,
+.pong404_btn {
+    @include y2k-raised;
+    color: #000 !important;
+    font-family: $y2k-ui !important;
+    padding: 4px 12px !important;
+
+    &:active {
+        border-color: $y2k-chrome-dark $y2k-chrome-lit $y2k-chrome-lit $y2k-chrome-dark !important;
+    }
+}
+
+nav button {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: #fff !important;
+}
+
+input,
+select,
+textarea {
+    @include y2k-sunken;
+    font-family: $y2k-ui !important;
+}
+
+/* ======================================================= PANELS AND MENUS */
+
+// The table of contents, theme picker and its prompt bring their own dark
+// surfaces; restyle them for the grey chrome.
+
+.post-toc,
+.post-toc__shell {
+    @include y2k-raised;
+    color: #000 !important;
+}
+
+.post-toc__summary,
+.post-toc__summary *,
+.post-toc__icon {
+    color: #000 !important;
+}
+
+.post-toc__item > .post-toc__link::before {
+    color: #000 !important;
+}
+
+.post-toc__link {
+    color: #0000ee !important;
+
+    &:visited { color: #551a8b !important; }
+
+    &:hover,
+    &:focus-visible { color: #ff0000 !important; }
+}
+
+.theme-picker__menu,
+.theme-prompt {
+    @include y2k-raised;
+    color: #000 !important;
+}
+
+.theme-picker__option,
+.theme-picker__option *,
+.theme-prompt__title,
+.theme-prompt__text {
+    color: #000 !important;
+}
+
+.theme-picker__option:hover,
+.theme-picker__option:focus-visible {
+    background: $y2k-titlebar !important;
+    color: #fff !important;
+}
+
+.theme-prompt__button {
+    @include y2k-raised;
+    color: #000 !important;
+}
+
+/* ============================================================ POST TOKENS */
+
+.post-page {
+    --post-accent: #{$y2k-titlebar} !important;
+    --post-rule: #{rgba(#000, 0.3)} !important;
+    --post-muted: #{rgba(#000, 0.68)} !important;
+    --post-quote-bg: #{$y2k-chrome-face} !important;
+    --post-inline-bg: #{$y2k-chrome-face} !important;
+    --post-inline-border: #{$y2k-chrome-shadow} !important;
+}
+
+/* ================================================================ FOOTER */
+
+// The footer becomes the taskbar.
+.pong_footer {
+    background: $y2k-chrome !important;
+    color: #000 !important;
+    border-top: 2px solid $y2k-chrome-lit !important;
+}
+
+.pong_footer a,
+.pong_footer p,
+.pong_footer time {
+    color: #000 !important;
+}
+
+.pong_footer_social {
+    @include y2k-raised;
+    border-width: 1px !important;
+}
+
+.pong_footer_ball {
+    background-color: $y2k-titlebar !important;
+}
+
+.pong_footer_paddle {
+    background-color: $y2k-chrome-dark !important;
+}
+
+/* ================================================================== TABLES */
+
+table {
+    @include y2k-sunken;
+    border-collapse: separate !important;
+}
+
+th {
+    background: $y2k-chrome !important;
+    color: #000 !important;
+}
+
+/* ============================================================ REDUCED MOTION */
+

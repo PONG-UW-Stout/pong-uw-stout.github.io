@@ -164,7 +164,7 @@ faq:
   - q: Can I bring a console instead of a PC?
     a: Yes. Bring it, a monitor or TV, and the cables. Ask in the Discord if you are unsure about space.
   - q: Where do people sleep?
-    a: Wherever they end up. Most people bring a pillow and claim a stretch of floor. Keep the walkways clear. That is fire safety, not house style.
+    a: Wherever they end up. Most people bring a pillow and claim a stretch of floor. Keep the walkways clear.
   - q: I have never been to a LAN before. Is that okay?
     a: Completely. Show up, find a table, say hi. Ask in the Discord beforehand if you want advice on what to bring.
 ---

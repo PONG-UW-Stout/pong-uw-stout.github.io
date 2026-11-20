@@ -1,0 +1,435 @@
+// ===========================================================================
+// SuperLAN event stylesheet.
+// ===========================================================================
+
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$sl-display: "Arial Black", "Arial Bold", Impact, Haettenschweiler, "Helvetica Neue", sans-serif;
+$sl-ui:      "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+$sl-body:    "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$sl-teal:     #3c6c7d;
+$sl-teal-dk:  #2b5160;
+$sl-teal-dp:  #1b3540;
+$sl-orange:   #e88520;
+$sl-orange-dk:#b96414;
+$sl-blue:     #1c71b9;
+$sl-ink:      #081015;
+$sl-paper:    #f4f7f8;
+$sl-dim:      #bcd0d8;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$sl-paper};
+    --lan-ink-soft: #{$sl-dim};
+    --lan-panel: rgba(27, 53, 64, 0.88);
+    --lan-panel-edge: #{$sl-ink};
+    --lan-accent: #{$sl-orange};
+    --lan-accent-2: #{$sl-blue};
+    --lan-on-accent: #{$sl-ink};
+    --lan-on-day: #{$sl-paper};
+    --lan-slot: rgba(8, 16, 21, 0.86);
+    --lan-slot-ink: #{$sl-paper};
+    --lan-slot-dim: #{$sl-dim};
+    --lan-sunk: rgba(8, 16, 21, 0.55);
+    --lan-sunk-open: rgba(8, 16, 21, 0.82);
+    --lan-day-1: #4a52a8;
+    --lan-day-2: #7a5aa8;
+    --lan-day-3: #1f9d6a;
+    --lan-day-all: #{$sl-teal-dk};
+    --lan-legend: rgba(8, 16, 21, 0.86);
+    --lan-legend-ink: #{$sl-paper};
+    --lan-footer: #{$sl-ink};
+    --lan-footer-card: rgba(232, 133, 32, 0.14);
+    --lan-footer-ink: #{$sl-paper};
+    --lan-radius: 0;
+    --lan-edge-w: 3px;
+    --lan-title-track: 0.02em;
+    --lan-scrim: rgba(5, 11, 14, 0.95);
+    --lan-font: #{$sl-body};
+    --lan-font-ui: #{$sl-ui};
+    --lan-font-display: #{$sl-display};
+
+    --dc-ground: #{$sl-teal};
+    --dc-ink: #{$sl-paper};
+    --dc-rubric: #{$sl-orange};
+    --dc-link: #{$sl-orange};
+    --sl-ground: #{$sl-teal};
+}
+
+html[data-theme="light"] { --sl-ground: #4a7f92; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--sl-ground); }
+
+/* ====================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $sl-body;
+    font-size: 16px;
+    line-height: 1.66;
+    color: $sl-paper;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $sl-display;
+    font-weight: 400;
+}
+
+#content a {
+    color: $sl-orange;
+    text-decoration: underline;
+
+    &:hover { color: $sl-paper; }
+}
+
+#content ::selection { background: $sl-orange; color: $sl-ink; }
+#content :focus-visible { outline: 3px solid $sl-orange; outline-offset: 2px; }
+
+* { scrollbar-color: #{$sl-orange} #{$sl-teal-dp}; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $sl-teal-dp; }
+::-webkit-scrollbar-thumb {
+    background: $sl-orange;
+    border: 3px solid $sl-teal-dp;
+
+    &:hover { background: $sl-paper; }
+}
+
+/* =============================================================== THE STOCK */
+
+.super-stock {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: var(--sl-ground);
+    background-image:
+        radial-gradient(circle, rgba(8, 16, 21, 0.26) 2.6px, transparent 3px),
+        radial-gradient(circle, rgba(8, 16, 21, 0.26) 2.6px, transparent 3px);
+    background-size: 16px 16px, 16px 16px;
+    background-position: 0 0, 8px 8px;
+}
+
+.super-stock::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 12%, rgba(244, 247, 248, 0.16) 0%, rgba(244, 247, 248, 0) 70%);
+}
+
+/* ============================================================== THE TICKER */
+
+.super-marquee {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    padding: 8px 0;
+    border-bottom: 3px solid $sl-ink;
+    background: $sl-orange;
+    font-family: $sl-display;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $sl-ink;
+
+    span {
+        display: inline-block;
+        padding-right: 2.2em;
+        animation: super-marquee 45s linear infinite;
+    }
+}
+
+@keyframes super-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================ THE HERO */
+
+.super-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 34px 18px 32px;
+}
+
+.super-splash {
+    position: relative;
+    overflow: hidden;
+    padding: 28px 26px 30px;
+    border: 4px solid $sl-ink;
+    background: $sl-teal-dk;
+    box-shadow: 9px 10px 0 rgba(8, 16, 21, 0.5);
+    text-align: center;
+}
+
+.super-burst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 160%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(
+        from 0deg,
+        rgba(244, 247, 248, 0.12) 0deg 3deg,
+        transparent 3deg 9deg);
+    -webkit-mask-image: radial-gradient(circle, #000 12%, rgba(0, 0, 0, 0.4) 46%, transparent 68%);
+    mask-image: radial-gradient(circle, #000 12%, rgba(0, 0, 0, 0.4) 46%, transparent 68%);
+    pointer-events: none;
+}
+
+.super-hero-inner { position: relative; }
+
+.super-presents {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 0 0 6px;
+    font-family: $sl-display;
+    font-size: clamp(0.8rem, 2.3vw, 1.05rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: $sl-paper;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1 1 auto;
+        max-width: 110px;
+        height: 3px;
+        background: $sl-paper;
+    }
+}
+
+.super-title {
+    margin: 4px 0 8px;
+    font-family: $sl-display;
+    font-size: clamp(2.6rem, 12vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    color: $sl-orange;
+    -webkit-text-stroke: 3px #{$sl-ink};
+    paint-order: stroke fill;
+    text-shadow: 5px 6px 0 rgba(8, 16, 21, 0.55);
+}
+
+.super-tagline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 0 22px;
+    font-family: $sl-display;
+    font-size: clamp(0.82rem, 2.7vw, 1.2rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $sl-paper;
+
+    i {
+        font-style: normal;
+        color: $sl-orange;
+    }
+}
+
+/* ============================================================ THE BALLOON */
+
+.super-balloon {
+    position: relative;
+    max-width: 540px;
+    margin: 0 auto 30px;
+    padding: 18px 22px 20px;
+    border: 4px solid $sl-ink;
+    border-radius: 14px;
+    background: $sl-paper;
+    text-align: left;
+    color: $sl-ink;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: -26px;
+        left: 46px;
+        width: 0;
+        height: 0;
+        border-top: 26px solid $sl-ink;
+        border-right: 30px solid transparent;
+    }
+
+    &::after {
+        bottom: -19px;
+        left: 51px;
+        border-top-color: $sl-paper;
+        border-right-width: 21px;
+    }
+}
+
+.super-balloon-line {
+    margin: 0 0 8px;
+    font-family: $sl-ui;
+    font-size: clamp(0.95rem, 2.6vw, 1.12rem);
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: $sl-ink;
+
+    &:last-child { margin-bottom: 0; }
+
+    &--shout {
+        font-family: $sl-display;
+        font-size: clamp(1.2rem, 3.6vw, 1.7rem);
+        letter-spacing: 0.04em;
+        color: $sl-orange-dk;
+    }
+}
+
+/* ========================================================= THE DATE ROWS */
+
+.super-when {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 18px;
+    max-width: 440px;
+    margin: 0 auto 24px;
+    text-align: left;
+}
+
+.super-when-key {
+    font-family: $sl-display;
+    font-size: clamp(0.78rem, 2.2vw, 0.95rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $sl-orange;
+    align-self: center;
+}
+
+.super-when-val {
+    font-family: $sl-display;
+    font-size: clamp(1.1rem, 3.6vw, 1.65rem);
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: $sl-paper;
+}
+
+.super-blurb {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 16px 0;
+    border-top: 3px solid $sl-orange;
+    border-bottom: 3px solid $sl-orange;
+    font-family: $sl-display;
+    font-size: clamp(0.95rem, 3vw, 1.3rem);
+    line-height: 1.45;
+    text-transform: uppercase;
+    color: $sl-paper;
+}
+
+.super-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.super-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 3px solid $sl-ink;
+    background: $sl-paper;
+    box-shadow: 5px 5px 0 rgba(8, 16, 21, 0.5);
+    font-family: $sl-display;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $sl-ink !important;
+    text-decoration: none !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+    &:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 3px 3px 0 rgba(8, 16, 21, 0.5);
+        color: $sl-ink !important;
+    }
+
+    &--primary {
+        background: $sl-orange;
+        color: $sl-ink !important;
+
+        &:hover { color: $sl-ink !important; }
+    }
+}
+
+/* =============================================== PANEL AND BOARD OVERRIDES */
+
+@include lan.lan-structure("super");
+
+.super-panel {
+    box-shadow: 0 0 0 4px $sl-ink, 8px 9px 0 rgba(8, 16, 21, 0.42);
+}
+
+.super-panel-title {
+    -webkit-text-stroke: 2px #{$sl-ink};
+    paint-order: stroke fill;
+}
+
+.super-day-name {
+    text-shadow: 2px 2px 0 rgba(8, 16, 21, 0.5);
+}
+
+.super-tag--mark {
+    background: transparent;
+    border: 1px solid #{$sl-dim};
+    color: $sl-dim;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.super-kit-check {
+    border-radius: 0;
+
+    &::before { border-color: $sl-ink; }
+}
+
+/* ============================================================= RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    .super-hero    { padding: 22px 10px 24px; }
+    .super-splash  { padding: 20px 14px 22px; box-shadow: 5px 6px 0 rgba(8, 16, 21, 0.5); }
+    .super-panel   { box-shadow: 0 0 0 4px $sl-ink; }
+
+    .super-title { -webkit-text-stroke-width: 2px; }
+
+    .super-when { grid-template-columns: 1fr; gap: 2px; }
+    .super-when-key { margin-top: 8px; }
+
+    .super-presents::before,
+    .super-presents::after { max-width: 34px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .super-marquee span { padding-left: 14px; animation: none; }
+    .super-marquee span + span { display: none; }
+    .super-btn { transition: none; }
+}

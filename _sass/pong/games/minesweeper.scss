@@ -1,0 +1,142 @@
+// ===========================================================================
+// Minesweeper. Markup in _games/minesweeper.html, behaviour in
+// assets/js/games/minesweeper.js. Colours come from pong/lans/y2k-tokens.
+// ===========================================================================
+
+@use "pong/variables" as *;
+@use "pong/lans/y2k-tokens" as *;
+
+@mixin raised($w: 3px) {
+    border: $w solid;
+    border-color: $y2k-chrome-lit $y2k-chrome-dark $y2k-chrome-dark $y2k-chrome-lit;
+}
+
+@mixin sunken($w: 3px) {
+    border: $w solid;
+    border-color: $y2k-chrome-dark $y2k-chrome-lit $y2k-chrome-lit $y2k-chrome-dark;
+}
+
+.ms-frame {
+    @include raised;
+    width: max-content;
+    max-width: 100%;
+    margin: 1.5rem auto;
+    padding: 6px;
+    background: $y2k-chrome;
+    font-family: $y2k-ui;
+
+    overflow-x: auto;
+}
+
+/* ------------------------------------------------------------------ HUD */
+
+.ms-hud {
+    @include sunken(2px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding: 5px 6px;
+    background: $y2k-chrome;
+}
+
+.ms-led {
+    @include sunken(1px);
+    padding: 2px 4px;
+    background: #000;
+    color: #f00;
+    font-family: $y2k-mono;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.08em;
+}
+
+.ms-face {
+    @include raised(2px);
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: $y2k-chrome;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:active {
+        @include sunken(2px);
+    }
+
+    &::before { content: "🙂"; }
+    &[data-face="dead"]::before { content: "😵"; }
+    &[data-face="cool"]::before { content: "😎"; }
+}
+
+/* ---------------------------------------------------------------- BOARD */
+
+.ms-board {
+    @include sunken;
+    display: grid;
+    grid-template-columns: repeat(var(--ms-cols, 9), 26px);
+    background: $y2k-chrome;
+}
+
+.ms-cell {
+    @include raised(2px);
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    background: $y2k-chrome;
+    font-family: $y2k-ui;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid $y2k-titlebar;
+        outline-offset: -2px;
+    }
+}
+
+.ms-cell.is-open {
+    border: 1px solid $y2k-chrome-shadow;
+    border-right-color: $y2k-chrome;
+    border-bottom-color: $y2k-chrome;
+    cursor: default;
+}
+
+.ms-cell.is-flag::before { content: "🚩"; font-size: 0.9rem; }
+.ms-cell.is-mine::before { content: "💣"; font-size: 0.9rem; }
+
+.ms-cell.is-hit { background: #ff0000; }
+
+.ms-cell[data-near="1"] { color: #0000ff; }
+.ms-cell[data-near="2"] { color: #008000; }
+.ms-cell[data-near="3"] { color: #ff0000; }
+.ms-cell[data-near="4"] { color: #000080; }
+.ms-cell[data-near="5"] { color: #800000; }
+.ms-cell[data-near="6"] { color: #008080; }
+.ms-cell[data-near="7"] { color: #000000; }
+.ms-cell[data-near="8"] { color: #808080; }
+
+.ms-status {
+    max-width: 60ch;
+    margin: 0 auto 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.85;
+    min-height: 1.4em;
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .ms-board {
+        grid-template-columns: repeat(var(--ms-cols, 9), 22px);
+    }
+
+    .ms-cell {
+        width: 22px;
+        height: 22px;
+        font-size: 0.85rem;
+    }
+}

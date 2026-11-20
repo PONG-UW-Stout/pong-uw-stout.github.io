@@ -1,0 +1,88 @@
+@use "pong/variables" as *;
+
+.lan-ring {
+    max-width: 70ch;
+    margin: 3.5rem auto 1rem;
+    padding: 1.25rem 1rem 0;
+    border-top: 1px solid rgba(128, 128, 128, 0.3);
+    text-align: center;
+}
+
+.lan-ring_title {
+    margin: 0 0 1rem;
+    font-family: "pong_cocogoose";
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.65;
+}
+
+.lan-ring_nav {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.lan-ring_link {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.15rem;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-radius: 6px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+        border-color: $exec-color;
+        transform: translateY(-2px);
+    }
+}
+
+.lan-ring_link--index {
+    flex: 0 1 auto;
+    justify-content: center;
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
+
+.lan-ring_link--next {
+    text-align: right;
+}
+
+.lan-ring_dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+.lan-ring_name {
+    font-family: "pong_cocogoose";
+    font-size: 0.95rem;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: $breakpoint-tablet) {
+    .lan-ring_nav {
+        flex-wrap: wrap;
+    }
+
+    .lan-ring_link {
+        flex: 1 1 40%;
+    }
+
+    .lan-ring_link--index {
+        flex: 1 1 100%;
+        order: 1;
+    }
+}

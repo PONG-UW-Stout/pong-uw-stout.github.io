@@ -1,0 +1,372 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$pl-display: Luminari, Trattatello, Herculanum, "Copperplate Gothic Bold", Copperplate, "Palatino Linotype", Georgia, serif;
+$pl-ui:      "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+$pl-body:    "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$pl-navy:     #0b1823;
+$pl-navy-lt:  #15293a;
+$pl-navy-dp:  #060f17;
+$pl-wood:     #8f502f;
+$pl-wood-dk:  #6e3f29;
+$pl-wood-lt:  #a9664177;
+$pl-cream:    #f0ebdd;
+$pl-cream-dim:#c3bba6;
+$pl-red:      #a8352c;
+$pl-orange:   #d4581f;
+$pl-teal:     #1f7b9e;
+$pl-gold:     #f2c744;
+$pl-sand:     #f6e2bd;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$pl-cream};
+    --lan-ink-soft: #{$pl-cream-dim};
+    --lan-panel: rgba(21, 41, 58, 0.9);
+    --lan-panel-edge: rgba(240, 235, 221, 0.42);
+    --lan-accent: #{$pl-gold};
+    --lan-accent-2: #{$pl-orange};
+    --lan-on-accent: #{$pl-navy-dp};
+    --lan-on-day: #{$pl-cream};
+    --lan-slot: rgba(6, 15, 23, 0.86);
+    --lan-slot-ink: #{$pl-cream};
+    --lan-slot-dim: #{$pl-cream-dim};
+    --lan-sunk: rgba(6, 15, 23, 0.55);
+    --lan-sunk-open: rgba(6, 15, 23, 0.82);
+    --lan-day-1: #4a52a8;
+    --lan-day-2: #7a5aa8;
+    --lan-day-3: #1f9d6a;
+    --lan-day-all: #{$pl-wood-dk};
+    --lan-legend: rgba(6, 15, 23, 0.84);
+    --lan-legend-ink: #{$pl-cream};
+    --lan-footer: #{$pl-navy-dp};
+    --lan-footer-card: rgba(242, 199, 68, 0.1);
+    --lan-footer-ink: #{$pl-cream};
+    --lan-radius: 3px;
+    --lan-edge-w: 1px;
+    --lan-title-track: 0.06em;
+    --lan-scrim: rgba(4, 10, 16, 0.95);
+    --lan-font: #{$pl-body};
+    --lan-font-ui: #{$pl-ui};
+    --lan-font-display: #{$pl-display};
+    --lan-lift: 0 16px 40px rgba(0, 0, 0, 0.5);
+
+    --dc-ground: #{$pl-navy};
+    --dc-ink: #{$pl-cream};
+    --dc-rubric: #{$pl-gold};
+    --dc-link: #{$pl-gold};
+    --pl-ground: #{$pl-navy};
+}
+
+html[data-theme="light"] { --pl-ground: #{$pl-navy-lt}; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--pl-ground); }
+
+/* ====================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $pl-body;
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: $pl-cream;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $pl-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $pl-gold;
+    text-decoration: underline;
+
+    &:hover { color: $pl-orange; }
+}
+
+#content ::selection { background: $pl-gold; color: $pl-navy-dp; }
+#content :focus-visible { outline: 2px solid $pl-gold; outline-offset: 3px; }
+
+* { scrollbar-color: #{$pl-wood} #{$pl-navy-dp}; }
+::-webkit-scrollbar { width: 13px; height: 13px; }
+::-webkit-scrollbar-track { background: $pl-navy-dp; }
+::-webkit-scrollbar-thumb {
+    background: $pl-wood;
+
+    &:hover { background: $pl-gold; }
+}
+
+/* ================================================================ THE SEA */
+
+.pirate-sea {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: var(--pl-ground);
+    background-image:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(31, 123, 158, 0.16) 0%, rgba(31, 123, 158, 0) 70%),
+        repeating-linear-gradient(118deg,
+            rgba(240, 235, 221, 0.022) 0 2px,
+            transparent 2px 9px),
+        repeating-linear-gradient(62deg,
+            rgba(240, 235, 221, 0.016) 0 2px,
+            transparent 2px 13px);
+}
+
+/* ============================================================== THE ROUTE */
+
+.pirate-route {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.pirate-route svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.pirate-route path {
+    fill: none;
+    stroke: #{$pl-red};
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 26 30;
+    opacity: 0.42;
+    vector-effect: non-scaling-stroke;
+}
+
+/* ============================================================== THE TICKER */
+
+.pirate-marquee {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(242, 199, 68, 0.4);
+    background: $pl-navy-dp;
+    font-family: $pl-ui;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $pl-gold;
+
+    span {
+        display: inline-block;
+        padding-right: 2.2em;
+        animation: pirate-marquee 46s linear infinite;
+    }
+}
+
+@keyframes pirate-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================ THE HERO */
+
+.pirate-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 30px 20px 34px;
+    text-align: center;
+}
+
+.pirate-plank {
+    display: block;
+    width: 100%;
+    max-width: 760px;
+    height: auto;
+    margin: 0 auto 16px;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
+}
+
+.pirate-tagline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin: 0 0 30px;
+    font-family: $pl-ui;
+    font-size: clamp(1rem, 3.4vw, 1.6rem);
+    font-weight: 700;
+    color: $pl-cream;
+
+    i {
+        font-style: normal;
+        font-size: 0.7em;
+        color: $pl-orange;
+    }
+}
+
+/* ============================================================== THE DECK */
+
+.pirate-deck {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 26px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.pirate-ahoy {
+    margin: 0 0 16px;
+    font-family: $pl-display;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    line-height: 1.1;
+    color: $pl-cream;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 7px;
+}
+
+.pirate-line {
+    margin: 0 0 16px;
+    font-size: 17px;
+    line-height: 1.7;
+    color: $pl-cream;
+
+    &:last-child { margin-bottom: 0; }
+}
+
+.pirate-chest {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* ============================================================= SET SAIL */
+
+.pirate-sail {
+    margin: 0 0 6px;
+    font-family: $pl-display;
+    font-size: clamp(1.5rem, 5vw, 2.4rem);
+    letter-spacing: 0.04em;
+    color: $pl-cream;
+
+    i {
+        font-style: normal;
+        color: $pl-cream-dim;
+        padding: 0 0.4em;
+    }
+}
+
+.pirate-dates {
+    margin: 0;
+    font-family: $pl-display;
+    font-size: clamp(1.15rem, 4vw, 1.9rem);
+    line-height: 1.25;
+    color: $pl-cream;
+
+    sup {
+        font-size: 0.55em;
+        vertical-align: 0.6em;
+    }
+}
+
+.pirate-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.pirate-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 2px solid $pl-gold;
+    border-radius: 3px;
+    background: transparent;
+    font-family: $pl-ui;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: $pl-gold !important;
+    text-decoration: none !important;
+    transition: background-color 0.18s ease, color 0.18s ease;
+
+    &:hover { background: $pl-gold; color: $pl-navy-dp !important; }
+
+    &--primary {
+        background: $pl-gold;
+        color: $pl-navy-dp !important;
+
+        &:hover { background: $pl-orange; border-color: $pl-orange; color: $pl-cream !important; }
+    }
+}
+
+/* =============================================== PANEL AND BOARD OVERRIDES */
+
+@include lan.lan-structure("pirate");
+
+.pirate-slot {
+    border-left: 3px solid var(--d);
+}
+
+.pirate-tag--mark {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px #{$pl-cream-dim};
+    color: $pl-cream-dim;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+// The Among Us badge is longer, so let the tag grow.
+.pirate-tag--long {
+    background: linear-gradient(180deg, #5ccd69, #3cb54a 55%, #2d8f39);
+    border: 1px solid #2d8f39;
+    white-space: nowrap;
+}
+
+.pirate-day-name {
+    font-family: $pl-display;
+    letter-spacing: 0.1em;
+}
+
+.pirate-kit-check::before { border-color: $pl-navy-dp; }
+
+/* ============================================================= RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    .pirate-hero { padding: 22px 12px 26px; }
+
+    .pirate-deck { grid-template-columns: 1fr; gap: 18px; }
+    .pirate-chest { max-width: 280px; margin: 0 auto; }
+
+    .pirate-route { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pirate-marquee span { padding-left: 14px; animation: none; }
+    .pirate-marquee span + span { display: none; }
+    .pirate-btn { transition: none; }
+}

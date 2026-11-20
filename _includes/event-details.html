@@ -1,0 +1,76 @@
+{%- comment -%} Event when/where block. Every row is optional and guarded. {%- endcomment -%}
+
+{%- assign event_time = "" -%}
+{%- if page.time_note -%}
+  {%- assign event_time = page.time_note -%}
+{%- elsif page.start_time and page.end_time -%}
+  {%- assign event_time = page.start_time | append: " &ndash; " | append: page.end_time -%}
+{%- elsif page.start_time -%}
+  {%- assign event_time = page.start_time -%}
+{%- endif -%}
+
+{%- comment -%} Collection documents default `tags` to [], which is truthy in Liquid, so test its size instead. {%- endcomment -%}
+{%- assign has_tags = false -%}
+{%- if page.tags and page.tags.size > 0 -%}{%- assign has_tags = true -%}{%- endif -%}
+
+{%- if event_time != "" or page.location or page.cost or page.host or has_tags -%}
+<dl class="event-details">
+
+  {%- if event_time != "" %}
+  <div class="event-detail">
+    <dt>Time</dt>
+    <dd>{{ event_time }}</dd>
+  </div>
+  {%- endif %}
+
+  {%- if page.location %}
+  <div class="event-detail">
+    <dt>Where</dt>
+    <dd>
+      {%- if page.map_url -%}
+        <a href="{{ page.map_url }}" target="_blank" rel="noopener">{{ page.location }}{% if page.room %}, {{ page.room }}{% endif %}</a>
+      {%- else -%}
+        {{ page.location }}{% if page.room %}, {{ page.room }}{% endif %}
+      {%- endif -%}
+      {%- if page.address %}
+      <span class="event-address">{{ page.address }}</span>
+      {%- endif %}
+    </dd>
+  </div>
+  {%- endif %}
+
+  {%- if page.cost %}
+  <div class="event-detail">
+    <dt>Cost</dt>
+    <dd>{{ page.cost }}</dd>
+  </div>
+  {%- endif %}
+
+  {%- if page.host %}
+  <div class="event-detail">
+    <dt>Hosted by</dt>
+    <dd>{{ page.host }}</dd>
+  </div>
+  {%- endif %}
+
+  {%- if has_tags %}
+  <div class="event-detail event-detail--tags">
+    <dt>Tags</dt>
+    <dd>
+      {%- for tag in page.tags %}
+      <span class="event-tag">{{ tag }}</span>
+      {%- endfor %}
+    </dd>
+  </div>
+  {%- endif %}
+
+</dl>
+{%- endif -%}
+
+{%- if page.signup_url %}
+<p class="event-cta">
+  <a class="event-cta-link" href="{{ page.signup_url }}" target="_blank" rel="noopener">
+    {{ page.signup_label | default: "Sign up" }}
+  </a>
+</p>
+{%- endif -%}

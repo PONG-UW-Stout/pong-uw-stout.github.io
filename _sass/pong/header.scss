@@ -10,6 +10,22 @@ nav {
     color: $light;
     margin-bottom: 30px;
     position: relative;
+
+    // `position: relative` on its own leaves z-index auto, which is not a
+    // stacking context, so the nav paints at the same level as the page
+    // below it and loses ties on tree order. Every themed LAN page lays a
+    // `position: fixed` backdrop over the whole viewport, and because that
+    // backdrop comes later in the document it was painting straight over the
+    // PONG logo, the theme toggle and the nav's own background. The links
+    // survived only because the menu sets its own z-index.
+    //
+    // 940 is chosen, not arbitrary: above every LAN page's content layer
+    // (0-5) so the nav is never buried, and below the schedule lightbox
+    // (950), the confetti (8000) and the dial-up gate (9000) so those still
+    // cover the nav as they are meant to. It also keeps the mobile menu
+    // drawer, which lives inside here, above the LAN taskbar (900) and its
+    // assistant (903).
+    z-index: 940;
 }
 
 nav a {
@@ -165,7 +181,7 @@ html[data-theme="dark"] #theme-toggle {
     display: flex;
     align-items: center;
     // Stretch to the nav's full height so the menu can hang off the bottom of
-    // the bar rather than the middle of the button.
+    // the bar, not the middle of the button.
     align-self: stretch;
     position: relative;
     // Above #nav-menu's mobile overlay, matching #nav-toggle.

@@ -1,0 +1,441 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$tr-display: "Avenir Next", "Futura", "Century Gothic", "Trebuchet MS", sans-serif;
+$tr-ui:      "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$tr-sky:     #a8dcef;
+$tr-sky-pale:#cfeaf5;
+$tr-sea:     #2e8f8a;
+$tr-sea-lt:  #45aba2;
+$tr-surf:    #bfe6de;
+$tr-sand:    #f0e0ba;
+$tr-sand-dk: #ddc694;
+$tr-yellow:  #f2c64a;
+$tr-green:   #1f7a5c;
+$tr-green-l: #2fa078;
+$tr-ink:     #1d3b3a;
+$tr-dim:     #5c7a78;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$tr-ink};
+    --lan-ink-soft: #{$tr-dim};
+    --lan-panel: #ffffff;
+    --lan-panel-edge: rgba(31, 122, 92, 0.22);
+    --lan-accent: #{$tr-green};
+    --lan-accent-2: #e8b53a;
+    --lan-on-accent: #ffffff;
+    --lan-on-day: #ffffff;
+    --lan-slot: #ffffff;
+    --lan-slot-ink: #{$tr-ink};
+    --lan-slot-dim: #{$tr-dim};
+    --lan-sunk: #eef7f3;
+    --lan-sunk-open: #ddeee7;
+    --lan-day-1: #{$tr-green};
+    --lan-day-2: #c9ab6a;
+    --lan-day-3: #{$tr-sea};
+    --lan-day-all: #4f8f8c;
+    --lan-legend: #{$tr-green};
+    --lan-legend-ink: #ffffff;
+    --lan-footer: #{$tr-green};
+    --lan-footer-card: rgba(255, 255, 255, 0.14);
+    --lan-footer-ink: #ffffff;
+    --lan-radius: 18px;
+    --lan-edge-w: 0px;
+    --lan-lift: 0 10px 26px rgba(29, 59, 58, 0.16);
+    --lan-scrim: rgba(29, 59, 58, 0.9);
+    --lan-font: #{$tr-ui};
+    --lan-font-ui: #{$tr-ui};
+    --lan-font-display: #{$tr-display};
+
+    --dc-ground: #{$tr-sky};
+    --dc-ink: #{$tr-ink};
+    --dc-rubric: #{$tr-green};
+    --dc-link: #{$tr-green};
+    --tr-sky: #{$tr-sky};
+}
+
+html[data-theme="dark"] { --tr-sky: #74bdd4; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--tr-sky); }
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $tr-ui;
+    font-size: 16px;
+    line-height: 1.65;
+    color: $tr-ink;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $tr-display;
+    font-weight: 700;
+}
+
+#content a {
+    color: $tr-green;
+    text-decoration: underline;
+
+    &:hover { color: #c49a1e; }
+}
+
+#content ::selection { background: $tr-green; color: #fff; }
+#content :focus-visible { outline: 3px solid $tr-green; outline-offset: 2px; }
+
+* { scrollbar-color: $tr-green $tr-sky-pale; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $tr-sky-pale; }
+::-webkit-scrollbar-thumb {
+    background: $tr-green;
+    border: 3px solid $tr-sky-pale;
+    border-radius: 8px;
+
+    &:hover { background: $tr-green-l; }
+}
+
+/* ================================================================= BEACH */
+
+.tropic-beach {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background: linear-gradient(180deg, #8fd0e8 0%, var(--tr-sky) 38%, #d8eef2 74%);
+}
+
+.tropic-sun {
+    position: absolute;
+    left: 50%;
+    top: 68%;
+    width: min(540px, 70vw);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f7dd9a 0 58%, #f7e8bd 58% 74%, transparent 75%);
+    opacity: 0.85;
+}
+
+.tropic-clouds {
+    position: absolute;
+    inset: 0;
+
+    span {
+        position: absolute;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.72);
+        animation: tropic-drift 70s linear infinite;
+    }
+
+    span:nth-child(1) { top: 7%;  left: -18%; width: 220px; padding-bottom: 54px; animation-delay: -4s; }
+    span:nth-child(2) { top: 15%; left: -30%; width: 170px; padding-bottom: 42px; animation-delay: -26s; }
+    span:nth-child(3) { top: 4%;  left: -46%; width: 260px; padding-bottom: 62px; animation-delay: -48s; }
+    span:nth-child(4) { top: 21%; left: -24%; width: 140px; padding-bottom: 36px; animation-delay: -62s; }
+}
+
+@keyframes tropic-drift { to { translate: 160vw 0; } }
+
+.tropic-sea {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 74%;
+    height: 10%;
+    background: linear-gradient(180deg, #{$tr-sea-lt}, #{$tr-sea});
+}
+
+.tropic-surf {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 84%;
+    height: 4%;
+    background: #{$tr-surf};
+}
+
+.tropic-sand {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 88%;
+    bottom: 0;
+    background: linear-gradient(180deg, #{$tr-sand}, #{$tr-sand-dk});
+}
+
+/* ================================================================ TICKER */
+
+.tropic-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 9px 0;
+    background: $tr-green;
+    font-family: $tr-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: #fff;
+    white-space: nowrap;
+
+    span { display: inline-block; padding-left: 100%; animation: tropic-marquee 42s linear infinite; }
+}
+
+@keyframes tropic-marquee { to { transform: translateX(-100%); } }
+
+/* ================================================================== HERO */
+
+.tropic-hero {
+    position: relative;
+    z-index: 2;
+    padding: 40px 20px 50px;
+}
+
+.tropic-hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: 36px;
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.tropic-presents {
+    margin: 0 0 4px;
+    font-family: $tr-display;
+    font-size: clamp(0.9rem, 2.2vw, 1.2rem);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(29, 59, 58, 0.4);
+}
+
+.tropic-title {
+    margin: 0 0 8px;
+    font-family: $tr-display;
+    font-size: clamp(2.4rem, 8vw, 5rem);
+    line-height: 0.96;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.tropic-title-a {
+    display: block;
+    color: #{$tr-yellow};
+    text-shadow: 0 3px 0 #c89b22, 0 5px 14px rgba(29, 59, 58, 0.3);
+}
+
+.tropic-title-b {
+    display: block;
+    color: #fff;
+    text-shadow: 0 3px 0 #9fc9cf, 0 5px 14px rgba(29, 59, 58, 0.3);
+}
+
+.tropic-tagline {
+    margin: 0 0 22px;
+    font-family: $tr-ui;
+    font-size: clamp(0.85rem, 2.1vw, 1.05rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #{$tr-green};
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.tropic-details {
+    margin: 0 0 18px;
+    font-family: $tr-display;
+    font-size: clamp(1rem, 2.3vw, 1.3rem);
+
+    dt {
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $tr-green;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    dd {
+        margin: 2px 0 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $tr-ink;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+}
+
+.tropic-flash {
+    margin: 0 0 24px;
+    font-family: $tr-display;
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $tr-green;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.7);
+}
+
+.tropic-hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+
+/* ================================================================ SCENE */
+
+.tropic-hero-art { display: flex; justify-content: center; }
+
+.tropic-scene {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+}
+
+.tr-trunk      { fill: #a8824e; }
+.tr-trunk-ring { fill: none; stroke: #8a6838; stroke-width: 3; stroke-linecap: round; }
+
+.tr-frond      { fill: #1f7a5c; }
+.tr-frond--dk  { fill: #176349; }
+.tr-rib        { fill: none; stroke: #114a37; stroke-width: 2.6; stroke-linecap: round; }
+
+.tr-coco       { fill: #6b4a28; }
+.tr-shell      { fill: #7d5730; }
+.tr-shell-d    { fill: #5e4023; }
+.tr-flesh      { fill: #f4e8cf; }
+.tr-lime       { fill: #8fc63d; }
+.tr-lime-d     { fill: #6ea52c; }
+.tr-umbrella   { fill: #e05a4a; }
+.tr-umbrella-d { fill: #c04335; }
+.tr-stick      { fill: none; stroke: #8a6838; stroke-width: 4; stroke-linecap: round; }
+.tr-straw      { fill: none; stroke: #2f6fe0; stroke-width: 7; stroke-linecap: round; }
+
+/* ============================================================== BUTTONS */
+
+.tropic-btn {
+    display: inline-block;
+    padding: 13px 28px;
+    border: 3px solid $tr-green;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.86);
+    font-family: $tr-ui;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: $tr-green !important;
+    cursor: pointer;
+    transition: transform 0.12s ease, background-color 0.12s ease;
+
+    &:hover { background: #fff; transform: translateY(-2px); }
+    &:active { transform: translateY(0); }
+
+    &--primary {
+        background: $tr-green;
+        color: #fff !important;
+
+        &:hover { background: $tr-green-l; border-color: $tr-green-l; color: #fff !important; }
+    }
+}
+
+@include lan.lan-structure("tropic");
+
+/* ====================================================== THE BEACH, CARRIED DOWN */
+
+.tropic-panel,
+.tropic-countdown-wrap { overflow: hidden; }
+
+.tropic-panel::before,
+.tropic-countdown-wrap::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: repeating-linear-gradient(
+        90deg,
+        #{$tr-green}   0 20px,
+        #{$tr-yellow} 20px 40px,
+        #{$tr-sea-lt} 40px 60px,
+        #{$tr-surf}   60px 80px
+    );
+    pointer-events: none;
+}
+
+.tropic-panel-body { padding-top: 32px; }
+
+.tropic-kit-check {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 36% 32%, #ffe08a 0 38%, #{$tr-yellow} 39%);
+    box-shadow: 0 0 0 2px rgba(242, 198, 74, 0.3);
+
+    &::before {
+        top: 4px;
+        left: 7px;
+        border-right-color: #fff;
+        border-bottom-color: #fff;
+    }
+}
+
+.tropic-faq-q::before {
+    width: 13px;
+    height: 6.5px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 13px 13px 0 0;
+    background: #{$tr-yellow};
+    transition: height 0.16s ease, margin-top 0.16s ease, border-radius 0.16s ease;
+}
+
+.tropic-faq-item[open] .tropic-faq-q::before {
+    height: 13px;
+    margin-top: 5px;
+    border-radius: 50%;
+    transform: none;
+}
+
+.tropic-tag { border-radius: 999px; }
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: 900px) {
+    .tropic-hero-grid { grid-template-columns: 1fr; gap: 26px; }
+    .tropic-hero-art { order: -1; }
+    .tropic-scene { max-width: 240px; }
+
+    .tropic-sun  { top: 76%; }
+    .tropic-sea  { top: 86%; height: 7%; }
+    .tropic-surf { top: 93%; height: 3%; }
+    .tropic-sand { top: 96%; }
+}
+
+@media (max-width: $breakpoint-tablet) {
+    #content { font-size: 15px; }
+    .tropic-hero { padding: 26px 14px 36px; }
+}
+
+/* ================================================== REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .tropic-marquee span { padding-left: 14px; animation: none; }
+    .tropic-clouds span  { animation: none; }
+    .tropic-btn          { transition: none; }
+    .tropic-faq-q::before { transition: none; }
+}

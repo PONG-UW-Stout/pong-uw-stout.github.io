@@ -1,0 +1,2007 @@
+@use "pong/variables" as *;
+
+/* ============================================================ TYPE STACKS */
+
+$aero-ui:    "Segoe UI", Tahoma, "Trebuchet MS", Verdana, sans-serif;
+$aero-body:  "Segoe UI", Tahoma, Verdana, system-ui, sans-serif;
+$aero-mono:  Consolas, "Lucida Console", "Courier New", monospace;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$aero-deep:      #04265e;
+$aero-mid:       #0c4ea8;
+$aero-bright:    #2a8ce0;
+$aero-glow:      #9fdcff;
+
+$aero-glass:     #e8f2fd;
+$aero-glass-lit: #ffffff;
+$aero-glass-dim: #cfe2f6;
+$aero-frame:     #7fa9d6;
+$aero-frame-dark:#4a7fb5;
+$aero-body-bg:   #ffffff;
+
+$aero-ink:       #16324f;
+$aero-ink-soft:  #4a6880;
+$aero-blue:      #1b6fd4;
+$aero-blue-dark: #0f4c96;
+
+$aero-free:      #3cb54a;
+$aero-free-dark: #2d8f39;
+$aero-contest:   #e8343c;
+$aero-contest-dk:#bb242b;
+
+$aero-day-fri:   #fadce1;
+$aero-day-sat:   #d8efdc;
+$aero-day-sun:   #d9eaf8;
+$aero-day-all:   #f3daf7;
+
+$aero-close:     #e04f3d;
+$aero-close-dk:  #b5301f;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --dc-ground:      #{$aero-deep};
+    --dc-ground-deep: #022048;
+    --dc-vellum:      #{$aero-glass};
+    --dc-vellum-lit:  #{$aero-glass-lit};
+    --dc-vellum-deep: #{$aero-glass-dim};
+    --dc-ink:         #{$aero-ink};
+    --dc-ink-soft:    #{$aero-ink-soft};
+    --dc-rubric:      #{$aero-blue};
+    --dc-gold:        #{$aero-glow};
+    --dc-gold-edge:   #ffffff;
+    --dc-link:        #{$aero-blue};
+    --dc-link-hover:  #{$aero-blue-dark};
+    --dc-lift:        0 6px 26px rgba(2, 20, 50, 0.45);
+    --dc-candle:      rgba(0, 0, 0, 0);
+
+    --aero-deep:      #{$aero-deep};
+    --aero-mid:       #{$aero-mid};
+    --aero-bright:    #{$aero-bright};
+    --aero-glow:      #{$aero-glow};
+    --aero-glass:     #{$aero-glass};
+    --aero-ink:       #{$aero-ink};
+    --aero-blue:      #{$aero-blue};
+
+    --aero-taskbar-h: 40px;
+}
+
+html[data-theme="light"] {
+    --aero-deep:   #0a4a9c;
+    --aero-mid:    #1f72c8;
+    --aero-bright: #5cb3ee;
+    --dc-ground:   #0a4a9c;
+}
+
+/* ================================================================ MIXINS */
+
+@mixin aero-frame($radius: 8px) {
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: $radius $radius 4px 4px;
+    background: linear-gradient(180deg, rgba(232, 242, 253, 0.96), rgba(203, 226, 248, 0.94));
+    box-shadow:
+        0 0 0 1px rgba(26, 72, 128, 0.45),
+        0 10px 32px rgba(2, 18, 46, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+@mixin aero-titlebar {
+    background:
+        linear-gradient(180deg,
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(226, 240, 253, 0.92) 46%,
+            rgba(190, 219, 246, 0.92) 52%,
+            rgba(214, 234, 252, 0.95) 100%);
+    color: $aero-ink;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+@mixin aero-button {
+    border: 1px solid $aero-frame;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #fdfefe 0%, #eef5fc 48%, #dcebf9 52%, #eaf4fd 100%);
+    color: $aero-ink;
+    font-family: $aero-ui;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(10, 40, 80, 0.18);
+
+    &:hover {
+        border-color: $aero-blue;
+        background: linear-gradient(180deg, #fdfeff 0%, #e6f3ff 48%, #cfe7fd 52%, #e2f1ff 100%);
+        box-shadow: inset 0 1px 0 #fff, 0 0 0 2px rgba(60, 150, 230, 0.3);
+    }
+
+    &:active {
+        background: linear-gradient(180deg, #cfe2f4 0%, #dbeaf8 100%);
+        box-shadow: inset 0 2px 4px rgba(20, 60, 110, 0.25);
+    }
+}
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header {
+    display: none;
+}
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $aero-body;
+    font-size: 16px;
+    line-height: 1.6;
+    color: $aero-ink;
+    // Background under the fixed wallpaper, so nothing flashes white before it
+    // paints.
+    background-color: var(--aero-deep);
+}
+
+#post-container article {
+    display: block;
+}
+
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content time {
+    font-family: $aero-ui;
+    font-weight: 600;
+}
+
+#content a {
+    color: $aero-blue;
+    text-decoration: underline;
+
+    &:hover {
+        color: $aero-blue-dark;
+    }
+}
+
+.aero-win-body a {
+    color: #0a52bd;
+}
+
+/* ============================================================ SCROLLBARS */
+
+// Only this page loads this stylesheet, so the scrollbar styling does not
+// leak.
+* {
+    scrollbar-color: #8cb8e4 #dceafa;
+}
+
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: linear-gradient(90deg, #d4e6f9, #eaf3fd);
+}
+
+::-webkit-scrollbar-thumb {
+    border: 1px solid #6d9fd4;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #ffffff 0%, #cbe2f8 35%, #9fc8ee 100%);
+
+    &:hover {
+        background: linear-gradient(90deg, #ffffff 0%, #d9ecff 35%, #8cc0f2 100%);
+    }
+}
+
+::-webkit-scrollbar-corner {
+    background: #dceafa;
+}
+
+#content ::selection {
+    background: $aero-blue;
+    color: #fff;
+}
+
+#content :focus-visible {
+    outline: 2px solid $aero-glow;
+    outline-offset: 2px;
+}
+
+.aero-has-js .aero-footer {
+    padding-bottom: calc(var(--aero-taskbar-h) + 28px);
+}
+
+/* ============================================================ SVG SPRITE */
+
+.aero-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.aero-icon {
+    display: inline-block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+    vertical-align: middle;
+}
+
+/* ============================================================= WALLPAPER */
+
+.aero-wallpaper {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 80% 60% at 72% 34%, rgba(159, 220, 255, 0.55), transparent 62%),
+        radial-gradient(ellipse 120% 90% at 20% 80%, rgba(42, 140, 224, 0.5), transparent 68%),
+        linear-gradient(170deg, $aero-mid 0%, $aero-deep 55%, #021735 100%);
+}
+
+.aero-swirl {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 180vmax;
+    height: 180vmax;
+    margin: -90vmax 0 0 -90vmax;
+    opacity: 0.5;
+    background: conic-gradient(
+        from 200deg at 50% 50%,
+        transparent 0deg,
+        rgba(159, 220, 255, 0.22) 26deg,
+        transparent 62deg,
+        rgba(120, 200, 255, 0.16) 112deg,
+        transparent 168deg,
+        rgba(159, 220, 255, 0.2) 236deg,
+        transparent 300deg
+    );
+    animation: aero-swirl 90s linear infinite;
+}
+
+@keyframes aero-swirl {
+    to { transform: rotate(360deg); }
+}
+
+.aero-fish {
+    position: absolute;
+    top: 62%;
+    left: -22vw;
+    width: clamp(160px, 20vw, 300px);
+    height: auto;
+    opacity: 0.85;
+    filter: drop-shadow(0 8px 18px rgba(2, 20, 50, 0.45));
+    animation: aero-fish-swim 54s linear infinite;
+}
+
+.aero-fish-body { fill: #f2812c; }
+
+.aero-fish-tail,
+.aero-fish-fin  { fill: #f8ad57; }
+
+.aero-fish-eye   { fill: #ffffff; }
+.aero-fish-pupil { fill: #14222f; }
+
+@keyframes aero-fish-swim {
+    from { transform: translateX(0) translateY(0); }
+    50%  { transform: translateX(72vw) translateY(-5vh); }
+    to   { transform: translateX(144vw) translateY(0); }
+}
+
+/* ======================================================== DESKTOP ICONS */
+
+.aero-desktop-icons {
+    position: fixed;
+    top: 96px;
+    left: 14px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    pointer-events: none;
+}
+
+.aero-shortcut {
+    width: 74px;
+    text-align: center;
+    color: #fff;
+}
+
+.aero-shortcut-art {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+    .aero-icon {
+        width: 26px;
+        height: 26px;
+        color: #eaf6ff;
+        stroke-width: 1.9;
+        filter: drop-shadow(0 1px 2px rgba(0, 20, 50, 0.6));
+    }
+}
+
+.aero-shortcut-arrow {
+    position: absolute;
+    bottom: 1px;
+    left: 1px;
+    width: 13px;
+    height: 13px;
+    border: 1px solid #8ba8c4;
+    border-radius: 2px;
+    background: #f4f8fc;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 7px;
+        height: 7px;
+        border-top: 2px solid #33506e;
+        border-right: 2px solid #33506e;
+        transform: rotate(-45deg);
+    }
+}
+
+.aero-shortcut-label {
+    display: block;
+    margin-top: 5px;
+    font-family: $aero-ui;
+    font-size: 11px;
+    line-height: 1.3;
+    text-shadow: 0 1px 2px rgba(0, 16, 40, 0.95), 0 0 3px rgba(0, 16, 40, 0.8);
+}
+
+/* ================================================================ TICKER */
+
+.aero-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 7px 0;
+    background: linear-gradient(180deg, rgba(10, 48, 100, 0.92), rgba(4, 28, 66, 0.92));
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+    font-family: $aero-ui;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: $aero-glow;
+    white-space: nowrap;
+
+    span {
+        display: inline-block;
+        padding-right: 1.6em;
+        animation: aero-marquee 26s linear infinite;
+    }
+}
+
+@keyframes aero-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================== HERO */
+
+.aero-hero {
+    position: relative;
+    z-index: 2;
+    padding: 56px 20px 48px;
+    text-align: center;
+}
+
+.aero-hero-stack {
+    position: relative;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.aero-win--behind {
+    position: relative;
+    z-index: 1;
+    width: 94%;
+    margin: -36px 0 0 auto;
+    text-align: left;
+}
+
+.aero-hero-blurb {
+    padding: 20px 22px 22px;
+    font-size: 17px;
+    line-height: 1.5;
+
+    p {
+        margin: 0 0 12px;
+
+        &:last-child { margin-bottom: 0; }
+    }
+}
+
+.aero-free-inline {
+    color: #0a52bd;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.aero-dialog {
+    position: relative;
+    z-index: 2;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: left;
+    @include aero-frame(9px);
+    box-shadow:
+        0 0 0 1px rgba(26, 72, 128, 0.5),
+        0 18px 50px rgba(2, 16, 42, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.aero-dialog-title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-family: $aero-ui;
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 1.15;
+    color: $aero-ink;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.aero-dialog-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px 24px 18px;
+    background: $aero-body-bg;
+    border-top: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.aero-dialog-warn {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    margin-top: 2px;
+    color: #e8a33d;
+    stroke-width: 2;
+    fill: #fcefd2;
+}
+
+.aero-dialog-facts {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-family: $aero-ui;
+    font-size: 21px;
+    line-height: 1.35;
+
+    dt {
+        display: inline;
+        font-weight: 700;
+        color: $aero-ink;
+
+        &::after { content: " "; }
+    }
+
+    dd {
+        display: inline;
+        margin: 0;
+        color: $aero-ink;
+    }
+
+    dd::after {
+        content: "";
+        display: block;
+        height: 6px;
+    }
+}
+
+.aero-dialog-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    padding: 4px 24px 20px;
+    background: $aero-body-bg;
+    border-radius: 0 0 4px 4px;
+}
+
+.aero-hero-tagline {
+    margin: 26px 0 0;
+    font-family: $aero-ui;
+    font-size: clamp(1.2rem, 3.4vw, 1.9rem);
+    font-style: italic;
+    font-weight: 600;
+    color: #eaf6ff;
+    text-shadow: 0 2px 6px rgba(0, 20, 50, 0.8);
+}
+
+/* ============================================================== BUTTONS */
+
+.aero-btn {
+    @include aero-button;
+    display: inline-block;
+    min-width: 128px;
+    padding: 9px 22px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none !important;
+    color: $aero-ink !important;
+}
+
+.aero-btn--default {
+    border-color: $aero-blue;
+    box-shadow:
+        inset 0 1px 0 #fff,
+        inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+        0 0 0 2px rgba(60, 150, 230, 0.35),
+        0 1px 2px rgba(10, 40, 80, 0.2);
+}
+
+/* ============================================================= COUNTDOWN */
+
+.aero-countdown-wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto 36px;
+    padding: 16px 18px 18px;
+    text-align: center;
+    @include aero-frame(8px);
+}
+
+.aero-countdown-head {
+    margin: 0 0 12px;
+    font-family: $aero-ui;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $aero-ink-soft;
+}
+
+.aero-countdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.aero-countdown-unit {
+    min-width: 84px;
+    padding: 10px 8px 8px;
+    border: 1px solid $aero-frame;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #fff, #e4f0fc);
+    box-shadow: inset 0 1px 0 #fff;
+}
+
+.aero-countdown-num {
+    display: block;
+    font-family: $aero-ui;
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1;
+    color: $aero-blue-dark;
+    font-variant-numeric: tabular-nums;
+}
+
+.aero-countdown-label {
+    display: block;
+    margin-top: 4px;
+    font-family: $aero-ui;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $aero-ink-soft;
+}
+
+.aero-countdown-wrap.is-past {
+    .aero-countdown { display: none; }
+
+    .aero-countdown-head {
+        margin: 0;
+        font-size: 15px;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        color: $aero-ink;
+    }
+}
+
+/* ============================================================ FACT TABLE */
+
+.aero-facts {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    margin: 0 auto 40px;
+    padding: 4px;
+    @include aero-frame(8px);
+}
+
+.aero-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: $aero-body-bg;
+    border-radius: 5px;
+    overflow: hidden;
+    font-family: $aero-ui;
+    font-size: 14px;
+
+    caption {
+        padding: 9px 12px;
+        @include aero-titlebar;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-align: left;
+    }
+
+    th, td {
+        padding: 9px 14px;
+        border-bottom: 1px solid #dfeaf6;
+        text-align: left;
+    }
+
+    th {
+        width: 42%;
+        font-weight: 600;
+        color: $aero-ink-soft;
+        background: #f4f9fe;
+    }
+
+    td { color: $aero-ink; }
+
+    tr:last-child th,
+    tr:last-child td { border-bottom: none; }
+}
+
+.aero-th-inner {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.aero-fact-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: $aero-blue;
+}
+
+/* ========================================================= WINDOW CHROME */
+
+.aero-win {
+    position: relative;
+    z-index: 2;
+    max-width: 980px;
+    margin: 34px auto;
+    @include aero-frame(9px);
+}
+
+.aero-win-bar {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 8px 7px 11px;
+    border-radius: 8px 8px 0 0;
+    @include aero-titlebar;
+    font-family: $aero-ui;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.aero-win-bar--inactive {
+    background: linear-gradient(180deg, rgba(248, 251, 254, 0.92), rgba(224, 236, 248, 0.9));
+    color: $aero-ink-soft;
+}
+
+.aero-win-icon {
+    flex: none;
+    width: 17px;
+    height: 17px;
+    color: $aero-blue;
+}
+
+.aero-win-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.aero-win-buttons {
+    display: flex;
+    gap: 3px;
+    flex: none;
+}
+
+.aero-win-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 27px;
+    height: 19px;
+    border: 1px solid rgba(120, 160, 200, 0.75);
+    border-radius: 3px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(214, 232, 248, 0.9));
+    font-size: 10px;
+    line-height: 1;
+    color: $aero-ink;
+    text-decoration: none !important;
+}
+
+.aero-win-button--close {
+    border-color: $aero-close-dk;
+    background: linear-gradient(180deg, #f08c7c 0%, $aero-close 48%, #c93a27 100%);
+    color: #fff !important;
+    font-weight: 700;
+}
+
+.aero-win-menu {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 3px 6px 4px;
+    background: linear-gradient(180deg, #fbfdff, #eef5fc);
+    border-top: 1px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid #cfe0f1;
+    font-family: $aero-ui;
+    font-size: 12.5px;
+    color: $aero-ink;
+
+    span {
+        padding: 3px 9px;
+        border-radius: 3px;
+    }
+
+    span:hover {
+        background: $aero-blue;
+        color: #fff;
+    }
+
+    u { text-decoration: underline; }
+}
+
+.aero-win-body {
+    padding: 24px 26px 28px;
+    background: $aero-body-bg;
+    font-family: $aero-body;
+    color: $aero-ink;
+}
+
+.aero-win-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 4px;
+    font-size: clamp(1.4rem, 3.4vw, 2rem);
+    font-weight: 600;
+    color: $aero-blue-dark;
+
+    .aero-icon {
+        flex: none;
+        width: 26px;
+        height: 26px;
+        color: $aero-blue;
+    }
+}
+
+.aero-win-sub {
+    margin: 0 0 22px;
+    font-family: $aero-ui;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $aero-ink-soft;
+}
+
+.aero-win-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    font-family: $aero-ui;
+    font-size: 11.5px;
+    color: $aero-ink-soft;
+}
+
+.aero-win-status-cell {
+    padding: 2px 9px;
+    border: 1px solid rgba(140, 175, 212, 0.6);
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.5);
+
+    &--grow { flex: 1; }
+}
+
+/* ====================================================== SCHEDULE SCREEN */
+
+.aero-screen-wrap {
+    margin-top: 4px;
+}
+
+.aero-screen {
+    display: block;
+    padding: 6px;
+    border: 1px solid $aero-frame;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #eef5fc, #dbeaf8);
+    text-decoration: none !important;
+
+    &.is-missing .aero-schedule-img { display: none; }
+    &.is-missing .aero-noimg { display: flex; }
+}
+
+.aero-schedule-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 3px;
+}
+
+.aero-noimg {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    padding: 54px 24px;
+    text-align: center;
+    font-family: $aero-ui;
+    color: $aero-ink-soft;
+
+    .aero-icon {
+        width: 38px;
+        height: 38px;
+        color: $aero-frame;
+    }
+
+    strong {
+        font-size: 15px;
+        color: $aero-ink;
+    }
+
+    code {
+        font-family: $aero-mono;
+        font-size: 12px;
+        padding: 1px 5px;
+        border-radius: 3px;
+        background: #e8f0f9;
+    }
+}
+
+.aero-screen-meta {
+    margin-top: 9px;
+    font-family: $aero-ui;
+    font-size: 12px;
+    text-align: right;
+}
+
+.aero-zoom {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(2, 16, 40, 0.8);
+    transition: opacity 0.22s ease;
+
+    &:target {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+.aero-zoom-bg {
+    position: absolute;
+    inset: 0;
+}
+
+.aero-zoom-frame {
+    position: relative;
+    max-width: 1200px;
+    max-height: 92vh;
+    overflow: hidden;
+    @include aero-frame(9px);
+}
+
+.aero-zoom-body {
+    padding: 8px;
+    background: $aero-body-bg;
+    overflow: auto;
+    max-height: calc(92vh - 46px);
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* ========================================================= RUNNING ORDER */
+
+.aero-days {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    align-items: start;
+    gap: 16px;
+}
+
+.aero-day {
+    --aero-day-bg: #{$aero-day-sat};
+    padding: 4px;
+    border: 1px solid $aero-frame;
+    border-radius: 6px;
+    background: var(--aero-day-bg);
+
+    &:nth-child(1) { --aero-day-bg: #{$aero-day-fri}; }
+    &:nth-child(2) { --aero-day-bg: #{$aero-day-sat}; }
+    &:nth-child(3) { --aero-day-bg: #{$aero-day-sun}; }
+
+    &--all {
+        --aero-day-bg: #{$aero-day-all};
+        grid-column: 1 / -1;
+    }
+}
+
+.aero-day-name {
+    margin: 0;
+    padding: 8px 12px;
+    font-family: $aero-ui;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $aero-ink;
+}
+
+.aero-slots {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.aero-slot {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 3px 10px;
+    margin: 0 0 3px;
+    padding: 9px 11px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.85);
+    list-style: none;
+
+    &:last-child { margin-bottom: 0; }
+}
+
+.aero-slot-time {
+    grid-column: 1;
+    grid-row: 1;
+    font-family: $aero-ui;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $aero-ink-soft;
+    font-variant-numeric: tabular-nums;
+}
+
+.aero-slot-name {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-family: $aero-ui;
+    font-size: 15px;
+    font-weight: 600;
+    color: $aero-ink;
+}
+
+.aero-slot-note {
+    display: block;
+    margin-top: 3px;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: $aero-ink-soft;
+}
+
+.aero-slot-tags {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.aero-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: $aero-ui;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+
+    &--free {
+        border: 1px solid $aero-free-dark;
+        background: linear-gradient(180deg, #5ccd69, $aero-free 55%, $aero-free-dark);
+    }
+
+    &--contest {
+        border: 1px solid $aero-contest-dk;
+        background: linear-gradient(180deg, #f4616a, $aero-contest 55%, $aero-contest-dk);
+    }
+}
+
+.aero-legend {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border: 1px solid $aero-frame;
+    border-radius: 6px;
+    background: #f6fafe;
+    font-family: $aero-ui;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.aero-legend-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin: 0 0 10px;
+
+    .aero-tag { flex: none; margin-top: 1px; }
+}
+
+.aero-legend-note {
+    margin: 0;
+    padding-top: 4px;
+    border-top: 1px solid #dfeaf6;
+    font-size: 11.5px;
+    font-style: italic;
+    color: $aero-ink-soft;
+}
+
+/* ============================================================ KIT LIST */
+
+.aero-kit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.aero-kit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid #dfeaf6;
+    border-radius: 5px;
+    background: #f8fbff;
+    list-style: none;
+    font-size: 15px;
+}
+
+.aero-kit-check {
+    position: relative;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-top: 3px;
+    border: 1px solid $aero-frame-dark;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #fff, #e8f2fc);
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 5px;
+        width: 4px;
+        height: 9px;
+        border-right: 2px solid $aero-free-dark;
+        border-bottom: 2px solid $aero-free-dark;
+        transform: rotate(42deg);
+    }
+}
+
+/* ================================================================== FAQ */
+
+.aero-faq {
+    display: grid;
+    gap: 7px;
+}
+
+.aero-faq-item {
+    border: 1px solid #dfeaf6;
+    border-radius: 5px;
+    background: #f8fbff;
+    overflow: hidden;
+
+    &[open] {
+        border-color: $aero-frame;
+        background: #fff;
+    }
+}
+
+.aero-faq-q {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    font-family: $aero-ui;
+    font-size: 15px;
+    font-weight: 600;
+    color: $aero-blue-dark;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+
+    &::before {
+        content: "";
+        flex: none;
+        width: 7px;
+        height: 7px;
+        margin-top: 6px;
+        border-right: 2px solid $aero-blue;
+        border-bottom: 2px solid $aero-blue;
+        transform: rotate(-45deg);
+        transition: transform 0.16s ease;
+    }
+}
+
+.aero-faq-item[open] .aero-faq-q::before {
+    transform: rotate(45deg);
+}
+
+.aero-faq-a {
+    margin: 0;
+    padding: 0 16px 14px 31px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: $aero-ink;
+}
+
+/* ============================================================ SPONSORS */
+
+.aero-sponsors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+}
+
+.aero-sponsor {
+    padding: 14px;
+    border: 1px solid #dfeaf6;
+    border-radius: 6px;
+    background: #f8fbff;
+    text-align: center;
+}
+
+.aero-sponsor-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 72px;
+    margin-bottom: 10px;
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+}
+
+.aero-sponsor-name {
+    font-family: $aero-ui;
+    font-size: 14px;
+    font-weight: 600;
+    color: $aero-ink;
+}
+
+.aero-sponsor-tier {
+    margin-top: 2px;
+    font-family: $aero-ui;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $aero-ink-soft;
+}
+
+.aero-sponsor-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+
+    a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 4px;
+        color: #fff !important;
+        font-size: 13px;
+        text-decoration: none !important;
+    }
+}
+
+/* =============================================================== FOOTER */
+
+.aero-footer {
+    position: relative;
+    z-index: 2;
+    padding: 30px 18px 36px;
+    background: linear-gradient(180deg, rgba(4, 30, 70, 0.9), rgba(2, 18, 46, 0.95));
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    text-align: center;
+}
+
+.aero-footer-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.aero-footer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    font-family: $aero-ui;
+    font-size: 12.5px;
+    text-align: left;
+
+    a {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #dceeff !important;
+        text-decoration: none !important;
+
+        &:hover { color: #fff !important; text-decoration: underline !important; }
+    }
+
+    i { flex: none; width: 16px; text-align: center; }
+}
+
+.aero-footer-sig {
+    margin: 22px 0 0;
+    font-family: $aero-ui;
+    font-size: 12px;
+    color: rgba(220, 238, 255, 0.65);
+}
+
+/* =============================================================== TASKBAR */
+
+// Taskbar. Hidden unless the document has .aero-has-js.
+.aero-taskbar {
+    display: none;
+}
+
+.aero-has-js .aero-taskbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    height: var(--aero-taskbar-h);
+    padding: 0 6px;
+    font-family: $aero-ui;
+    background: linear-gradient(180deg, rgba(22, 60, 110, 0.93), rgba(6, 26, 58, 0.96));
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 2px 6px rgba(120, 190, 255, 0.18),
+        0 -3px 14px rgba(0, 10, 30, 0.5);
+}
+
+.aero-start {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 32px;
+    padding: 0 14px 0 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    background: linear-gradient(180deg, #7fe08a 0%, #3cae4e 48%, #1f7f31 52%, #38a949 100%);
+    font-size: 15px;
+    font-style: italic;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 40, 10, 0.7);
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 3px rgba(0, 10, 30, 0.5);
+
+    &:hover { filter: brightness(1.12); }
+
+    &:active,
+    &[aria-expanded="true"] {
+        background: linear-gradient(180deg, #2e9440 0%, #1f7f31 48%, #38a949 100%);
+        box-shadow: inset 0 2px 5px rgba(0, 30, 10, 0.5);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $aero-glow;
+        outline-offset: 2px;
+    }
+}
+
+.aero-start-orb {
+    position: relative;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background:
+        linear-gradient(#ff8a4c 0 0) 0 0 / 46% 46% no-repeat,
+        linear-gradient(#8fd34a 0 0) 100% 0 / 46% 46% no-repeat,
+        linear-gradient(#4aa8f0 0 0) 0 100% / 46% 46% no-repeat,
+        linear-gradient(#ffd34a 0 0) 100% 100% / 46% 46% no-repeat,
+        #0b3a6b;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5), 0 1px 3px rgba(0, 10, 30, 0.6);
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 1px 1px 48% 1px;
+        border-radius: 50% 50% 40% 40%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.05));
+    }
+}
+
+.aero-quicklaunch {
+    display: flex;
+    flex: none;
+    gap: 2px;
+    padding-left: 4px;
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.aero-quick {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #cfe8ff !important;
+    text-decoration: none !important;
+
+    .aero-icon {
+        width: 19px;
+        height: 19px;
+        stroke-width: 1.9;
+    }
+
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.16);
+        color: #fff !important;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $aero-glow;
+        outline-offset: -2px;
+    }
+}
+
+// Built by script from the window title bars. Scrolls sideways instead of
+// wrapping.
+.aero-tasks {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    // The site styles bare <nav> elements; undo that here.
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 0;
+    margin: 0;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { width: 0; height: 0; }
+}
+
+.aero-task {
+    display: flex;
+    flex: 0 1 172px;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    height: 30px;
+    padding: 0 11px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+    font-size: 12px;
+    color: #dcecff !important;
+    text-decoration: none !important;
+
+    .aero-icon {
+        flex: none;
+        width: 16px;
+        height: 16px;
+        color: #9fd2ff;
+    }
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &:hover {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+        color: #fff !important;
+    }
+
+    &.is-active {
+        border-color: rgba(159, 220, 255, 0.7);
+        background: linear-gradient(180deg, rgba(120, 195, 255, 0.45), rgba(40, 110, 190, 0.5));
+        color: #fff !important;
+        box-shadow: inset 0 0 10px rgba(159, 220, 255, 0.5);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $aero-glow;
+        outline-offset: -2px;
+    }
+}
+
+.aero-tray {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 9px;
+    height: 30px;
+    padding: 0 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    color: #cfe8ff;
+}
+
+.aero-tray-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.aero-tray-clock {
+    font-size: 12px;
+    color: #eaf6ff;
+    min-width: 62px;
+    text-align: center;
+}
+
+/* ============================================================ START MENU */
+
+.aero-startmenu {
+    position: fixed;
+    left: 6px;
+    bottom: var(--aero-taskbar-h);
+    z-index: 901;
+    width: 268px;
+    display: block;
+    flex-wrap: nowrap;
+    min-height: 0;
+    margin: 0;
+    padding: 0 0 6px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 7px 7px 4px 4px;
+    background: linear-gradient(180deg, rgba(240, 247, 254, 0.98), rgba(222, 236, 250, 0.98));
+    box-shadow:
+        0 0 0 1px rgba(20, 60, 110, 0.5),
+        0 -6px 30px rgba(2, 16, 42, 0.55);
+
+    &[hidden] { display: none; }
+}
+
+.aero-startmenu-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px 6px 0 0;
+    @include aero-titlebar;
+    border-bottom: 1px solid #c6dcf2;
+}
+
+.aero-startmenu-avatar {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    background: linear-gradient(135deg, $aero-bright, $aero-blue-dark);
+    box-shadow: 0 1px 3px rgba(10, 40, 80, 0.35);
+}
+
+.aero-startmenu-user {
+    font-family: $aero-ui;
+    font-size: 15px;
+    font-weight: 600;
+    color: $aero-ink;
+}
+
+.aero-startmenu-list {
+    margin: 0;
+    padding: 5px 0 0;
+    list-style: none;
+
+    li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    a,
+    button {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        width: 100%;
+        padding: 8px 14px;
+        background: transparent;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+        font-family: $aero-ui;
+        font-size: 13.5px;
+        color: $aero-ink !important;
+        text-decoration: none !important;
+
+        .aero-icon {
+            flex: none;
+            width: 21px;
+            height: 21px;
+            color: $aero-blue;
+        }
+
+        &:hover,
+        &:focus-visible {
+            background: linear-gradient(180deg, #4e9ae8, #2a6fc4);
+            color: #fff !important;
+            outline: none;
+
+            .aero-icon { color: #fff; }
+        }
+    }
+}
+
+.aero-startmenu-sep {
+    height: 1px;
+    margin: 5px 12px;
+    background: #c6dcf2;
+}
+
+/* ========================================================== BALLOON TIP */
+
+.aero-tip {
+    position: fixed;
+    right: 12px;
+    bottom: calc(var(--aero-taskbar-h) + 14px);
+    z-index: 902;
+    // The site has no global border-box, so count padding and border in the
+    // width.
+    box-sizing: border-box;
+    width: min(320px, calc(100vw - 24px));
+    padding: 12px 14px 13px;
+    border: 1px solid #a9c7e4;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #ffffff, #eef6fd);
+    box-shadow: 0 6px 22px rgba(2, 18, 46, 0.45);
+    font-family: $aero-ui;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: $aero-ink;
+    transform-origin: 85% 100%;
+    animation: aero-tip-in 0.22s ease-out;
+
+    &[hidden] { display: none; }
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        clip-path: polygon(0 0, 100% 0, 26% 100%);
+    }
+
+    &::before {
+        right: 25px;
+        bottom: -12px;
+        width: 20px;
+        height: 12px;
+        background: #a9c7e4;
+    }
+
+    &::after {
+        right: 26px;
+        bottom: -10px;
+        width: 18px;
+        height: 10px;
+        background: #eef6fd;
+    }
+}
+
+@keyframes aero-tip-in {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.aero-tip-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+
+    .aero-icon {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        color: $aero-blue;
+    }
+
+    strong {
+        flex: 1;
+        min-width: 0;
+        font-size: 13px;
+    }
+}
+
+.aero-tip-close {
+    @include aero-button;
+    flex: none;
+    width: 19px;
+    height: 17px;
+    padding: 0;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.aero-tip-body {
+    margin: 0;
+    color: $aero-ink-soft;
+}
+
+/* ============================================================= ASSISTANT */
+
+.aero-clippy {
+    position: fixed;
+    right: 14px;
+    bottom: calc(var(--aero-taskbar-h) + 14px);
+    z-index: 903;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    pointer-events: none;
+
+    // Needed because display: flex would otherwise beat the [hidden]
+    // attribute.
+    &[hidden] { display: none; }
+
+    > * { pointer-events: auto; }
+}
+
+.aero-clippy-balloon {
+    position: relative;
+    // The site has no global border-box, so count padding and border in the
+    // width.
+    box-sizing: border-box;
+    width: min(330px, calc(100vw - 30px));
+    padding: 13px 15px 11px;
+    border: 1px solid #a9c7e4;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #ffffff, #eef6fd);
+    box-shadow: 0 8px 26px rgba(2, 18, 46, 0.5);
+    font-family: $aero-ui;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: $aero-ink;
+    animation: aero-clippy-pop 0.24s ease-out;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        clip-path: polygon(0 0, 100% 0, 74% 100%);
+    }
+
+    &::before {
+        right: 24px;
+        bottom: -14px;
+        width: 24px;
+        height: 14px;
+        background: #a9c7e4;
+    }
+
+    &::after {
+        right: 25px;
+        bottom: -12px;
+        width: 22px;
+        height: 12px;
+        background: #eef6fd;
+    }
+}
+
+.aero-clippy-close {
+    @include aero-button;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 19px;
+    height: 17px;
+    padding: 0;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.aero-clippy-line {
+    margin: 0 24px 9px 0;
+    font-size: 13px;
+}
+
+.aero-clippy-options {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li { margin: 0; padding: 0; list-style: none; }
+
+    button {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        width: 100%;
+        padding: 6px 7px;
+        background: transparent;
+        border: none;
+        border-radius: 4px;
+        font-family: $aero-ui;
+        font-size: 12.5px;
+        line-height: 1.45;
+        text-align: left;
+        color: #0a52bd;
+        cursor: pointer;
+
+        &::before {
+            content: "";
+            flex: none;
+            width: 7px;
+            height: 7px;
+            margin-top: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        &:hover,
+        &:focus-visible {
+            background: linear-gradient(180deg, #4e9ae8, #2a6fc4);
+            color: #fff;
+            outline: none;
+        }
+    }
+}
+
+.aero-clippy-char {
+    display: block;
+    width: 66px;
+    padding: 0;
+    margin-right: 6px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transform-origin: bottom center;
+    animation: aero-clippy-idle 6s ease-in-out infinite;
+
+    &:hover { animation-duration: 1.8s; }
+
+    &:focus-visible {
+        outline: 2px solid $aero-glow;
+        outline-offset: 3px;
+    }
+}
+
+.aero-clippy-art {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(2, 18, 46, 0.6));
+}
+
+.aero-clip-edge,
+.aero-clip-wire {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.aero-clip-edge { stroke: #2d4154; stroke-width: 9; }
+.aero-clip-wire { stroke: #dbe6f2; stroke-width: 5; }
+
+.aero-clip-eye {
+    fill: #fff;
+    stroke: #22323f;
+    stroke-width: 2.5;
+}
+
+.aero-clip-pupil { fill: #16232e; }
+
+.aero-clip-brow {
+    fill: none;
+    stroke: #22323f;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+@keyframes aero-clippy-pop {
+    from { opacity: 0; transform: translateY(12px) scale(0.9); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes aero-clippy-idle {
+    0%, 84%, 100% { transform: rotate(0deg) translateY(0); }
+    88%           { transform: rotate(-7deg) translateY(-4px); }
+    92%           { transform: rotate(6deg) translateY(-1px); }
+    96%           { transform: rotate(-2deg) translateY(0); }
+}
+
+/* ========================================================= SCROLL REVEAL */
+
+.aero-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+
+    &.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@for $i from 1 through 8 {
+    .aero-reveal:nth-child(#{$i}) {
+        transition-delay: #{($i - 1) * 0.06}s;
+    }
+}
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: 1180px) {
+    .aero-desktop-icons { display: none; }
+}
+
+@media (max-width: $breakpoint-tablet) {
+    #content { font-size: 15px; }
+
+    .aero-win { margin: 24px 10px; }
+
+    .aero-win-body { padding: 18px 15px 22px; }
+
+    .aero-win-menu {
+        font-size: 11.5px;
+
+        span { padding: 3px 7px; }
+    }
+
+    .aero-hero { padding: 36px 14px 36px; }
+
+    .aero-hero-stack { padding-bottom: 0; }
+
+    .aero-win--behind {
+        width: 100%;
+        margin: 16px 0 0;
+    }
+
+    .aero-dialog-facts { font-size: 18px; }
+
+    .aero-dialog-body { padding: 18px 16px 14px; }
+
+    .aero-dialog-actions { padding: 4px 16px 16px; }
+
+    .aero-btn { min-width: 110px; font-size: 15px; }
+
+    .aero-countdown-wrap,
+    .aero-facts { margin-left: 10px; margin-right: 10px; }
+
+    .aero-countdown-unit { min-width: 70px; }
+
+    .aero-table {
+        font-size: 13px;
+
+        th, td { display: block; width: auto; }
+
+        th { border-bottom: none; }
+    }
+
+    .aero-kit,
+    .aero-days { grid-template-columns: 1fr; }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    :root { --aero-taskbar-h: 36px; }
+
+    .aero-tasks,
+    .aero-quicklaunch { display: none; }
+
+    .aero-tray { margin-left: auto; }
+
+    .aero-start { height: 28px; font-size: 14px; }
+
+    .aero-start-orb { width: 21px; height: 21px; }
+
+    .aero-startmenu { width: calc(100vw - 12px); }
+
+    .aero-fish { width: 150px; }
+
+    .aero-clippy {
+        right: 8px;
+        left: 8px;
+        bottom: calc(var(--aero-taskbar-h) + 8px);
+    }
+
+    .aero-clippy-balloon { width: 100%; }
+
+    .aero-clippy-char { width: 54px; }
+}
+
+/* ================================================== REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .aero-marquee span { padding-left: 14px; animation: none; }
+    .aero-marquee span + span { display: none; }
+    .aero-swirl        { animation: none; }
+    .aero-fish         { animation: none; left: 8vw; }
+    .aero-tip          { animation: none; }
+    .aero-clippy-balloon { animation: none; }
+    .aero-clippy-char  { animation: none; }
+    .aero-faq-q::before { transition: none; }
+    .aero-zoom         { transition: none; }
+
+    .aero-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

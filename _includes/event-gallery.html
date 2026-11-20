@@ -1,0 +1,89 @@
+{%- comment -%} Gallery for the folder named in the `photos` front-matter key, e.g. event_photos/2026-intro-meeting. {%- endcomment -%}
+
+{%- if page.photos -%}
+
+  {%- comment -%} Normalise to a leading and trailing slash so the folder cannot match a sibling with the same prefix. {%- endcomment -%}
+  {%- comment -%} Liquid has no strip-prefix filter, so wrap in slashes and collapse doubles instead. {%- endcomment -%}
+  {%- assign photos_dir = page.photos | strip -%}
+  {%- assign photos_dir = "/" | append: photos_dir | append: "/" | replace: "//", "/" -%}
+  {%- unless photos_dir contains "/assets/images/" -%}
+    {%- assign photos_dir = "/assets/images" | append: photos_dir -%}
+  {%- endunless -%}
+  {%- assign photos_prefix = photos_dir -%}
+  {%- assign photos_prefix_size = photos_prefix | size -%}
+
+  {%- assign image_exts = ".jpg,.jpeg,.png,.webp,.gif,.avif" | split: "," -%}
+
+  {%- assign all_files = site.static_files | sort: "path" -%}
+
+  {%- assign photo_count = 0 -%}
+  {%- for f in all_files -%}
+    {%- assign f_prefix = f.path | slice: 0, photos_prefix_size -%}
+    {%- assign f_ext = f.extname | downcase -%}
+    {%- if f_prefix == photos_prefix and image_exts contains f_ext -%}
+      {%- assign photo_count = photo_count | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- assign photos_heading = page.photos_heading | default: "Photos" -%}
+
+<section class="event-gallery" id="event-gallery" aria-labelledby="event-gallery-heading">
+  <h2 class="event-gallery-heading" id="event-gallery-heading">{{ photos_heading }}</h2>
+
+  {%- if photo_count > 0 %}
+  <ul class="event-gallery-grid">
+    {%- assign n = 0 -%}
+    {%- for f in all_files -%}
+      {%- assign f_prefix = f.path | slice: 0, photos_prefix_size -%}
+      {%- assign f_ext = f.extname | downcase -%}
+      {%- if f_prefix == photos_prefix and image_exts contains f_ext -%}
+        {%- assign n = n | plus: 1 -%}
+        {%- assign caption = page.photo_captions[f.name] -%}
+        {%- assign alt = caption | default: page.photos_alt | default: page.title -%}
+    <li class="event-photo">
+      <a class="event-photo-frame" href="#event-photo-{{ n }}">
+        {%- comment -%} Lazy-loaded. Jekyll does not know image sizes, so the stylesheet holds the aspect ratio. {%- endcomment -%}
+        <img src="{{ f.path | relative_url }}" alt="{{ alt | escape }}" loading="lazy" decoding="async">
+      </a>
+      {%- if caption %}
+      <p class="event-photo-caption">{{ caption }}</p>
+      {%- endif %}
+    </li>
+      {%- endif -%}
+    {%- endfor %}
+  </ul>
+  {%- else %}
+  <p class="event-gallery-empty">
+    No photos yet. Drop them in <code>{{ photos_prefix }}</code> and they turn up here.
+  </p>
+  {%- endif %}
+</section>
+
+{%- comment -%} Overlays sit outside the grid so they are not trapped in its stacking context. {%- endcomment -%}
+{%- if photo_count > 0 -%}
+  {%- assign n = 0 -%}
+  {%- for f in all_files -%}
+    {%- assign f_prefix = f.path | slice: 0, photos_prefix_size -%}
+    {%- assign f_ext = f.extname | downcase -%}
+    {%- if f_prefix == photos_prefix and image_exts contains f_ext -%}
+      {%- assign n = n | plus: 1 -%}
+      {%- assign caption = page.photo_captions[f.name] -%}
+      {%- assign alt = caption | default: page.photos_alt | default: page.title -%}
+<div class="event-zoom" id="event-photo-{{ n }}">
+  <a class="event-zoom-bg" href="#event-gallery" aria-label="Close"></a>
+  <div class="event-zoom-frame">
+    <a class="event-zoom-close" href="#event-gallery" aria-label="Close">&#10005;</a>
+    <img src="{{ f.path | relative_url }}" alt="{{ alt | escape }}" loading="lazy" decoding="async">
+    {%- if caption %}
+    <p class="event-zoom-caption">{{ caption }}</p>
+    {%- endif %}
+    <p class="event-zoom-meta">
+      <a href="{{ f.path | relative_url }}" target="_blank" rel="noopener">Open full size &#8599;</a>
+    </p>
+  </div>
+</div>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- endif -%}

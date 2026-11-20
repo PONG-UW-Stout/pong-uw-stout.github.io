@@ -1,0 +1,474 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$ex-display: "Haettenschweiler", "Arial Narrow", "Avenir Next Condensed", Impact, sans-serif;
+$ex-ui:      "Trebuchet MS", "Segoe UI", Tahoma, Verdana, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$ex-night:   #170c2e;
+$ex-deep:    #0c0618;
+$ex-panel:   #22123f;
+$ex-sunk:    #2d1a51;
+$ex-magenta: #e8379b;
+$ex-pink:    #ff6fc6;
+$ex-cyan:    #35d6e8;
+$ex-gold:    #f2c14a;
+$ex-blue:    #3f72e8;
+$ex-cream:   #f4eefc;
+$ex-dim:     #b8a6d4;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$ex-cream};
+    --lan-ink-soft: #{$ex-dim};
+    --lan-panel: #{$ex-panel};
+    --lan-panel-edge: rgba(232, 55, 155, 0.45);
+    --lan-accent: #{$ex-magenta};
+    --lan-accent-2: #{$ex-cyan};
+    --lan-on-accent: #ffffff;
+    --lan-on-day: #2a0f3f;
+    --lan-slot: rgba(255, 255, 255, 0.94);
+    --lan-slot-ink: #1d1030;
+    --lan-slot-dim: #6a4a80;
+    --lan-sunk: #{$ex-sunk};
+    --lan-sunk-open: #3a2266;
+    --lan-day-1: #f7c6e4;
+    --lan-day-2: #bdeef4;
+    --lan-day-3: #d3c6f7;
+    --lan-day-all: #f7dfae;
+    --lan-legend: #{$ex-sunk};
+    --lan-legend-ink: #{$ex-cream};
+    --lan-footer: #{$ex-deep};
+    --lan-footer-card: rgba(255, 255, 255, 0.07);
+    --lan-footer-ink: #{$ex-cream};
+    --lan-radius: 5px;
+    --lan-edge-w: 1px;
+    --lan-lift: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --lan-scrim: rgba(10, 5, 22, 0.94);
+    --lan-font: #{$ex-ui};
+    --lan-font-ui: #{$ex-ui};
+    --lan-font-display: #{$ex-display};
+
+    --dc-ground: #{$ex-night};
+    --dc-ink: #{$ex-cream};
+    --dc-rubric: #{$ex-magenta};
+    --dc-link: #{$ex-cyan};
+    --expo-night: #{$ex-night};
+}
+
+html[data-theme="light"] { --expo-night: #2a1850; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--expo-night); }
+
+/* ======================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $ex-ui;
+    font-size: 16px;
+    line-height: 1.65;
+    color: $ex-cream;
+    background-color: var(--expo-night);
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $ex-display;
+    font-weight: 400;
+}
+
+#content a {
+    color: $ex-cyan;
+    text-decoration: underline;
+
+    &:hover { color: $ex-pink; }
+}
+
+#content ::selection { background: $ex-magenta; color: #fff; }
+#content :focus-visible { outline: 3px solid $ex-cyan; outline-offset: 2px; }
+
+* { scrollbar-color: $ex-magenta $ex-deep; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: $ex-deep; }
+::-webkit-scrollbar-thumb {
+    background: $ex-magenta;
+    border: 3px solid $ex-deep;
+    border-radius: 7px;
+
+    &:hover { background: $ex-cyan; }
+}
+
+/* ================================================================= NIGHT */
+
+.expo-night {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 70% 50% at 50% 8%, rgba(232, 55, 155, 0.24), transparent 70%),
+        radial-gradient(ellipse 90% 60% at 20% 90%, rgba(53, 214, 232, 0.16), transparent 70%),
+        linear-gradient(180deg, #1d1038 0%, var(--expo-night) 46%, #0d0620 100%);
+}
+
+.expo-bokeh {
+    position: absolute;
+    inset: 0;
+
+    span {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(1px);
+    }
+
+    span:nth-child(1)  { top: 12%; left: 6%;  width: 34px; height: 34px; background: rgba(242, 193, 74, 0.3); }
+    span:nth-child(2)  { top: 28%; left: 15%; width: 22px; height: 22px; background: rgba(232, 55, 155, 0.3); }
+    span:nth-child(3)  { top: 48%; left: 4%;  width: 42px; height: 42px; background: rgba(53, 214, 232, 0.22); }
+    span:nth-child(4)  { top: 66%; left: 13%; width: 26px; height: 26px; background: rgba(242, 193, 74, 0.26); }
+    span:nth-child(5)  { top: 82%; left: 5%;  width: 32px; height: 32px; background: rgba(232, 55, 155, 0.22); }
+    span:nth-child(6)  { top: 18%; right: 7%; width: 38px; height: 38px; background: rgba(53, 214, 232, 0.26); }
+    span:nth-child(7)  { top: 36%; right: 15%; width: 24px; height: 24px; background: rgba(242, 193, 74, 0.3); }
+    span:nth-child(8)  { top: 54%; right: 5%; width: 44px; height: 44px; background: rgba(232, 55, 155, 0.24); }
+    span:nth-child(9)  { top: 72%; right: 12%; width: 28px; height: 28px; background: rgba(53, 214, 232, 0.24); }
+    span:nth-child(10) { top: 88%; right: 6%; width: 36px; height: 36px; background: rgba(242, 193, 74, 0.22); }
+    span:nth-child(11) { top: 6%;  left: 46%; width: 20px; height: 20px; background: rgba(232, 55, 155, 0.26); }
+    span:nth-child(12) { top: 94%; left: 52%; width: 30px; height: 30px; background: rgba(53, 214, 232, 0.2); }
+}
+
+/* ================================================================ TICKER */
+
+.expo-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding: 9px 0;
+    background: linear-gradient(90deg, rgba(232, 55, 155, 0.34), rgba(53, 214, 232, 0.26));
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: $ex-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: $ex-cream;
+    white-space: nowrap;
+
+    span {
+        display: inline-block;
+        padding-left: 100%;
+        animation: expo-marquee 42s linear infinite;
+    }
+}
+
+@keyframes expo-marquee { to { transform: translateX(-100%); } }
+
+/* =============================================================== BULBS */
+
+.expo-bulbs {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: 30px;
+}
+
+.expo-bulb-wire {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.28);
+    stroke-width: 1.4;
+}
+
+.expo-bulb {
+    fill: $ex-gold;
+    animation: expo-bulb 1.6s steps(1) infinite;
+
+    &.b1 { animation-delay: 0s; }
+    &.b2 { animation-delay: -0.4s; }
+    &.b3 { animation-delay: -0.8s; }
+    &.b4 { animation-delay: -1.2s; }
+}
+
+@keyframes expo-bulb {
+    0%, 49%   { fill: #{$ex-gold}; }
+    50%, 100% { fill: #6d5a1e; }
+}
+
+/* ================================================================== HERO */
+
+.expo-hero {
+    position: relative;
+    z-index: 2;
+    padding: 34px 20px 52px;
+    text-align: center;
+}
+
+.expo-presents {
+    margin: 0 0 6px;
+    font-family: $ex-display;
+    font-size: clamp(0.95rem, 2.6vw, 1.5rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: $ex-cream;
+}
+
+.expo-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.04em;
+    margin: 0;
+    font-family: $ex-display;
+    font-size: clamp(3rem, 13vw, 8.5rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #fff;
+
+    span { text-shadow: 6px 7px 0 #0b0518; }
+}
+
+.expo-title-wheel {
+    width: 0.95em;
+    height: 0.95em;
+    flex: none;
+    filter: drop-shadow(4px 5px 0 rgba(11, 5, 24, 0.85));
+}
+
+.expo-tagline {
+    margin: 14px 0 0;
+    font-family: $ex-display;
+    font-size: clamp(1rem, 3.4vw, 2.1rem);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 3px 3px 0 #0b0518;
+}
+
+/* =============================================================== WHEEL */
+
+.expo-wheel-stage {
+    display: flex;
+    justify-content: center;
+    margin: 26px 0 8px;
+}
+
+.expo-wheel {
+    width: min(420px, 82vw);
+    height: auto;
+}
+
+.expo-wheel-spin { animation: expo-turn 26s linear infinite; }
+
+.expo-car-level {
+    transform-origin: 0 0;
+    animation: expo-turn-back 26s linear infinite;
+}
+
+@keyframes expo-turn      { to { rotate: 360deg; } }
+@keyframes expo-turn-back { to { rotate: -360deg; } }
+
+.expo-rim {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.55);
+    stroke-width: 3;
+
+    &--in { stroke-width: 2; stroke: rgba(255, 255, 255, 0.3); }
+}
+
+.expo-spoke { fill: none; stroke: rgba(255, 255, 255, 0.4); stroke-width: 1.6; }
+.expo-hub   { fill: #fff; }
+
+.expo-car      { stroke: rgba(0, 0, 0, 0.35); stroke-width: 1; }
+.expo-car-bar  { fill: none; stroke-width: 2; }
+.expo-car--a   { fill: #{$ex-blue}; stroke: #{$ex-blue}; }
+.expo-car--b   { fill: #{$ex-gold}; stroke: #{$ex-gold}; }
+
+.expo-legs {
+    fill: rgba(255, 255, 255, 0.3);
+}
+
+.expo-leg-brace {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.3);
+    stroke-width: 5;
+}
+
+/* =============================================================== BOARDS */
+
+.expo-boards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    max-width: 920px;
+    margin: 30px auto 0;
+}
+
+.expo-board {
+    flex: 1 1 240px;
+    max-width: 300px;
+    padding: 14px 18px;
+    border: 1px solid rgba(232, 55, 155, 0.5);
+    border-radius: 5px;
+    background: rgba(34, 18, 63, 0.82);
+    text-align: left;
+    box-shadow: 0 0 16px rgba(232, 55, 155, 0.22);
+}
+
+.expo-board-label {
+    margin: 0 0 4px;
+    font-family: $ex-display;
+    font-size: 13px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: $ex-cyan;
+}
+
+.expo-board-value {
+    margin: 0;
+    font-family: $ex-ui;
+    font-size: 15px;
+    font-weight: 700;
+    color: $ex-cream;
+}
+
+.expo-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+/* ============================================================== BUTTONS */
+
+.expo-btn {
+    display: inline-block;
+    padding: 13px 28px;
+    border: 2px solid $ex-cyan;
+    border-radius: 4px;
+    background: transparent;
+    font-family: $ex-ui;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: $ex-cyan !important;
+    cursor: pointer;
+    transition: transform 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease;
+
+    &:hover {
+        background: rgba(53, 214, 232, 0.16);
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(53, 214, 232, 0.4);
+    }
+
+    &:active { transform: translateY(0); }
+
+    &--primary {
+        border-color: $ex-magenta;
+        background: $ex-magenta;
+        color: #fff !important;
+
+        &:hover {
+            background: $ex-pink;
+            border-color: $ex-pink;
+            box-shadow: 0 0 22px rgba(232, 55, 155, 0.6);
+        }
+    }
+}
+
+@include lan.lan-structure("expo");
+
+/* ================================================== THE MIDWAY, CARRIED DOWN */
+
+.expo-kit-check {
+    width: 15px;
+    height: 15px;
+    margin-top: 5px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 36% 30%, #fffae0 0 20%, #{$ex-gold} 21% 68%, #b8860f 69%);
+    box-shadow: 0 0 10px rgba(242, 193, 74, 0.6);
+
+    &::before {
+        top: -4px;
+        left: 50%;
+        width: 7px;
+        height: 4px;
+        translate: -50% 0;
+        border: none;
+        border-radius: 1px 1px 0 0;
+        background: #{$ex-dim};
+        transform: none;
+    }
+}
+
+.expo-faq-q::before {
+    width: 11px;
+    height: 11px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 50%;
+    background: #4a3270;
+    box-shadow: inset 0 0 0 1px rgba(244, 238, 252, 0.25);
+    transition: background-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.expo-faq-item[open] .expo-faq-q::before {
+    background: #{$ex-gold};
+    box-shadow: 0 0 10px rgba(242, 193, 74, 0.8);
+    transform: none;
+}
+
+.expo-panel::before,
+.expo-countdown-wrap::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 7px;
+    background:
+        radial-gradient(circle at 9px 3.5px, #{$ex-gold} 0 2.3px, transparent 2.4px) 0 0 / 18px 7px repeat-x;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.expo-tag {
+    border-radius: 2px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    #content { font-size: 15px; }
+
+    .expo-hero { padding: 24px 14px 38px; }
+    .expo-wheel { width: min(300px, 86vw); }
+    .expo-board { max-width: none; }
+    .expo-bulbs { height: 22px; }
+}
+
+/* ================================================== REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+    .expo-marquee span { padding-left: 14px; animation: none; }
+    .expo-bulb         { animation: none; }
+    .expo-wheel-spin,
+    .expo-car-level    { animation: none; }
+    .expo-btn          { transition: none; }
+    .expo-faq-q::before { transition: none; }
+}

@@ -21,3 +21,23 @@ p {
 	src: url("/assets/fonts/CocogooseProTrial-Light.woff"), url("/assets/fonts/CocogooseProTrial-Light.woff2");
 	font-family: "cocogoose"
 }
+
+// The light face is a trial cut, and a trial cut does not give you its
+// numerals. It maps 0-9 to a placeholder glyph, so any digit in body copy
+// comes out as a little blob. That is why the site has a .number
+// class: it swaps the full face in by hand, one span at a time.
+//
+// This does the same swap automatically. A family can be assembled from
+// several @font-face rules carrying different unicode-ranges, and the browser
+// picks per character, so declaring the digit range of "cocogoose" against
+// the full face points 0-9 at real numerals and leaves every other character
+// on the light one.
+//
+// A .number span is still worth using where you want the whole run in the
+// display face; it is just no longer the only thing standing between a date
+// in a sentence and a row of blobs.
+@font-face {
+	src: url("/assets/fonts/PONG_Cocogoose_Regular.woff"), url("/assets/fonts/PONG_Cocogoose_Regular.woff2");
+	font-family: "cocogoose";
+	unicode-range: U+0030-0039;
+}

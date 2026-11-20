@@ -1,0 +1,477 @@
+@use "pong/variables" as *;
+@use "pong/lans/lan-base" as lan;
+
+/* ============================================================ TYPE STACKS */
+
+$bt-display: Haettenschweiler, Impact, "Franklin Gothic Medium Cond", "Arial Narrow", "Oswald", "Roboto Condensed", sans-serif;
+$bt-ui:      "Trebuchet MS", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$bt-body:    "Trebuchet MS", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+/* ======================================================= COLOUR CONSTANTS */
+
+$bt-red:      #ee3725;
+$bt-red-dk:   #b32113;
+$bt-gold:     #e9be62;
+$bt-olive:    #c8bc82;
+$bt-olive-dk: #6d6743;
+$bt-char:     #1c1a18;
+$bt-char-dp:  #0f0d12;
+$bt-ink:      #f5f5ed;
+$bt-dim:      #c3bfae;
+
+/* =========================================================== THEME TOKENS */
+
+:root {
+    --lan-ink: #{$bt-ink};
+    --lan-ink-soft: #{$bt-dim};
+    --lan-panel: rgba(18, 17, 15, 0.84);
+    --lan-panel-edge: rgba(233, 190, 98, 0.42);
+    --lan-accent: #{$bt-gold};
+    --lan-accent-2: #{$bt-red};
+    --lan-on-accent: #{$bt-char-dp};
+    --lan-on-day: #{$bt-char-dp};
+    --lan-slot: rgba(38, 35, 31, 0.92);
+    --lan-slot-ink: #{$bt-ink};
+    --lan-slot-dim: #{$bt-dim};
+    --lan-sunk: rgba(38, 35, 31, 0.66);
+    --lan-sunk-open: rgba(38, 35, 31, 0.92);
+    --lan-day-1: #{$bt-olive};
+    --lan-day-2: #{$bt-red};
+    --lan-day-3: #4f9ba0;
+    --lan-day-all: #{$bt-olive-dk};
+    --lan-legend: rgba(15, 13, 18, 0.82);
+    --lan-legend-ink: #{$bt-ink};
+    --lan-footer: #{$bt-char-dp};
+    --lan-footer-card: rgba(233, 190, 98, 0.1);
+    --lan-footer-ink: #{$bt-ink};
+    --lan-radius: 2px;
+    --lan-edge-w: 1px;
+    --lan-title-track: 0.05em;
+    --lan-scrim: rgba(9, 8, 7, 0.95);
+    --lan-font: #{$bt-body};
+    --lan-font-ui: #{$bt-ui};
+    --lan-font-display: #{$bt-display};
+    --lan-lift: 0 20px 46px rgba(0, 0, 0, 0.55);
+
+    --dc-ground: #{$bt-char};
+    --dc-ink: #{$bt-ink};
+    --dc-rubric: #{$bt-gold};
+    --dc-link: #{$bt-gold};
+    --bt-ground: #{$bt-char};
+}
+
+html[data-theme="light"] { --bt-ground: #2a2722; }
+
+html,
+html[data-theme="light"],
+html[data-theme="dark"] { background-color: var(--bt-ground); }
+
+/* ====================================================== GLOBAL PAGE SHELL */
+
+#content > header { display: none; }
+
+#content {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: $bt-body;
+    font-size: 16px;
+    line-height: 1.68;
+    color: $bt-ink;
+    background-color: transparent;
+}
+
+#post-container article { display: block; }
+
+#content h1, #content h2, #content h3, #content h4, #content time {
+    font-family: $bt-display;
+    font-weight: 400;
+}
+
+#content a {
+    color: $bt-gold;
+    text-decoration: underline;
+
+    &:hover { color: $bt-red; }
+}
+
+#content ::selection { background: $bt-red; color: $bt-ink; }
+#content :focus-visible { outline: 2px solid $bt-gold; outline-offset: 3px; }
+
+* { scrollbar-color: #{$bt-olive-dk} #{$bt-char-dp}; }
+::-webkit-scrollbar { width: 13px; height: 13px; }
+::-webkit-scrollbar-track { background: $bt-char-dp; }
+::-webkit-scrollbar-thumb {
+    background: $bt-olive-dk;
+
+    &:hover { background: $bt-gold; }
+}
+
+/* ============================================================== THE FIELD */
+
+.battle-field {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 120% 70% at 52% 58%, rgba(201, 188, 130, 0.5) 0%, rgba(140, 120, 70, 0.22) 38%, rgba(0, 0, 0, 0) 72%),
+        radial-gradient(ellipse 90% 60% at 20% 90%, rgba(238, 55, 37, 0.22) 0%, rgba(0, 0, 0, 0) 64%),
+        linear-gradient(180deg, #{$bt-char-dp} 0%, #26231f 44%, #1a1815 76%, #{$bt-char-dp} 100%);
+}
+
+.battle-field::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 86% 76% at 50% 52%, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+/* =============================================================== THE SMOKE */
+
+.battle-smoke {
+    position: absolute;
+    left: -35%;
+    width: 170%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(214, 200, 148, 0.34) 0%, rgba(214, 200, 148, 0) 70%);
+    filter: blur(34px);
+    will-change: transform;
+}
+
+.battle-smoke--1 { bottom: 20%; height: 42vh; opacity: 0.8;  animation: battle-roll-a 83s ease-in-out infinite alternate; }
+.battle-smoke--2 { bottom: 2%;  height: 34vh; opacity: 0.62; animation: battle-roll-b 104s ease-in-out infinite alternate; }
+.battle-smoke--3 { top: 6%;     height: 30vh; opacity: 0.4;  animation: battle-roll-b 127s ease-in-out infinite alternate reverse; }
+
+@keyframes battle-roll-a {
+    from { transform: translateX(-5%) scaleY(1); }
+    to   { transform: translateX(6%)  scaleY(1.16); }
+}
+
+@keyframes battle-roll-b {
+    from { transform: translateX(7%)  scaleY(1.12); }
+    to   { transform: translateX(-6%) scaleY(0.9); }
+}
+
+/* ============================================================== THE EMBERS */
+
+.battle-ember {
+    position: absolute;
+    bottom: -4%;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: $bt-gold;
+    box-shadow: 0 0 7px 1px rgba(233, 190, 98, 0.7);
+    opacity: 0;
+    animation: battle-rise 15s linear infinite;
+}
+
+.battle-ember:nth-child(1) { left: 8%;  animation-duration: 17s; animation-delay: -2s;  }
+.battle-ember:nth-child(2) { left: 21%; animation-duration: 22s; animation-delay: -9s;  }
+.battle-ember:nth-child(3) { left: 34%; animation-duration: 14s; animation-delay: -13s; }
+.battle-ember:nth-child(4) { left: 47%; animation-duration: 25s; animation-delay: -5s;  }
+.battle-ember:nth-child(5) { left: 60%; animation-duration: 19s; animation-delay: -17s; }
+.battle-ember:nth-child(6) { left: 73%; animation-duration: 16s; animation-delay: -21s; }
+.battle-ember:nth-child(7) { left: 86%; animation-duration: 23s; animation-delay: -7s;  }
+.battle-ember:nth-child(8) { left: 94%; animation-duration: 20s; animation-delay: -15s; }
+
+@keyframes battle-rise {
+    0%   { transform: translate(0, 0) scale(1);   opacity: 0; }
+    12%  { opacity: 0.9; }
+    70%  { opacity: 0.55; }
+    100% { transform: translate(26px, -92vh) scale(0.4); opacity: 0; }
+}
+
+/* ============================================================ THE WRECKAGE */
+
+.battle-wreck {
+    position: absolute;
+    bottom: 0;
+    left: -2%;
+    width: 104%;
+    display: block;
+}
+
+.battle-wreck--far {
+    height: clamp(90px, 13vh, 150px);
+    fill: #16130f;
+    opacity: 0.62;
+}
+
+.battle-wreck--near {
+    height: clamp(140px, 21vh, 230px);
+    fill: #0a0907;
+    opacity: 0.94;
+}
+
+.battle-wreck-line path {
+    fill: none;
+    stroke: #0a0907;
+    stroke-width: 5;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+/* ================================================================ THE FIRE */
+
+.battle-fire {
+    position: absolute;
+    bottom: -6%;
+    width: 34%;
+    height: 26vh;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 100%,
+        rgba(255, 138, 40, 0.5) 0%,
+        rgba(238, 55, 37, 0.26) 34%,
+        rgba(238, 55, 37, 0) 72%);
+    filter: blur(26px);
+    will-change: opacity;
+}
+
+.battle-fire--1 { left: 4%;  animation: battle-flicker 7s ease-in-out infinite alternate; }
+.battle-fire--2 { left: 42%; width: 26%; height: 20vh; animation: battle-flicker 11s ease-in-out infinite alternate -3s; }
+.battle-fire--3 { left: 72%; width: 30%; animation: battle-flicker 9s ease-in-out infinite alternate -5s; }
+
+@keyframes battle-flicker {
+    from { opacity: 0.62; }
+    to   { opacity: 1; }
+}
+
+/* ============================================================== THE TICKER */
+
+.battle-marquee {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(233, 190, 98, 0.35);
+    background: rgba(9, 8, 7, 0.88);
+    font-family: $bt-ui;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $bt-gold;
+
+    span {
+        display: inline-block;
+        padding-right: 2.2em;
+        animation: battle-marquee 46s linear infinite;
+    }
+}
+
+@keyframes battle-marquee {
+    to { transform: translateX(-100%); }
+}
+
+/* ================================================================ THE HERO */
+
+.battle-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 44px 22px 34px;
+    text-align: center;
+}
+
+.battle-lockup {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(12px, 3vw, 26px);
+    margin-bottom: 10px;
+}
+
+.battle-emblem {
+    flex: none;
+    width: clamp(62px, 11vw, 106px);
+    height: auto;
+    color: $bt-gold;
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.7));
+}
+
+.battle-wordmark {
+    margin: 0;
+    font-family: $bt-display;
+    font-size: clamp(3rem, 13vw, 8rem);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    color: $bt-red;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.45), 0 10px 34px rgba(0, 0, 0, 0.8);
+}
+
+.battle-presents {
+    margin: 0 0 6px;
+    font-family: $bt-ui;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: $bt-dim;
+}
+
+.battle-tagline {
+    margin: 0 0 30px;
+    font-family: $bt-ui;
+    font-size: clamp(0.85rem, 2.5vw, 1.15rem);
+    font-weight: 700;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: $bt-olive;
+}
+
+/* ========================================================= STARTS / ENDS */
+
+.battle-when {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.battle-when-block {
+    flex: 1 1 250px;
+    max-width: 340px;
+    padding: 14px 20px 16px;
+    border-top: 3px solid $bt-gold;
+    background: rgba(9, 8, 7, 0.5);
+    text-align: left;
+}
+
+.battle-when-key {
+    display: block;
+    font-family: $bt-ui;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: $bt-gold;
+}
+
+.battle-when-val {
+    display: block;
+    margin-top: 2px;
+    font-family: $bt-display;
+    font-size: clamp(1.5rem, 4.6vw, 2.4rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: $bt-ink;
+}
+
+.battle-blurb {
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 16.5px;
+    line-height: 1.72;
+    color: $bt-ink;
+}
+
+.battle-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.battle-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 1px solid $bt-gold;
+    background: transparent;
+    font-family: $bt-ui;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: $bt-gold !important;
+    text-decoration: none !important;
+    transition: background-color 0.18s ease, color 0.18s ease;
+
+    &:hover { background: $bt-gold; color: $bt-char-dp !important; }
+
+    &--primary {
+        border-color: $bt-red;
+        background: $bt-red;
+        color: $bt-ink !important;
+
+        &:hover { background: $bt-red-dk; border-color: $bt-red-dk; color: $bt-ink !important; }
+    }
+}
+
+/* =============================================== PANEL AND BOARD OVERRIDES */
+
+@include lan.lan-structure("battle");
+
+.battle-panel,
+.battle-panel-body {
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(233, 190, 98, 0.5);
+    }
+}
+
+.battle-panel {
+    &::before { top: 9px; left: 9px; }
+    &::after  { top: 9px; right: 9px; }
+}
+
+.battle-panel-body {
+    &::before { bottom: 9px; left: 9px; }
+    &::after  { bottom: 9px; right: 9px; }
+}
+
+.battle-slot {
+    border-left: 3px solid var(--d);
+}
+
+.battle-tag--mark {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px #{$bt-dim};
+    color: $bt-dim;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.battle-day-name {
+    font-family: $bt-ui;
+    font-weight: 700;
+}
+
+.battle-kit-check::before { border-color: $bt-char-dp; }
+
+/* ============================================================= RESPONSIVE */
+
+@media (max-width: $breakpoint-tablet) {
+    .battle-hero { padding: 28px 14px 26px; }
+
+    .battle-lockup { gap: 10px; }
+
+    .battle-when-block { max-width: none; }
+
+    .battle-smoke { filter: blur(22px); }
+    .battle-wreck--far  { height: clamp(70px, 9vh, 110px); }
+    .battle-wreck--near { height: clamp(110px, 15vh, 170px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .battle-marquee span { padding-left: 14px; animation: none; }
+    .battle-marquee span + span { display: none; }
+    .battle-smoke { animation: none; }
+    .battle-fire  { animation: none; opacity: 0.82; }
+    .battle-ember { display: none; }
+    .battle-btn   { transition: none; }
+}

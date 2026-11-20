@@ -1,0 +1,6 @@
+---
+---
+
+// Page-only entry point, kept out of pong.css so its bare class names do not
+// leak.
+@use "pong/games/minesweeper";
