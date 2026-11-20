@@ -33,7 +33,7 @@ facts:
   - { icon: ico-plug,      label: Network,   value: "Provided" }
 
 registration_url:
-schedule_image: /assets/images/lan_schedules/apoca-lan_schedule.png
+schedule_image: /assets/images/lan_schedules/apoca-lan_schedule.webp
 schedule_alt: >-
   The ApocaLAN weekend schedule: three columns of events, colour-keyed by day,
   with the free-to-play ones flagged. The full running order follows below.

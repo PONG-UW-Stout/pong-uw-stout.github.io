@@ -34,7 +34,7 @@ facts:
   - { icon: ico-plug,   label: Network,   value: "Provided" }
 
 registration_url:
-schedule_image: /assets/images/lan_schedules/pirate-lan_schedule.png
+schedule_image: /assets/images/lan_schedules/pirate-lan_schedule.webp
 schedule_alt: >-
   The PirateLAN weekend schedule: three columns of events joined by a dashed
   route, colour-keyed by day, with the free-to-play ones flagged. The full

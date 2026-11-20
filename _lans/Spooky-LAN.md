@@ -44,7 +44,7 @@ facts:
 
 registration_url:
 
-schedule_image: /assets/images/lan_schedules/spooky-lan_schedule.png
+schedule_image: /assets/images/lan_schedules/spooky-lan_schedule.webp
 schedule_alt: >-
   The Spooky-LAN weekend schedule: four columns of events colour-coded by day
   and flagged free to play and/or competitive. The full running order follows

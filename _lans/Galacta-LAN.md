@@ -26,7 +26,7 @@ facts:
   - { icon: ico-plug,  label: Network,  value: "Provided" }
 
 registration_url:
-schedule_image: /assets/images/lan_schedules/galacta-lan_schedule.png
+schedule_image: /assets/images/lan_schedules/galacta-lan_schedule.webp
 schedule_alt: >-
   The Galacta-LAN weekend schedule: four columns of events, each flagged free
   to play and/or competitive. The full running order follows below.

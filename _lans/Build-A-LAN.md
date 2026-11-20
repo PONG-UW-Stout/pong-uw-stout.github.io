@@ -27,7 +27,7 @@ facts:
   - { icon: ico-plug,  label: Network,  value: "Provided" }
 
 registration_url:
-schedule_image: /assets/images/lan_schedules/build-a-lan_schedule.png
+schedule_image: /assets/images/lan_schedules/build-a-lan_schedule.webp
 schedule_alt: >-
   The Build-A-LAN weekend schedule: four columns of events, each flagged free
   to play and/or competitive. The full running order follows below.

@@ -33,7 +33,7 @@ facts:
   - { icon: ico-plug,   label: Network,   value: "Provided" }
 
 registration_url:
-schedule_image: /assets/images/lan_schedules/super-lan_schedule.png
+schedule_image: /assets/images/lan_schedules/super-lan_schedule.webp
 schedule_alt: >-
   The SuperLAN weekend schedule: three columns of events, colour-keyed by day
   and flagged free to play and/or competitive. The full running order follows

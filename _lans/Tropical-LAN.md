@@ -27,7 +27,7 @@ facts:
   - { icon: ico-plug,  label: Network,  value: "Provided" }
 
 registration_url:
-schedule_image: /assets/images/lan_schedules/tropical-lan_schedule.png
+schedule_image: /assets/images/lan_schedules/tropical-lan_schedule.webp
 schedule_alt: >-
   The Tropical-LAN weekend schedule: four columns of events, each flagged free
   to play and/or competitive. The full running order follows below.
